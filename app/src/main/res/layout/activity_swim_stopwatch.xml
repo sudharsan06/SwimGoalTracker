@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/tvSwimDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date: 2025-10-11"
+        android:textSize="14sp"
+        android:textColor="@color/teal_dark"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp" />
+
+    <!-- Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Freestyle Timer -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/edt_bg"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Freestyle"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_light" />
+
+                <TextView
+                    android:id="@+id/tvFree"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:00.0"
+                    android:textSize="32sp"
+                    android:layout_gravity="center"
+                    android:textStyle="bold"
+                    android:textColor="@color/teal_primary"
+                    android:layout_marginVertical="12dp"
+                    android:fontFamily="monospace" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:spacing="8dp">
+
+                    <Button
+                        android:id="@+id/btnFreeStart"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="START"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/teal_primary"
+                        android:textColor="@color/white" />
+
+                    <Button
+                        android:id="@+id/btnFreeStop"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="STOP"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/orange_accent"
+                        android:textColor="@color/white" />
+
+                    <Button
+                        android:id="@+id/btnFreeReset"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="RESET"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/gray_light"
+                        android:textColor="@color/text_dark" />
+                    <Button
+                        android:id="@+id/btn_save_free"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="Save"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/colorAccent"
+                        android:textColor="@color/text_dark" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Backstroke Timer -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/edt_bg"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Backstroke"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_light" />
+
+                <TextView
+                    android:id="@+id/tvBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:00.0"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:textColor="@color/teal_primary"
+                    android:layout_marginVertical="12dp"
+                    android:fontFamily="monospace" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:spacing="8dp">
+
+                    <Button
+                        android:id="@+id/btnBackStart"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="START"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/teal_primary"
+                        android:textColor="@color/white" />
+
+                    <Button
+                        android:id="@+id/btnBackStop"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="STOP"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/orange_accent"
+                        android:textColor="@color/white" />
+
+                    <Button
+                        android:id="@+id/btnBackReset"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="RESET"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/gray_light"
+                        android:textColor="@color/text_dark" />
+                    <Button
+                        android:id="@+id/btn_save_back"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="Save"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/colorAccent"
+                        android:textColor="@color/text_dark" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Breaststroke Timer -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/edt_bg"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Breaststroke"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_light" />
+
+                <TextView
+                    android:id="@+id/tvBreast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:00.0"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:textColor="@color/teal_primary"
+                    android:layout_marginVertical="12dp"
+                    android:fontFamily="monospace" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:spacing="8dp">
+
+                    <Button
+                        android:id="@+id/btnBreastStart"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="START"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/teal_primary"
+                        android:textColor="@color/white" />
+
+                    <Button
+                        android:id="@+id/btnBreastStop"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="STOP"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/orange_accent"
+                        android:textColor="@color/white" />
+
+                    <Button
+                        android:id="@+id/btnBreastReset"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="RESET"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/gray_light"
+                        android:textColor="@color/text_dark" />
+                    <Button
+                        android:id="@+id/btn_save_breast"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="Save"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/colorAccent"
+                        android:textColor="@color/text_dark" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Butterfly Timer -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/edt_bg"
+                android:padding="16dp"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Butterfly"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_light" />
+
+                <TextView
+                    android:id="@+id/tvFly"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:00.0"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:textColor="@color/teal_primary"
+                    android:layout_marginVertical="12dp"
+                    android:fontFamily="monospace" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:spacing="8dp">
+
+                    <Button
+                        android:id="@+id/btnFlyStart"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="START"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/teal_primary"
+                        android:textColor="@color/white" />
+
+                    <Button
+                        android:id="@+id/btnFlyStop"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="STOP"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/orange_accent"
+                        android:textColor="@color/white" />
+
+                    <Button
+                        android:id="@+id/btnFlyReset"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="RESET"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/gray_light"
+                        android:textColor="@color/text_dark" />
+                    <Button
+                        android:id="@+id/btn_save_fly"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="Save"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/colorAccent"
+                        android:textColor="@color/text_dark" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_swim"
+        android:icon="@android:drawable/ic_menu_recent_history"
+        android:title="Swim" />
+    <item
+        android:id="@+id/nav_nutrition"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="Nutrition" />
+    <item
+        android:id="@+id/nav_tracker"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="Tracker" />
+<!--    You can add more items later if needed -->
+</menu>
+
+

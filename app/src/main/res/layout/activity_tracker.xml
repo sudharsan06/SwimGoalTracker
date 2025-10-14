@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+<!--
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:title="Tracker"
+        app:navigationIcon="@drawable/ic_arrow_back_24"
+        app:navigationIconTint="@android:color/white" />-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:text="Last 15 Days"
+        android:padding="8dp"
+        android:textColor="@color/teal_dark"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listTracker"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical" />
+
+   <!-- <ListView
+        android:id="@+id/listTracker"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dividerHeight="8dp" />-->
+
+</LinearLayout>
+
