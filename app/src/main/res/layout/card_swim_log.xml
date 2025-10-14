@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:elevation="4dp"
+    android:layout_margin="8dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/edt_bg"
+        android:padding="8dp"
+        android:layout_marginBottom="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center_vertical">
+
+            <!--<ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="Date icon" />
+-->
+            <TextView
+                android:id="@+id/tv_log_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="2025-10-11"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/teal_dark"
+                android:layout_marginStart="12dp" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/baseline_arrow_right_24"
+                android:contentDescription="Expand" />
+        </LinearLayout>
+
+        <!-- Nutrition Info -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="12dp"
+            android:paddingStart="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Overall Nutrition"
+                android:textSize="12sp"
+                android:textColor="@color/textSecondary"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_nutrition_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cals: 0  |  P: 0g  |  C: 0g  |  F: 0g"
+                android:textSize="13sp"
+                android:textColor="@color/teal_primary"
+                android:layout_marginTop="4dp"
+                android:fontFamily="monospace" />
+        </LinearLayout>
+
+        <!-- Swim Info -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:paddingStart="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Swim Best Times"
+                android:textSize="12sp"
+                android:textColor="@color/textSecondary"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_swim_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Free: 00:03.6  |  Back: 00:00.0  |  Breast: 00:00.0  |  Fly: 00:00.0"
+                android:textSize="13sp"
+                android:textColor="@color/orange"
+                android:layout_marginTop="4dp"
+                android:fontFamily="monospace" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

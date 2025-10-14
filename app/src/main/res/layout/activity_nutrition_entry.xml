@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!--     <com.google.android.material.appbar.MaterialToolbar
+                     android:id="@+id/toolbar"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:title="Nutrition Entry"
+                     app:navigationIcon="@drawable/ic_arrow_back_24"
+                     app:navigationIconTint="@android:color/white" />-->
+
+            <TextView
+                android:id="@+id/tvEntryDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/textSecondary"
+                android:text="Date: 2024-10-01"
+                android:textSize="14sp"  />
+
+            <!-- Calories Input -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Calories (kcal)"
+                    android:textSize="14sp"
+                    android:textColor="@color/teal_primary"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/etCalories"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/edt_bg"
+                    android:hint="Enter calories"
+                    android:inputType="number"
+                    android:textColorHint="@color/textSecondary"
+                    android:paddingHorizontal="16dp"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- Protein Input -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Protein (g)"
+                    android:layout_marginTop="16dp"
+                    android:textSize="14sp"
+                    android:textColor="@color/teal_primary"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/etProtein"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/edt_bg"
+                    android:hint="Enter protein"
+                    android:textColorHint="@color/textSecondary"
+                    android:inputType="numberDecimal"
+                    android:paddingHorizontal="16dp"
+                    android:textSize="14sp" />
+            </LinearLayout>
+            <!--<EditText
+                android:id="@+id/etProtein"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Protein (g)"
+                android:inputType="number"
+                android:textColor="@color/textSecondary"
+                android:textColorHint="@color/textPrimary" />-->
+
+            <!-- Carbs Input -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Carbs (g)"
+                    android:layout_marginTop="16dp"
+                    android:textSize="14sp"
+                    android:textColor="@color/teal_primary"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/etCarbs"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/edt_bg"
+                    android:hint="Enter carbs"
+                    android:textColorHint="@color/textSecondary"
+                    android:inputType="numberDecimal"
+                    android:paddingHorizontal="16dp"
+                    android:textSize="14sp" />
+            </LinearLayout>
+            <!--<EditText
+                android:id="@+id/etCarbs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Carbs (g)"
+                android:inputType="number"
+                android:textColor="@color/textSecondary"
+                android:textColorHint="@color/textPrimary" />-->
+            <!-- Fats Input -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="32dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fats (g)"
+                    android:layout_marginTop="16dp"
+                    android:textSize="14sp"
+                    android:textColor="@color/teal_primary"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/etFats"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/edt_bg"
+                    android:hint="Enter fats"
+                    android:textColorHint="@color/textSecondary"
+                    android:inputType="numberDecimal"
+                    android:paddingHorizontal="16dp"
+                    android:textSize="14sp" />
+            </LinearLayout>
+            <!--<EditText
+                android:id="@+id/etFats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Fats (g)"
+                android:inputType="number"
+                android:textColor="@color/textSecondary"
+                android:textColorHint="@color/textPrimary" />-->
+
+        </LinearLayout>
+
+    </ScrollView>
+    <!-- Save Session Button -->
+    <Button
+        android:id="@+id/btnSaveNutrition"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="SAVE Nutrition Intake"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:background="@color/teal_primary"
+        android:layout_margin="16dp" />
+</LinearLayout>
+
+
+

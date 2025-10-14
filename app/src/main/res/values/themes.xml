@@ -1,0 +1,50 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.SwimGoalTracker" parent="Theme.AppCompat">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">@color/my_custom_status_bar_color</item>
+        <item name="colorPrimary">@color/my_custom_app_bar_color</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
+
+    <style name="AppTheme" parent="Theme.AppCompat">
+        <item name="colorPrimary">#7DB8C4</item> <!-- Soft aqua -->
+        <item name="colorPrimaryDark">#6FB1C5</item> <!-- Muted teal -->
+        <item name="colorAccent">#F7C8E0</item> <!-- Watercolor pink -->
+        <item name="android:windowBackground">@color/watercolorBackground</item>
+        <item name="android:textColorPrimary">#4A4A4A</item> <!-- Gentle gray -->
+        <item name="android:buttonStyle">@style/WatercolorButton</item>
+    </style>
+
+    <style name="AppTheme_NoActionBar" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">#7DB8C4</item> <!-- Soft aqua -->
+        <item name="colorPrimaryDark">#6FB1C5</item> <!-- Muted teal -->
+        <item name="colorAccent">#F7C8E0</item> <!-- Watercolor pink -->
+        <item name="android:windowBackground">@color/watercolorBackground</item>
+        <item name="android:textColorPrimary">#4A4A4A</item> <!-- Gentle gray -->
+        <item name="android:buttonStyle">@style/WatercolorButton</item>
+    </style>
+
+    <!-- Custom button style -->
+    <style name="WatercolorButton" parent="Widget.AppCompat.Button">
+        <item name="android:backgroundTint">#BFDCE5</item> <!-- Misty blue -->
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+    <style name="CustomDatePickerDialog" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="android:background">#FFDDDD</item> <!-- Background color -->
+        <item name="android:textColorPrimary">#000000</item> <!-- Text color -->
+        <item name="android:datePickerDialogTheme">@style/CustomDatePicker</item>
+    </style>
+
+    <style name="CustomDatePicker" parent="@android:style/Widget.DatePicker">
+        <item name="android:background">#FFDDDD</item>
+    </style>
+
+    <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">#2196F3</item> <!-- Optional -->
+    </style>
+
+
+</resources>
