@@ -3,6 +3,7 @@ package com.dreamcreators.swimgoaltracker;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -36,6 +37,15 @@ public class NutritionEntryActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }*/
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            int statusBarHeight = getStatusBarHeight();
+            View actionBarView = findViewById(R.id.toolbar); // or your ActionBar container
+            actionBarView.setPadding(0, statusBarHeight, 0, 0);
+        }
+
+
+
 
         TextView tvDate = findViewById(R.id.tvEntryDate);
         EditText etCalories = findViewById(R.id.etCalories);
@@ -82,7 +92,14 @@ public class NutritionEntryActivity extends AppCompatActivity {
             finish();
         });
     }
-
+    private int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();

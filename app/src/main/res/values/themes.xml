@@ -9,13 +9,15 @@
         <item name="colorOnPrimary">@color/white</item>
     </style>
 
-    <style name="AppTheme" parent="Theme.AppCompat">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">#7DB8C4</item> <!-- Soft aqua -->
         <item name="colorPrimaryDark">#6FB1C5</item> <!-- Muted teal -->
         <item name="colorAccent">#F7C8E0</item> <!-- Watercolor pink -->
         <item name="android:windowBackground">@color/watercolorBackground</item>
         <item name="android:textColorPrimary">#4A4A4A</item> <!-- Gentle gray -->
         <item name="android:buttonStyle">@style/WatercolorButton</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowTranslucentStatus">false</item>
     </style>
 
     <style name="AppTheme_NoActionBar" parent="Theme.AppCompat.NoActionBar">
@@ -25,6 +27,9 @@
         <item name="android:windowBackground">@color/watercolorBackground</item>
         <item name="android:textColorPrimary">#4A4A4A</item> <!-- Gentle gray -->
         <item name="android:buttonStyle">@style/WatercolorButton</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowTranslucentStatus">false</item>
+
     </style>
 
     <!-- Custom button style -->
