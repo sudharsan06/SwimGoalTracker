@@ -30,11 +30,19 @@ public class SwimEntryActivity extends AppCompatActivity {
 
     String selectedStyle = "";
     private NutritionDbHelper dbHelper;
+    private boolean fromSwimStopwatch = false;
+    private String returnStroke = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_swim_entry);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setTitle("Manual swim entry");
+        }
 
         swimStyleSpinner = findViewById(R.id.swimStyleSpinner);
         edtSwimTime = findViewById(R.id.edtSwimTime);
@@ -49,6 +57,10 @@ public class SwimEntryActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         swimStyleSpinner.setAdapter(adapter);
 
+        // Check if we came from SwimStopwatchActivity
+        fromSwimStopwatch = getIntent().getBooleanExtra("from_swim_stopwatch", false);
+        returnStroke = getIntent().getStringExtra("selected_stroke");
+
         swimStyleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -62,6 +74,12 @@ public class SwimEntryActivity extends AppCompatActivity {
             }
         });
         btn_SaveTiming.setOnClickListener(v -> saveSession(selectedStyle, edtSwimTime.getText().toString()));
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private void saveSession(String selectedStyle, String inputSeconds) {
@@ -120,25 +138,44 @@ public class SwimEntryActivity extends AppCompatActivity {
         if (which != null && !which.isEmpty()) {
             Double seconds = Double.parseDouble(edtSwimTime.getText().toString().trim());
             long milliseconds = (long) (seconds * 1000);
-            //long seconds = Long.parseLong(edtSwimTime.getText().toString());
+            
+            // Always insert a new entry for each attempt
+            // This allows multiple attempts per day, and MIN() query will find the best time
             ContentValues values = new ContentValues();
             values.put("date", date);
-            if (which.equalsIgnoreCase("Freestyle")) values.put("freestyle_ms", milliseconds);
-            else values.put("freestyle_ms", 0);
-            if (which.equalsIgnoreCase("Backstroke")) values.put("backstroke_ms", milliseconds);
-            else values.put("backstroke_ms", 0);
-            if (which.equalsIgnoreCase("Breaststroke")) values.put("breaststroke_ms", milliseconds);
-            else values.put("breaststroke_ms", 0);
-            if (which.equalsIgnoreCase("Butterfly")) values.put("butterfly_ms", milliseconds);
-            else values.put("butterfly_ms", 0);
-
-            long id = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);
-            if (id > 0) {
+            values.put("created_at", System.currentTimeMillis());
+            
+            // Only set the selected style, others will default to 0
+            // This allows tracking multiple attempts and finding the best time using MIN()
+            if (which.equalsIgnoreCase("freestyle") || which.equalsIgnoreCase("Freestyle")) {
+                values.put("freestyle_ms", milliseconds);
+            } else if (which.equalsIgnoreCase("backstroke") || which.equalsIgnoreCase("Backstroke")) {
+                values.put("backstroke_ms", milliseconds);
+            } else if (which.equalsIgnoreCase("breaststroke") || which.equalsIgnoreCase("Breaststroke")) {
+                values.put("breaststroke_ms", milliseconds);
+            } else if (which.equalsIgnoreCase("butterfly") || which.equalsIgnoreCase("Butterfly")) {
+                values.put("butterfly_ms", milliseconds);
+            }
+            
+            long result = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);
+            
+            if (result > 0) {
                 Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
 
-                Intent intent = new Intent(SwimEntryActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
+                // Navigate back to SwimStopwatchActivity if we came from there
+                if (fromSwimStopwatch) {
+                    Intent intent = new Intent(SwimEntryActivity.this, SwimStopwatchActivity.class);
+                    if (returnStroke != null) {
+                        intent.putExtra("stroke", returnStroke);
+                    }
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(intent);
+                } else {
+                    // Otherwise go to MainActivity
+                    Intent intent = new Intent(SwimEntryActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(intent);
+                }
                 finish();
 
             } else {

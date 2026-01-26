@@ -123,10 +123,10 @@ public class TrackerActivity extends AppCompatActivity {
             }
             c1.close();
 
-            // Swim session query
+            // Swim session query - use NULLIF to convert 0 to NULL, so MIN() ignores zeros and finds the best (lowest) non-zero time
             long freeMs = 0, backMs = 0, breastMs = 0, flyMs = 0;
             Cursor c2 = dbHelper.getReadableDatabase().rawQuery(
-                    "SELECT MIN(freestyle_ms), MIN(backstroke_ms), MIN(breaststroke_ms), MIN(butterfly_ms) FROM swim_sessions WHERE date = ?",
+                    "SELECT MIN(NULLIF(freestyle_ms, 0)), MIN(NULLIF(backstroke_ms, 0)), MIN(NULLIF(breaststroke_ms, 0)), MIN(NULLIF(butterfly_ms, 0)) FROM swim_sessions WHERE date = ?",
                     new String[]{date}
             );
             if (c2.moveToFirst()) {

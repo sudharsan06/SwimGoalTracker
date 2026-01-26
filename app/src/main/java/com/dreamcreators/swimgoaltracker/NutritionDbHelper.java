@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class NutritionDbHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "goaltracker.db";
-    public static final int DB_VERSION = 2;
+    public static final int DB_VERSION = 3;
 
     public NutritionDbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -29,7 +29,8 @@ public class NutritionDbHelper extends SQLiteOpenHelper {
                 "freestyle_ms INTEGER NOT NULL DEFAULT 0, " +
                 "backstroke_ms INTEGER NOT NULL DEFAULT 0, " +
                 "breaststroke_ms INTEGER NOT NULL DEFAULT 0, " +
-                "butterfly_ms INTEGER NOT NULL DEFAULT 0" +
+                "butterfly_ms INTEGER NOT NULL DEFAULT 0, " +
+                "created_at INTEGER NOT NULL DEFAULT 0" +
                 ")");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS profile (" +
@@ -57,6 +58,9 @@ public class NutritionDbHelper extends SQLiteOpenHelper {
                     "start_date TEXT, " +
                     "last_login TEXT" +
                     ")");
+        }
+        if (oldVersion < 3) {
+            db.execSQL("ALTER TABLE swim_sessions ADD COLUMN created_at INTEGER NOT NULL DEFAULT 0");
         }
     }
 }

@@ -2,20 +2,27 @@ package com.dreamcreators.swimgoaltracker;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class SwimStopwatchActivity extends AppCompatActivity {
@@ -29,7 +36,10 @@ public class SwimStopwatchActivity extends AppCompatActivity {
 
     private TextView tvDate;
     private TextView tvFree, tvBack, tvBreast, tvFly;
+    private TextView tvEntriesHeader;
     private NutritionDbHelper dbHelper;
+    private RecyclerView recyclerViewEntries;
+    private String selectedStroke = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +62,12 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         tvBreast = findViewById(R.id.tvBreast);
         tvFly = findViewById(R.id.tvFly);
 
+        // Sections for each stroke (used to show/hide based on selected style from dashboard)
+        LinearLayout sectionFree = findViewById(R.id.sectionFree);
+        LinearLayout sectionBack = findViewById(R.id.sectionBack);
+        LinearLayout sectionBreast = findViewById(R.id.sectionBreast);
+        LinearLayout sectionFly = findViewById(R.id.sectionFly);
+
         Button btnFreeStart = findViewById(R.id.btnFreeStart);
         Button btnFreeStop = findViewById(R.id.btnFreeStop);
         Button btnFreeReset = findViewById(R.id.btnFreeReset);
@@ -68,10 +84,52 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         Button btn_save_back = findViewById(R.id.btn_save_back);
         Button btn_save_breast = findViewById(R.id.btn_save_breast);
         Button btn_save_fly = findViewById(R.id.btn_save_fly);
+
+        // RecyclerView for entries list (shared for whichever style is visible)
+        tvEntriesHeader = findViewById(R.id.tvEntriesHeader);
+        recyclerViewEntries = findViewById(R.id.recyclerViewEntries);
+        recyclerViewEntries.setLayoutManager(new LinearLayoutManager(this));
+
         dbHelper = new NutritionDbHelper(this);
 
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         tvDate.setText("Date: " + today);
+
+        // Adjust UI based on which stroke was tapped on the dashboard
+        // Dashboard passes extras: "Freestyle", "Backstroke", "Breaststroke", "Butterfly"
+        // Also check if we're returning from SwimEntryActivity
+        String stroke = getIntent().getStringExtra("stroke");
+        if (stroke != null) {
+            selectedStroke = stroke;
+        }
+        if (stroke != null) {
+            // Default: hide all, then show only the selected section
+            sectionFree.setVisibility(View.GONE);
+            sectionBack.setVisibility(View.GONE);
+            sectionBreast.setVisibility(View.GONE);
+            sectionFly.setVisibility(View.GONE);
+
+            if ("Freestyle".equalsIgnoreCase(stroke)) {
+                sectionFree.setVisibility(View.VISIBLE);
+                setTitle("Freestyle timer");
+                loadTodayEntries("free", today);
+            } else if ("Backstroke".equalsIgnoreCase(stroke)) {
+                sectionBack.setVisibility(View.VISIBLE);
+                setTitle("Backstroke timer");
+                loadTodayEntries("back", today);
+            } else if ("Breaststroke".equalsIgnoreCase(stroke)) {
+                sectionBreast.setVisibility(View.VISIBLE);
+                setTitle("Breaststroke timer");
+                loadTodayEntries("breast", today);
+            } else if ("Butterfly".equalsIgnoreCase(stroke)) {
+                sectionFly.setVisibility(View.VISIBLE);
+                setTitle("Butterfly timer");
+                loadTodayEntries("fly", today);
+            }
+        } else {
+            // If opened from menu, default to freestyle list
+            loadTodayEntries("free", today);
+        }
 
         btnFreeStart.setOnClickListener(v -> startTimer("free"));
         btnFreeStop.setOnClickListener(v -> stopTimer("free"));
@@ -110,6 +168,11 @@ public class SwimStopwatchActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_edit) {
             Intent intent = new Intent(this, SwimEntryActivity.class);
+            // Pass information about where we came from and which stroke is selected
+            intent.putExtra("from_swim_stopwatch", true);
+            if (selectedStroke != null) {
+                intent.putExtra("selected_stroke", selectedStroke);
+            }
             startActivity(intent);
             return true;
         }
@@ -223,6 +286,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
     private void saveSession(String which) {
 
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        long createdAt = System.currentTimeMillis();
         long now = System.currentTimeMillis();
         long showFree = elapsedFree + (startFree >= 0 ? now - startFree : 0);
         long showBack = elapsedBack + (startBack >= 0 ? now - startBack : 0);
@@ -242,25 +306,30 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             } else if (which.equals("fly") && showFly < 10000) {
                 ThrowAlertDialog("fly");
             } else {
-                // proceed to save
+                // proceed to save - always insert new entry for each attempt
+                // This allows multiple attempts per day, and MIN() query will find the best time
                 ContentValues values = new ContentValues();
                 values.put("date", date);
-                if (which.equals("free")) values.put("freestyle_ms", showFree);
-                else values.put("freestyle_ms", 0);
-                if (which.equals("back")) values.put("backstroke_ms", showBack);
-                else values.put("backstroke_ms", 0);
-                if (which.equals("breast")) values.put("breaststroke_ms", showBreast);
-                else values.put("breaststroke_ms", 0);
-                if (which.equals("fly")) values.put("butterfly_ms", showFly);
-                else values.put("butterfly_ms", 0);
-
-                /* values.put("freestyle_ms", showFree);
-                 values.put("backstroke_ms", showBack);
-                 values.put("breaststroke_ms", showBreast);
-                 values.put("butterfly_ms", showFly);*/
+                
+                // Only set the selected style, others will default to 0
+                // This allows tracking multiple attempts and finding the best time using MIN()
+                if (which.equals("free")) {
+                    values.put("freestyle_ms", showFree);
+                } else if (which.equals("back")) {
+                    values.put("backstroke_ms", showBack);
+                } else if (which.equals("breast")) {
+                    values.put("breaststroke_ms", showBreast);
+                } else if (which.equals("fly")) {
+                    values.put("butterfly_ms", showFly);
+                }
+                values.put("created_at", createdAt);
+                
                 long id = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);
                 if (id > 0) {
                     Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+                    // Refresh the entries list
+                    String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                    loadTodayEntries(which, today);
                 } else {
                     Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show();
                 }
@@ -286,29 +355,124 @@ public class SwimStopwatchActivity extends AppCompatActivity {
     private void saveSessionWithSelectedValue(String which) {
 
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        long createdAt = System.currentTimeMillis();
         long now = System.currentTimeMillis();
         long showFree = elapsedFree + (startFree >= 0 ? now - startFree : 0);
         long showBack = elapsedBack + (startBack >= 0 ? now - startBack : 0);
         long showBreast = elapsedBreast + (startBreast >= 0 ? now - startBreast : 0);
         long showFly = elapsedFly + (startFly >= 0 ? now - startFly : 0);
 
-        // proceed to save
+        // Always insert new entry for each attempt
+        // This allows multiple attempts per day, and MIN() query will find the best time
         ContentValues values = new ContentValues();
         values.put("date", date);
-        if (which.equals("free")) values.put("freestyle_ms", showFree);
-        else values.put("freestyle_ms", 0);
-        if (which.equals("back")) values.put("backstroke_ms", showBack);
-        else values.put("backstroke_ms", 0);
-        if (which.equals("breast")) values.put("breaststroke_ms", showBreast);
-        else values.put("breaststroke_ms", 0);
-        if (which.equals("fly")) values.put("butterfly_ms", showFly);
-        else values.put("butterfly_ms", 0);
+        
+        // Only set the selected style, others will default to 0
+        // This allows tracking multiple attempts and finding the best time using MIN()
+        if (which.equals("free")) {
+            values.put("freestyle_ms", showFree);
+        } else if (which.equals("back")) {
+            values.put("backstroke_ms", showBack);
+        } else if (which.equals("breast")) {
+            values.put("breaststroke_ms", showBreast);
+        } else if (which.equals("fly")) {
+            values.put("butterfly_ms", showFly);
+        }
+        values.put("created_at", createdAt);
 
         long id = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);
         if (id > 0) {
             Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+            // Refresh the entries list
+            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            loadTodayEntries(which, today);
         } else {
             Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadTodayEntries(String style, String date) {
+        String columnName;
+
+        switch (style) {
+            case "free":
+                columnName = "freestyle_ms";
+                break;
+            case "back":
+                columnName = "backstroke_ms";
+                break;
+            case "breast":
+                columnName = "breaststroke_ms";
+                break;
+            case "fly":
+                columnName = "butterfly_ms";
+                break;
+            default:
+                return;
+        }
+
+        // Query database for today's entries of this style (non-zero values only), newest first
+        Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
+                "SELECT id, " + columnName + ", created_at FROM swim_sessions WHERE date = ? AND " + columnName + " > 0 ORDER BY created_at DESC",
+                new String[]{date}
+        );
+
+        List<SwimTimingEntry> entries = new ArrayList<>();
+        long bestTime = Long.MAX_VALUE;
+
+        while (cursor.moveToNext()) {
+            long id = cursor.getLong(0);
+            long timeMs = cursor.getLong(1);
+            long createdAt = cursor.isNull(2) ? 0 : cursor.getLong(2);
+            if (timeMs > 0) {
+                entries.add(new SwimTimingEntry(id, timeMs, createdAt));
+                if (timeMs < bestTime) {
+                    bestTime = timeMs;
+                }
+            }
+        }
+        cursor.close();
+
+        if (entries.isEmpty()) {
+            // No entries: hide header and clear list
+            tvEntriesHeader.setVisibility(View.GONE);
+            recyclerViewEntries.setAdapter(null);
+        } else {
+            tvEntriesHeader.setVisibility(View.VISIBLE);
+            long nowMs = System.currentTimeMillis();
+            SwimTimingAdapter adapter = new SwimTimingAdapter(this, entries, bestTime == Long.MAX_VALUE ? 0 : bestTime, nowMs);
+            recyclerViewEntries.setAdapter(adapter);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh entries when activity resumes (e.g., when returning from manual entry)
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        
+        // Check if stroke was passed in intent (might be updated when returning from SwimEntryActivity)
+        String strokeFromIntent = getIntent().getStringExtra("stroke");
+        if (strokeFromIntent != null) {
+            selectedStroke = strokeFromIntent;
+        }
+        
+        if (selectedStroke != null) {
+            if ("Freestyle".equalsIgnoreCase(selectedStroke)) {
+                loadTodayEntries("free", today);
+            } else if ("Backstroke".equalsIgnoreCase(selectedStroke)) {
+                loadTodayEntries("back", today);
+            } else if ("Breaststroke".equalsIgnoreCase(selectedStroke)) {
+                loadTodayEntries("breast", today);
+            } else if ("Butterfly".equalsIgnoreCase(selectedStroke)) {
+                loadTodayEntries("fly", today);
+            }
+        } else {
+            // If no stroke selected, refresh all (when opened from menu)
+            loadTodayEntries("free", today);
+            loadTodayEntries("back", today);
+            loadTodayEntries("breast", today);
+            loadTodayEntries("fly", today);
         }
     }
 }
