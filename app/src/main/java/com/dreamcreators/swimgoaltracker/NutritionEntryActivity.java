@@ -15,9 +15,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import android.content.Intent;
 
 public class NutritionEntryActivity extends AppCompatActivity {
 
@@ -37,15 +40,6 @@ public class NutritionEntryActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }*/
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            int statusBarHeight = getStatusBarHeight();
-            View actionBarView = findViewById(R.id.toolbar); // or your ActionBar container
-            actionBarView.setPadding(0, statusBarHeight, 0, 0);
-        }
-
-
-
 
         TextView tvDate = findViewById(R.id.tvEntryDate);
         EditText etCalories = findViewById(R.id.etCalories);
@@ -91,14 +85,24 @@ public class NutritionEntryActivity extends AppCompatActivity {
             Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
             finish();
         });
-    }
-    private int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
+
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+        if (bottomNav != null) {
+           // bottomNav.setSelectedItemId(R.id.nav_nutrition);
+            bottomNav.setOnItemSelectedListener(item -> {
+                int itemId = item.getItemId();
+                if (itemId == R.id.nav_home) {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(intent);
+                    return true;
+                } else if (itemId == R.id.nav_tracker) {
+                    startActivity(new Intent(this, TrackerActivity.class));
+                    return true;
+                }
+                return false;
+            });
         }
-        return result;
     }
     @Override
     public boolean onSupportNavigateUp() {

@@ -3,13 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@drawable/sgt_dashboard"
     android:layout_height="match_parent"
     android:orientation="vertical">
     <LinearLayout
+        android:id="@+id/top_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/teal_primary"
+        android:background="#901688C5"
         android:padding="20dp">
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,7 +25,7 @@
                 android:text="SwimGoalTracker"
                 android:textSize="28sp"
                 android:gravity="left"
-                android:textStyle="bold"
+                android:textStyle="bold|italic"
                 android:textColor="@color/white" />
 
             <ImageButton
@@ -42,7 +44,7 @@
             android:layout_height="wrap_content"
             android:text="Good Evening, sdd!"
             android:textSize="18sp"
-            android:textColor="@color/white"
+            android:textColor="@color/pale"
             android:layout_marginTop="8dp" />
 
         <TextView
@@ -51,20 +53,21 @@
             android:layout_height="wrap_content"
             android:text="Today: 2025-10-11"
             android:textSize="14sp"
-            android:textColor="@color/teal_light"
+            android:textColor="@color/pale"
             android:layout_marginTop="8dp" />
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
-
+        android:layout_weight="1"
+        >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
 
+
+            android:orientation="vertical">
             <!--<LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -85,7 +88,7 @@
                         android:layout_weight="1"
                         android:text="UserName"
                         android:padding="16dp"
-                        android:textColor="@color/white"
+                        android:textColor="?attr/colorOnPrimary"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -102,7 +105,7 @@
                     android:id="@+id/tvDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/colorOnPrimary"
                     android:textSize="18sp"
                     android:paddingLeft="16dp"
                     android:paddingBottom="16dp"
@@ -111,24 +114,23 @@
             </LinearLayout>-->
 
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/tvBestSwimHeader"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="DAILY NUTRITION"
-                android:padding="8dp"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/textSecondary"/>
-
+                android:text="BEST SWIM TIMINGS TODAY"
+                android:textColor="@color/sun_glow"
+                android:padding="8dp"  />
             <LinearLayout
+                android:id="@+id/layBestSwimContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="4dp">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-
+                    android:paddingTop="4dp"
                     android:weightSum="2">
 
                     <androidx.cardview.widget.CardView
@@ -136,32 +138,34 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         android:layout_weight="1"
-                        app:cardBackgroundColor="@color/white"
+                        app:cardBackgroundColor="?attr/colorSurface"
                         app:cardCornerRadius="12dp"
                         app:cardElevation="6dp">
 
                         <LinearLayout
+                            android:id="@+id/lay_freeStyle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:onClick="openSwimStopwatch"
                             android:orientation="vertical"
                             android:padding="12dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Calories"
-                                android:textColor="@color/textSecondary"
+                                android:text="Freestyle"
+                                android:textColor="@color/steel_blue"
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/tvCalories"
+                                android:id="@+id/tvBestFree"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/teal_dark"
+                                android:textColor="@color/tropical_cyan"
                                 android:textStyle="bold"
                                 android:padding="12dp"
                                 android:textSize="24sp"
-                                tools:text="2100 kcal" />
+                                tools:text="05:20.3" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
@@ -170,37 +174,38 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         android:layout_weight="1"
-                        app:cardBackgroundColor="@color/white"
+                        app:cardBackgroundColor="?attr/colorSurface"
                         app:cardCornerRadius="12dp"
                         app:cardElevation="6dp">
 
                         <LinearLayout
+                            android:id="@+id/lay_backStroke"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:onClick="openSwimStopwatch"
                             android:orientation="vertical"
                             android:padding="12dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Proteins"
-                                android:textColor="@color/textSecondary"
+                                android:text="Backstroke"
+                                android:textColor="@color/steel_blue"
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/tvProtein"
+                                android:id="@+id/tvBestBack"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/teal_dark"
+                                android:textColor="@color/tropical_cyan"
                                 android:textStyle="bold"
                                 android:padding="12dp"
                                 android:textSize="24sp"
-                                tools:text="120 g" />
+                                tools:text="04:10.0" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>
 
-                <!-- Carbs & Fats -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -213,32 +218,34 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         android:layout_weight="1"
-                        app:cardBackgroundColor="@color/white"
+                        app:cardBackgroundColor="?attr/colorSurface"
                         app:cardCornerRadius="12dp"
                         app:cardElevation="6dp">
 
                         <LinearLayout
+                            android:id="@+id/lay_breastStroke"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:onClick="openSwimStopwatch"
                             android:orientation="vertical"
                             android:padding="12dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Carbs"
-                                android:textColor="@color/textSecondary"
+                                android:text="Breaststroke"
+                                android:textColor="@color/steel_blue"
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/tvCarbs"
+                                android:id="@+id/tvBestBreast"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/teal_dark"
+                                android:textColor="@color/tropical_cyan"
                                 android:textStyle="bold"
                                 android:padding="12dp"
                                 android:textSize="24sp"
-                                tools:text="250 g" />
+                                tools:text="06:45.9" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
@@ -247,371 +254,212 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         android:layout_weight="1"
-                        app:cardBackgroundColor="@color/white"
+                        app:cardBackgroundColor="?attr/colorSurface"
                         app:cardCornerRadius="12dp"
                         app:cardElevation="6dp">
 
                         <LinearLayout
+                            android:id="@+id/lay_butterFly"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:onClick="openSwimStopwatch"
                             android:orientation="vertical"
                             android:padding="12dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Fats"
-                                android:textColor="@color/textSecondary"
+                                android:text="Butterfly"
+                                android:textColor="@color/steel_blue"
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/tvFats"
+                                android:id="@+id/tvBestFly"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/teal_dark"
+                                android:textColor="@color/tropical_cyan"
                                 android:textStyle="bold"
                                 android:padding="12dp"
                                 android:textSize="24sp"
-                                tools:text="70 g" />
+                                tools:text="03:55.2" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
+
                 </LinearLayout>
             </LinearLayout>
-            <!-- Nutrition Row -->
 
-
-            <!--<LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="12dp"
-                android:weightSum="2">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:padding="8dp"
-                    android:background="@android:color/darker_gray">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Calories" />
-                    <TextView
-                        android:id="@+id/tvCalories"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20sp"
-                        tools:text="2100 kcal" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:padding="8dp"
-                    android:background="@android:color/darker_gray"
-                    android:layout_marginStart="8dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Proteins" />
-                    <TextView
-                        android:id="@+id/tvProtein"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20sp"
-                        tools:text="120 g" />
-                </LinearLayout>
-            </LinearLayout>-->
-
-            <!--<LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="8dp"
-                android:weightSum="2">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:padding="8dp"
-                    android:background="@android:color/darker_gray">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Carbs" />
-                    <TextView
-                        android:id="@+id/tvCarbs"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20sp"
-                        tools:text="250 g" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:padding="8dp"
-                    android:background="@android:color/darker_gray"
-                    android:layout_marginStart="8dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Fats" />
-                    <TextView
-                        android:id="@+id/tvFats"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20sp"
-                        tools:text="70 g" />
-                </LinearLayout>
-            </LinearLayout>-->
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="BEST SWIM TIMINGS TODAY"
-                android:textColor="@color/textSecondary"
-                android:padding="8dp"  />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="4dp">
+            <!-- Daily Nutrition (Hidden) -->
             <LinearLayout
+                android:id="@+id/layNutritionSummary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="4dp"
-                android:weightSum="2">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="6dp">
-
-                    <LinearLayout
-                        android:id="@+id/lay_freeStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:onClick="openSwimStopwatch"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Freestyle"
-                            android:textColor="@color/textSecondary"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvBestFree"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/teal_dark"
-                            android:textStyle="bold"
-                            android:padding="12dp"
-                            android:textSize="24sp"
-                            tools:text="05:20.3" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="6dp">
-
-                    <LinearLayout
-                        android:id="@+id/lay_backStroke"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:onClick="openSwimStopwatch"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Backstroke"
-                            android:textColor="@color/textSecondary"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvBestBack"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/teal_dark"
-                            android:textStyle="bold"
-                            android:padding="12dp"
-                            android:textSize="24sp"
-                            tools:text="04:10.0" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <!--<LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
+                    android:text="DAILY NUTRITION"
                     android:padding="8dp"
-                    android:background="@android:color/darker_gray"
-                    android:layout_marginStart="8dp">
+                    android:layout_marginTop="4dp"
+                    android:textColor="?android:attr/textColorSecondary"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Backstroke" />
-                    <TextView
-                        android:id="@+id/tvBestBack"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20sp"
-                        tools:text="04:10.0" />
-                </LinearLayout>-->
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="8dp"
-                android:weightSum="2">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="6dp">
+                    android:orientation="vertical"
+                    android:padding="4dp">
 
                     <LinearLayout
-                        android:id="@+id/lay_breastStroke"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:onClick="openSwimStopwatch"
-                        android:orientation="vertical"
-                        android:padding="12dp">
+                        android:orientation="horizontal"
+                        android:weightSum="2">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="Breaststroke"
-                            android:textColor="@color/textSecondary"
-                            android:textStyle="bold" />
+                            android:layout_margin="4dp"
+                            android:layout_weight="1"
+                            app:cardBackgroundColor="?attr/colorSurface"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="6dp">
 
-                        <TextView
-                            android:id="@+id/tvBestBreast"
-                            android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Calories"
+                                    android:textColor="?android:attr/textColorSecondary"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvCalories"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="?attr/colorSecondary"
+                                    android:textStyle="bold"
+                                    android:padding="12dp"
+                                    android:textSize="24sp"
+                                    tools:text="2100 kcal" />
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/teal_dark"
-                            android:textStyle="bold"
-                            android:padding="12dp"
-                            android:textSize="24sp"
-                            tools:text="06:45.9" />
+                            android:layout_margin="4dp"
+                            android:layout_weight="1"
+                            app:cardBackgroundColor="?attr/colorSurface"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="6dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Proteins"
+                                    android:textColor="?android:attr/textColorSecondary"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvProtein"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="?attr/colorSecondary"
+                                    android:textStyle="bold"
+                                    android:padding="12dp"
+                                    android:textSize="24sp"
+                                    tools:text="120 g" />
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="6dp">
 
                     <LinearLayout
-                        android:id="@+id/lay_butterFly"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:onClick="openSwimStopwatch"
-                        android:orientation="vertical"
-                        android:padding="12dp">
+                        android:orientation="horizontal"
+                        android:paddingTop="8dp"
+                        android:weightSum="2">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="Butterfly"
-                            android:textColor="@color/textSecondary"
-                            android:textStyle="bold" />
+                            android:layout_margin="4dp"
+                            android:layout_weight="1"
+                            app:cardBackgroundColor="?attr/colorSurface"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="6dp">
 
-                        <TextView
-                            android:id="@+id/tvBestFly"
-                            android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Carbs"
+                                    android:textColor="?android:attr/textColorSecondary"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvCarbs"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="?attr/colorSecondary"
+                                    android:textStyle="bold"
+                                    android:padding="12dp"
+                                    android:textSize="24sp"
+                                    tools:text="250 g" />
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/teal_dark"
-                            android:textStyle="bold"
-                            android:padding="12dp"
-                            android:textSize="24sp"
-                            tools:text="03:55.2" />
+                            android:layout_margin="4dp"
+                            android:layout_weight="1"
+                            app:cardBackgroundColor="?attr/colorSurface"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="6dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Fats"
+                                    android:textColor="?android:attr/textColorSecondary"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvFats"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="?attr/colorSecondary"
+                                    android:textStyle="bold"
+                                    android:padding="12dp"
+                                    android:textSize="24sp"
+                                    tools:text="70 g" />
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-            </LinearLayout>
-
-                <!--<LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:padding="8dp"
-                    android:background="@android:color/darker_gray">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Breaststroke" />
-                    <TextView
-                        android:id="@+id/tvBestBreast"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20sp"
-                        tools:text="06:45.9" />
-                </LinearLayout>-->
-
-
-                <!--<LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:padding="8dp"
-                    android:background="@android:color/darker_gray"
-                    android:layout_marginStart="8dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Butterfly" />
-                    <TextView
-                        android:id="@+id/tvBestFly"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20sp"
-                        tools:text="03:55.2" />
-                </LinearLayout>-->
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
@@ -629,6 +477,10 @@
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:itemHorizontalTranslationEnabled="false"
+        app:itemIconTint="@color/nav_item_color"
+        app:itemTextColor="@color/nav_item_color"
+        app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu" />
 
 </LinearLayout>

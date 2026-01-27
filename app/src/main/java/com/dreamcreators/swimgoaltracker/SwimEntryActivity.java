@@ -11,13 +11,22 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.app.DatePickerDialog;
+import java.util.Calendar;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.activity.EdgeToEdge;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,17 +35,29 @@ import java.util.Locale;
 public class SwimEntryActivity extends AppCompatActivity {
     Spinner swimStyleSpinner;
     EditText edtSwimTime;
+    TextView tvSwimDate;
     Button btn_SaveTiming;
 
     String selectedStyle = "";
     private NutritionDbHelper dbHelper;
     private boolean fromSwimStopwatch = false;
     private String returnStroke = null;
+    private Calendar selectedCalendar = Calendar.getInstance();
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
+        getWindow().setStatusBarColor(getColor(R.color.lightPrimaryDark));
         setContentView(R.layout.activity_swim_entry);
+
+        View main = findViewById(R.id.main);
+        ViewCompat.setOnApplyWindowInsetsListener(main, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left + 16, systemBars.top, systemBars.right + 16, systemBars.bottom);
+            return insets;
+        });
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -46,8 +67,14 @@ public class SwimEntryActivity extends AppCompatActivity {
 
         swimStyleSpinner = findViewById(R.id.swimStyleSpinner);
         edtSwimTime = findViewById(R.id.edtSwimTime);
+        tvSwimDate = findViewById(R.id.tvSwimDate);
         btn_SaveTiming = findViewById(R.id.btn_SaveTiming);
         dbHelper = new NutritionDbHelper(this);
+
+        // Set initial date
+        updateDateDisplay();
+
+        tvSwimDate.setOnClickListener(v -> showDatePickerDialog());
 
         String[] swimStyles = {"Freestyle", "Backstroke", "Breaststroke", "Butterfly"};
 
@@ -74,6 +101,13 @@ public class SwimEntryActivity extends AppCompatActivity {
             }
         });
         btn_SaveTiming.setOnClickListener(v -> saveSession(selectedStyle, edtSwimTime.getText().toString()));
+
+        MobileAds.initialize(this, initializationStatus -> {
+        });
+        AdView adView = findViewById(R.id.adView);
+        if (adView != null) {
+            adView.loadAd(new AdRequest.Builder().build());
+        }
     }
 
     @Override
@@ -119,22 +153,22 @@ public class SwimEntryActivity extends AppCompatActivity {
     }
 
     private void throwAlertAndStore(String which) {
-        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this, R.style.AlertDialogTheme);
-        builder.setTitle("Warning");
-        builder.setMessage("The recorded time for " + which + " is less than 10 seconds. Are you sure you want to save it?");
-        builder.setPositiveButton("Yes", (dialog, whichButton) -> {
-            // User confirmed, proceed to save
-            saveSessionWithSelectedValue(which);
-        });
-        builder.setNegativeButton("No", (dialog, whichButton) -> {
-            // User cancelled, do nothing
-            dialog.dismiss();
-        });
-        builder.show();
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Warning")
+                .setMessage("The recorded time for " + which + " is less than 10 seconds. Are you sure you want to save it?")
+                .setPositiveButton("Yes", (dialog, whichButton) -> {
+                    // User confirmed, proceed to save
+                    saveSessionWithSelectedValue(which);
+                })
+                .setNegativeButton("No", (dialog, whichButton) -> {
+                    // User cancelled, do nothing
+                    dialog.dismiss();
+                })
+                .show();
     }
 
     private void saveSessionWithSelectedValue(String which) {
-        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        String date = dateFormat.format(selectedCalendar.getTime());
         if (which != null && !which.isEmpty()) {
             Double seconds = Double.parseDouble(edtSwimTime.getText().toString().trim());
             long milliseconds = (long) (seconds * 1000);
@@ -193,5 +227,23 @@ public class SwimEntryActivity extends AppCompatActivity {
         builder.setMessage(message)
                 .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
         builder.create().show();
+    }
+
+    private void showDatePickerDialog() {
+        int year = selectedCalendar.get(Calendar.YEAR);
+        int month = selectedCalendar.get(Calendar.MONTH);
+        int day = selectedCalendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, R.style.CustomDatePickerDialog, (view, year1, month1, dayOfMonth) -> {
+            selectedCalendar.set(Calendar.YEAR, year1);
+            selectedCalendar.set(Calendar.MONTH, month1);
+            selectedCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateDateDisplay();
+        }, year, month, day);
+        datePickerDialog.show();
+    }
+
+    private void updateDateDisplay() {
+        tvSwimDate.setText("Date: " + dateFormat.format(selectedCalendar.getTime()));
     }
 }

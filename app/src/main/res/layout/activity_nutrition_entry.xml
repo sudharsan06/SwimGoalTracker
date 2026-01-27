@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -41,7 +41,7 @@
                 android:id="@+id/tvEntryDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/textSecondary"
+                android:textColor="?android:attr/textColorSecondary"
                 android:text="Date: 2024-10-01"
                 android:textSize="14sp"  />
 
@@ -58,7 +58,7 @@
                     android:layout_marginTop="32dp"
                     android:text="Calories (kcal)"
                     android:textSize="14sp"
-                    android:textColor="@color/teal_primary"
+                    android:textColor="?attr/colorPrimary"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp" />
 
@@ -69,7 +69,7 @@
                     android:background="@drawable/edt_bg"
                     android:hint="Enter calories"
                     android:inputType="number"
-                    android:textColorHint="@color/textSecondary"
+                    android:textColorHint="?android:attr/textColorSecondary"
                     android:paddingHorizontal="16dp"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -87,7 +87,7 @@
                     android:text="Protein (g)"
                     android:layout_marginTop="16dp"
                     android:textSize="14sp"
-                    android:textColor="@color/teal_primary"
+                    android:textColor="?attr/colorPrimary"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp" />
 
@@ -97,7 +97,7 @@
                     android:layout_height="48dp"
                     android:background="@drawable/edt_bg"
                     android:hint="Enter protein"
-                    android:textColorHint="@color/textSecondary"
+                    android:textColorHint="?android:attr/textColorSecondary"
                     android:inputType="numberDecimal"
                     android:paddingHorizontal="16dp"
                     android:textSize="14sp" />
@@ -124,7 +124,7 @@
                     android:text="Carbs (g)"
                     android:layout_marginTop="16dp"
                     android:textSize="14sp"
-                    android:textColor="@color/teal_primary"
+                    android:textColor="?attr/colorPrimary"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp" />
 
@@ -134,7 +134,7 @@
                     android:layout_height="48dp"
                     android:background="@drawable/edt_bg"
                     android:hint="Enter carbs"
-                    android:textColorHint="@color/textSecondary"
+                    android:textColorHint="?android:attr/textColorSecondary"
                     android:inputType="numberDecimal"
                     android:paddingHorizontal="16dp"
                     android:textSize="14sp" />
@@ -160,7 +160,7 @@
                     android:text="Fats (g)"
                     android:layout_marginTop="16dp"
                     android:textSize="14sp"
-                    android:textColor="@color/teal_primary"
+                    android:textColor="?attr/colorPrimary"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp" />
 
@@ -170,7 +170,7 @@
                     android:layout_height="48dp"
                     android:background="@drawable/edt_bg"
                     android:hint="Enter fats"
-                    android:textColorHint="@color/textSecondary"
+                    android:textColorHint="?android:attr/textColorSecondary"
                     android:inputType="numberDecimal"
                     android:paddingHorizontal="16dp"
                     android:textSize="14sp" />
@@ -195,8 +195,8 @@
         android:text="SAVE Nutrition Intake"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="@color/white"
-        android:background="@color/teal_primary"
+        android:textColor="?attr/colorOnPrimary"
+        android:backgroundTint="?attr/colorPrimary"
         android:layout_margin="16dp" />
 </LinearLayout>
 

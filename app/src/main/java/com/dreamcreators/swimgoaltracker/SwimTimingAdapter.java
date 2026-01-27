@@ -19,24 +19,32 @@ public class SwimTimingAdapter extends RecyclerView.Adapter<SwimTimingAdapter.Vi
     private Context context;
     private long bestTime; // Best (lowest) time to highlight
     private long nowMs;    // Reference time to compute "X mins ago"
+    private OnDeleteClickListener deleteClickListener;
 
-    public SwimTimingAdapter(Context context, List<SwimTimingEntry> entries, long bestTime, long nowMs) {
+    public interface OnDeleteClickListener {
+        void onDeleteClick(SwimTimingEntry entry);
+    }
+
+    public SwimTimingAdapter(Context context, List<SwimTimingEntry> entries, long bestTime, long nowMs, OnDeleteClickListener deleteClickListener) {
         this.context = context;
         this.entries = entries;
         this.bestTime = bestTime;
         this.nowMs = nowMs;
+        this.deleteClickListener = deleteClickListener;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvEntryNumber;
         TextView tvTiming;
         TextView tvBestLabel;
+        View btnDelete;
 
         public ViewHolder(View itemView) {
             super(itemView);
             tvEntryNumber = itemView.findViewById(R.id.tvEntryNumber);
             tvTiming = itemView.findViewById(R.id.tvTiming);
             tvBestLabel = itemView.findViewById(R.id.tvBestLabel);
+            btnDelete = itemView.findViewById(R.id.btnDelete);
         }
     }
 
@@ -76,6 +84,12 @@ public class SwimTimingAdapter extends RecyclerView.Adapter<SwimTimingAdapter.Vi
             holder.tvTiming.setTextColor(ContextCompat.getColor(context, R.color.teal_primary));
             holder.tvEntryNumber.setTextColor(ContextCompat.getColor(context, R.color.textSecondary));
         }
+
+        holder.btnDelete.setOnClickListener(v -> {
+            if (deleteClickListener != null) {
+                deleteClickListener.onDeleteClick(entry);
+            }
+        });
     }
 
     @Override

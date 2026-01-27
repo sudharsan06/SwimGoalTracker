@@ -103,10 +103,16 @@ public class ProfileActivity extends ComponentActivity {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
             }
+            String name = etName.getText().toString().trim();
+            if (name.isEmpty()) {
+                Toast.makeText(this, "Please enter your name", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
             ContentValues values = new ContentValues();
             values.put("id", 1);
             values.put("image_uri", imageUri == null ? null : imageUri.toString());
-            values.put("name", etName.getText().toString());
+            values.put("name", name);
             values.put("age", parseIntSafe(etAge.getText().toString()));
             values.put("height", parseFloatSafe(etHeight.getText().toString()));
             values.put("weight", parseFloatSafe(etWeight.getText().toString()));

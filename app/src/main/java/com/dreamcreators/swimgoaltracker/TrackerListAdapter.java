@@ -15,43 +15,39 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
     private List<TrackerPojo> items;
     private Context context;
 
-    public TrackerListAdapter(Context contex, List<TrackerPojo> items) {
+    public TrackerListAdapter(Context context, List<TrackerPojo> items) {
         this.context = context;
         this.items = items;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
-        ImageView swimmerImage;
-        TextView logDate, nutritionStats, activityStats;
-
+        TextView tvDate, tvFree, tvFly, tvBreast, tvBack;
 
         public ViewHolder(View itemView) {
             super(itemView);
-
-           // swimmerImage = itemView.findViewById(R.id.swimmerImage);
-            logDate = itemView.findViewById(R.id.tv_log_date);
-            nutritionStats = itemView.findViewById(R.id.tv_nutrition_info);
-            activityStats = itemView.findViewById(R.id.tv_swim_info);
+            tvDate = itemView.findViewById(R.id.tv_date);
+            tvFree = itemView.findViewById(R.id.tv_free);
+            tvFly = itemView.findViewById(R.id.tv_fly);
+            tvBreast = itemView.findViewById(R.id.tv_breast);
+            tvBack = itemView.findViewById(R.id.tv_back);
         }
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_swim_log, parent, false);
+                .inflate(R.layout.row_tracker_table, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-      //  holder.textView.setText(items.get(position));
         TrackerPojo log = items.get(position);
-        //holder.swimmerImage.setImageResource(R.drawable.swimmer); // Replace with dynamic image if needed
-        holder.logDate.setText("📅 " + log.date);
-        holder.nutritionStats.setText(log.nutrition);
-        holder.activityStats.setText(log.swimActivity);
-
+        holder.tvDate.setText(log.date);
+        holder.tvFree.setText(log.freeTime);
+        holder.tvFly.setText(log.flyTime);
+        holder.tvBreast.setText(log.breastTime);
+        holder.tvBack.setText(log.backTime);
     }
 
     @Override

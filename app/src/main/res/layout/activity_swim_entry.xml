@@ -5,19 +5,26 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     android:orientation="vertical"
-    android:layout_margin="8dp"
     tools:context=".SwimEntryActivity">
 
     <TextView
         android:id="@+id/tvSwimDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
         android:text="Date: 2025-10-11"
-        android:textSize="14sp"
-        android:textColor="@color/teal_dark"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="16dp" />
+        android:textSize="16sp"
+        android:textColor="?android:attr/textColorPrimary"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_margin="4dp"
+        android:background="@drawable/edt_bg"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:drawableEnd="@android:drawable/ic_menu_my_calendar"
+        android:clickable="true"
+        android:focusable="true" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,7 +40,7 @@
             android:layout_height="wrap_content"
             android:text ="Select a swim style"
             android:textSize="18sp"
-            android:textColor="@color/textPrimary"
+            android:textColor="?android:attr/textColorPrimary"
             android:layout_marginStart="20dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="4dp"/>
@@ -41,6 +48,7 @@
             android:id="@+id/swimStyleSpinner"
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:background="@drawable/spinner_bg"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginTop="16dp"/>
@@ -51,7 +59,7 @@
             android:layout_height="wrap_content"
             android:text ="Enter Swim Time (in seconds)"
             android:textSize="18sp"
-            android:textColor="@color/textPrimary"
+            android:textColor="?android:attr/textColorPrimary"
             android:layout_marginStart="20dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="4dp"/>
@@ -68,7 +76,7 @@
             android:hint="e.g., 20.5"
             android:inputType="numberDecimal"
             android:paddingHorizontal="16dp"
-            android:textColorHint="@color/textSecondary"
+            android:textColorHint="?android:attr/textColorSecondary"
             android:textSize="14sp"/>
 
         <Button
@@ -81,5 +89,18 @@
             android:layout_marginBottom="8dp"
             android:text="Save Timing"/>
     </LinearLayout>
+    
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        tools:ignore="MissingClass" />
 
 </LinearLayout>

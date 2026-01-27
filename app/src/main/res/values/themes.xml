@@ -5,31 +5,45 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="android:statusBarColor">@color/my_custom_status_bar_color</item>
         <item name="colorPrimary">@color/my_custom_app_bar_color</item>
-        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryVariant">#0B3C5D</item>
         <item name="colorOnPrimary">@color/white</item>
     </style>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">#7DB8C4</item> <!-- Soft aqua -->
-        <item name="colorPrimaryDark">#6FB1C5</item> <!-- Muted teal -->
-        <item name="colorAccent">#F7C8E0</item> <!-- Watercolor pink -->
-        <item name="android:windowBackground">@color/watercolorBackground</item>
-        <item name="android:textColorPrimary">#4A4A4A</item> <!-- Gentle gray -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/lightPrimary</item>
+        <item name="colorPrimaryVariant">#0077B6</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/lightSecondary</item>
+        <item name="colorAccent">@color/lightAccent</item>
+        <item name="android:windowBackground">@color/lightBackground</item>
+        <item name="colorOnSurface">@color/lightText</item>
+        <item name="android:statusBarColor">@color/lightPrimaryDark</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@color/lightPrimaryDark</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:textColorPrimary">@color/lightText</item>
+        <item name="android:textColorSecondary">@color/textSecondary</item>
         <item name="android:buttonStyle">@style/WatercolorButton</item>
-        <item name="android:windowFullscreen">false</item>
-        <item name="android:windowTranslucentStatus">false</item>
     </style>
 
-    <style name="AppTheme_NoActionBar" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">#7DB8C4</item> <!-- Soft aqua -->
-        <item name="colorPrimaryDark">#6FB1C5</item> <!-- Muted teal -->
-        <item name="colorAccent">#F7C8E0</item> <!-- Watercolor pink -->
-        <item name="android:windowBackground">@color/watercolorBackground</item>
-        <item name="android:textColorPrimary">#4A4A4A</item> <!-- Gentle gray -->
+    <style name="AppTheme_NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/lightPrimary</item>
+        <item name="colorPrimaryVariant">#0077B6</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="android:statusBarColor">@color/midnight_blue</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="colorSecondary">@color/lightSecondary</item>
+        <item name="colorAccent">@color/lightAccent</item>
+        <item name="android:windowBackground">@color/lightBackground</item>
+        <item name="colorSurface">@color/lightSurface</item>
+        <item name="colorOnSurface">@color/lightText</item>
+        <item name="android:statusBarColor">@color/lightPrimaryDark</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:textColorPrimary">@color/lightText</item>
+        <item name="android:textColorSecondary">@color/textSecondary</item>
         <item name="android:buttonStyle">@style/WatercolorButton</item>
-        <item name="android:windowFullscreen">false</item>
-        <item name="android:windowTranslucentStatus">false</item>
-
     </style>
 
     <!-- Custom button style -->
@@ -37,18 +51,45 @@
         <item name="android:backgroundTint">#BFDCE5</item> <!-- Misty blue -->
         <item name="android:textColor">#FFFFFF</item>
     </style>
-    <style name="CustomDatePickerDialog" parent="Theme.MaterialComponents.DayNight.Dialog">
-        <item name="android:background">#FFDDDD</item> <!-- Background color -->
-        <item name="android:textColorPrimary">#000000</item> <!-- Text color -->
-        <item name="android:datePickerDialogTheme">@style/CustomDatePicker</item>
+    <style name="CustomDatePickerDialog" parent="Theme.MaterialComponents.Light.Dialog">
+        <item name="colorPrimary">@color/lightPrimary</item>
+        <item name="colorAccent">@color/lightPrimary</item>
+        <item name="android:textColorPrimary">@color/textPrimary</item>
+        <item name="android:textColorHighlight">@color/lightPrimary</item>
+        <item name="buttonBarPositiveButtonStyle">@style/CustomTextButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/CustomTextButton</item>
     </style>
 
-    <style name="CustomDatePicker" parent="@android:style/Widget.DatePicker">
-        <item name="android:background">#FFDDDD</item>
+    <style name="CustomTextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/lightPrimary</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="colorAccent">#2196F3</item> <!-- Optional -->
+    <style name="AlertDialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
+        <item name="colorAccent">?attr/colorPrimary</item>
+        <item name="android:textColorPrimary">?android:attr/textColorPrimary</item>
+        <item name="android:windowBackground">?attr/colorSurface</item>
+    </style>
+
+    <style name="Theme.SwimApp.Light" parent="Theme.MaterialComponents.Light">
+        <item name="colorPrimary">@color/lightPrimary</item>
+        <item name="colorSecondary">@color/lightSecondary</item>
+        <item name="colorAccent">@color/lightAccent</item>
+        <item name="android:statusBarColor">@color/midnight_blue</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:colorBackground">@color/lightBackground</item>
+        <item name="android:textColor">@color/lightText</item>
+    </style>
+
+    <style name="Theme.SwimApp.Dark" parent="Theme.MaterialComponents">
+        <item name="colorPrimary">@color/darkPrimary</item>
+        <item name="colorAccent">@color/darkAccent</item>
+        <item name="android:statusBarColor">@color/darkPrimaryDark</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:colorBackground">@color/darkBackground</item>
+        <item name="android:textColor">@color/darkText</item>
     </style>
 
 

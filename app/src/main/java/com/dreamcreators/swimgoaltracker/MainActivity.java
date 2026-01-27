@@ -39,9 +39,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+
+        View topBanner = findViewById(R.id.top_banner);
+       // View bottomNav = findViewById(R.id.bottomNav);
+
+        ViewCompat.setOnApplyWindowInsetsListener(topBanner, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(v.getPaddingLeft(), systemBars.top, v.getPaddingRight(), v.getPaddingBottom());
+            return insets;
+        });
+
+
 
         tvDate = findViewById(R.id.tvDate);
         tvCalories = findViewById(R.id.tvCalories);
@@ -96,6 +107,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+        ViewCompat.setOnApplyWindowInsetsListener(bottomNav, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), systemBars.bottom);
+            return insets;
+        });
         findViewById(R.id.btnOpenProfile).setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
 
         MobileAds.initialize(this, initializationStatus -> {
@@ -109,16 +125,16 @@ public class MainActivity extends AppCompatActivity {
         tvDate.setText("Today: " + today);
         loadTodayNutrition(today);
 
+        findViewById(R.id.layNutritionSummary).setVisibility(View.GONE);
+
 
         tvUserName.setText(getGreetingMessage(userName));
 
 
+        bottomNav.setSelectedItemId(R.id.nav_home);
         bottomNav.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.nav_swim) {
-                startActivity(new Intent(this, SwimStopwatchActivity.class));
-                return true;
-            } else if (item.getItemId() == R.id.nav_nutrition) {
-                startActivity(new Intent(this, NutritionEntryActivity.class));
+            if (item.getItemId() == R.id.nav_home) {
+                // Already on Dashboard
                 return true;
             } else if (item.getItemId() == R.id.nav_tracker) {
                 startActivity(new Intent(this, TrackerActivity.class));

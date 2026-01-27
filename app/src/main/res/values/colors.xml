@@ -4,11 +4,17 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#F0ECEC</color>
 
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color> <!-- This will be for the status bar -->
-    <color name="colorAccent">#03DAC5</color>
+
+    <color name="colorPrimaryDark">@color/midnight_blue</color> <!-- This will be for the status bar -->
+
     <color name="my_custom_status_bar_color">#FF5722</color>
     <color name="my_custom_app_bar_color">#FF9800</color>
+
+    <color name="colorPrimary">#0077B6</color>
+    <color name="colorSecondary">#00B4D8</color>
+    <color name="colorAccent">#FFD60A</color>
+    <color name="colorBackground">#CAF0F8</color>
+    <color name="colorText">#023E8A</color>
 
 
     <color name="watercolorBackground">#F0F8FF</color> <!-- Alice Blue -->
@@ -32,4 +38,32 @@
     <color name="text_light">#7F8C8D</color>
     <color name="gray_light">#ECF0F1</color>
     <color name="card_shadow">#1A000000</color>
+
+    <!-- Light Theme -->
+    <color name="lightPrimary">#0077B6</color>
+    <color name="lightSecondary">#00B4D8</color>
+    <color name="lightAccent">#FFD60A</color>
+    <color name="lightBackground">#CAF0F8</color>
+    <color name="lightText">#023E8A</color>
+    <color name="lightSurface">#FFFFFF</color>
+
+    <!-- Dark Theme -->
+    <color name="darkPrimary">#023E8A</color>
+    <color name="darkSecondary">#48CAE4</color>
+    <color name="darkAccent">#FF6F61</color>
+    <color name="darkBackground">@color/midnight_blue</color>
+    <color name="darkText">#FFFFFF</color>
+    <color name="darkSurface">#121212</color>
+
+    <color name="midnight_blue">#102A43</color>
+    <color name="steel_blue">#627D98</color>
+    <color name="sun_glow">#FFE29A</color>
+    <color name="tropical_cyan">#06BEE1</color>
+    <color name="pale">#DFF6F9</color>
+    <color name="sun_gold">#FFD166</color>
+    <color name="lightPrimaryDark">#005F91</color>
+    <color name="darkPrimaryDark">#012052</color>
+
+
+
 </resources>

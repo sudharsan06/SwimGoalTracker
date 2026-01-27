@@ -19,14 +19,21 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import androidx.activity.EdgeToEdge;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class SwimStopwatchActivity extends AppCompatActivity {
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+public class SwimStopwatchActivity extends AppCompatActivity {
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     private long startFree = -1, elapsedFree = 0;
@@ -43,7 +50,9 @@ public class SwimStopwatchActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
+        getWindow().setStatusBarColor(getColor(R.color.lightPrimaryDark));
         setContentView(R.layout.activity_swim_stopwatch);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -150,6 +159,35 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         btnFlyStop.setOnClickListener(v -> stopTimer("fly"));
         btnFlyReset.setOnClickListener(v -> resetTimer("fly"));
         btn_save_fly.setOnClickListener(v -> saveSession("fly"));
+
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+        
+        ViewCompat.setOnApplyWindowInsetsListener(tvDate, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(v.getPaddingLeft(), systemBars.top, v.getPaddingRight(), v.getPaddingBottom());
+            return insets;
+        });
+
+        ViewCompat.setOnApplyWindowInsetsListener(bottomNav, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), systemBars.bottom);
+            return insets;
+        });
+
+        bottomNav.setSelectedItemId(R.id.nav_home);
+        bottomNav.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.nav_home) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.nav_tracker) {
+                startActivity(new Intent(this, TrackerActivity.class));
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override
@@ -197,7 +235,10 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 if (startFly < 0) startFly = now;
                 break;
         }
-        handler.post(tick);
+        if (startFree >= 0 || startBack >= 0 || startBreast >= 0 || startFly >= 0) {
+            handler.removeCallbacks(tick);
+            handler.post(tick);
+        }
     }
 
     private void stopTimer(String which) {
@@ -327,6 +368,9 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 long id = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);
                 if (id > 0) {
                     Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+                    // Stop and reset the timer after saving
+                    stopTimer(which);
+                    resetTimer(which);
                     // Refresh the entries list
                     String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
                     loadTodayEntries(which, today);
@@ -338,18 +382,18 @@ public class SwimStopwatchActivity extends AppCompatActivity {
     }
 
     private void ThrowAlertDialog(String which) {
-        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this, R.style.AlertDialogTheme);
-        builder.setTitle("Warning");
-        builder.setMessage("The recorded time for " + which + " is less than 10 seconds. Are you sure you want to save it?");
-        builder.setPositiveButton("Yes", (dialog, whichButton) -> {
-            // User confirmed, proceed to save
-            saveSessionWithSelectedValue(which);
-        });
-        builder.setNegativeButton("No", (dialog, whichButton) -> {
-            // User cancelled, do nothing
-            dialog.dismiss();
-        });
-        builder.show();
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Warning")
+                .setMessage("The recorded time for " + which + " is less than 10 seconds. Are you sure you want to save it?")
+                .setPositiveButton("Yes", (dialog, whichButton) -> {
+                    // User confirmed, proceed to save
+                    saveSessionWithSelectedValue(which);
+                })
+                .setNegativeButton("No", (dialog, whichButton) -> {
+                    // User cancelled, do nothing
+                    dialog.dismiss();
+                })
+                .show();
     }
 
     private void saveSessionWithSelectedValue(String which) {
@@ -383,6 +427,9 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         long id = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);
         if (id > 0) {
             Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+            // Stop and reset the timer after saving
+            stopTimer(which);
+            resetTimer(which);
             // Refresh the entries list
             String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
             loadTodayEntries(which, today);
@@ -440,7 +487,9 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         } else {
             tvEntriesHeader.setVisibility(View.VISIBLE);
             long nowMs = System.currentTimeMillis();
-            SwimTimingAdapter adapter = new SwimTimingAdapter(this, entries, bestTime == Long.MAX_VALUE ? 0 : bestTime, nowMs);
+            SwimTimingAdapter adapter = new SwimTimingAdapter(this, entries, bestTime == Long.MAX_VALUE ? 0 : bestTime, nowMs, entry -> {
+                deleteEntry(entry.getId(), style, date);
+            });
             recyclerViewEntries.setAdapter(adapter);
         }
     }
@@ -468,15 +517,25 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 loadTodayEntries("fly", today);
             }
         } else {
-            // If no stroke selected, refresh all (when opened from menu)
+            // Default to freestyle list if nothing specific selected
             loadTodayEntries("free", today);
-            loadTodayEntries("back", today);
-            loadTodayEntries("breast", today);
-            loadTodayEntries("fly", today);
         }
     }
+
+    private void deleteEntry(long id, String style, String date) {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Delete Entry")
+                .setMessage("Are you sure you want to delete this timing entry?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    int deleted = dbHelper.getWritableDatabase().delete("swim_sessions", "id = ?", new String[]{String.valueOf(id)});
+                    if (deleted > 0) {
+                        Toast.makeText(this, "Deleted", Toast.LENGTH_SHORT).show();
+                        loadTodayEntries(style, date);
+                    } else {
+                        Toast.makeText(this, "Delete failed", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
 }
-
-
-
-
