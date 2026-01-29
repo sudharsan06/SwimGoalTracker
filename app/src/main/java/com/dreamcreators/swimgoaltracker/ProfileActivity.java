@@ -14,6 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yalantis.ucrop.UCrop;
+
+import java.io.File;
+
 import androidx.activity.ComponentActivity;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -32,14 +36,52 @@ public class ProfileActivity extends ComponentActivity {
             new ActivityResultContracts.OpenDocument(),
             uri -> {
                 if (uri != null) {
-                    final int takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION;
-                    try { getContentResolver().takePersistableUriPermission(uri, takeFlags); } catch (Exception ignored) { }
-                    imageUri = uri;
-                    ImageView img = findViewById(R.id.imgProfile);
-                    img.setImageURI(uri);
+                    startCrop(uri);
                 }
             }
     );
+
+    private final ActivityResultLauncher<Intent> cropImage = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    final Uri resultUri = UCrop.getOutput(result.getData());
+                    if (resultUri != null) {
+                        // Grant persistable permission ONLY if it's a content URI. 
+                        // Cached file URIs don't need it.
+                        imageUri = resultUri;
+                        ImageView img = findViewById(R.id.imgProfile);
+                        img.setImageURI(imageUri);
+                    }
+                } else if (result.getResultCode() == UCrop.RESULT_ERROR) {
+                    final Throwable cropError = UCrop.getError(result.getData());
+                    Toast.makeText(this, "Crop error: " + (cropError != null ? cropError.getMessage() : "Unknown"), Toast.LENGTH_SHORT).show();
+                }
+            }
+    );
+
+    private void startCrop(Uri uri) {
+        String destinationFileName = "cropped_profile_" + System.currentTimeMillis() + ".jpg";
+        Uri destinationUri = Uri.fromFile(new File(getCacheDir(), destinationFileName));
+
+        UCrop.Options options = new UCrop.Options();
+        options.setToolbarColor(getResources().getColor(R.color.lightPrimary));
+        options.setStatusBarColor(getResources().getColor(R.color.lightPrimaryDark));
+        options.setToolbarWidgetColor(getResources().getColor(R.color.white));
+        options.setActiveControlsWidgetColor(getResources().getColor(R.color.lightAccent));
+        options.setCompressionFormat(android.graphics.Bitmap.CompressFormat.JPEG);
+        options.setCompressionQuality(90);
+        options.setHideBottomControls(false);
+        options.setFreeStyleCropEnabled(true);
+
+        Intent intent = UCrop.of(uri, destinationUri)
+                .withAspectRatio(1, 1)
+                .withMaxResultSize(1000, 1000)
+                .withOptions(options)
+                .getIntent(this);
+
+        cropImage.launch(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,24 +91,25 @@ public class ProfileActivity extends ComponentActivity {
         dbHelper = new NutritionDbHelper(this);
 
         ImageView img = findViewById(R.id.imgProfile);
-        Button btnPick = findViewById(R.id.btnPickImage);
+        View btnPick = findViewById(R.id.btnPickImage);
         EditText etName = findViewById(R.id.etName);
         EditText etAge = findViewById(R.id.etAge);
         EditText etHeight = findViewById(R.id.etHeight);
         EditText etWeight = findViewById(R.id.etWeight);
-        Button btnPickStartDate = findViewById(R.id.btnPickStartDate);
+        View btnPickStartDate = findViewById(R.id.btnPickStartDate);
         TextView tvStartDate = findViewById(R.id.tvStartDate);
         TextView tvLastLogin = findViewById(R.id.tvLastLogin);
-        Button btnSave = findViewById(R.id.btnSaveProfile);
-        Button btnSkip = findViewById(R.id.btnSkip);
-        Button btnLogout = findViewById(R.id.btnLogout);
+        View btnSave = findViewById(R.id.btnSaveProfile);
+        View btnSkip = findViewById(R.id.btnSkip);
+        View btnLogout = findViewById(R.id.btnLogout);
+        View dividerLogout = findViewById(R.id.btnLogoutDivider);
 
         Cursor c = dbHelper.getReadableDatabase().rawQuery("SELECT image_uri, name, age, height, weight, start_date, last_login FROM profile WHERE id=1", null);
         if (c.moveToFirst()) {
             String uriStr = c.getString(0);
             if (uriStr != null && !uriStr.isEmpty()) {
                 imageUri = Uri.parse(uriStr);
-                if (hasPersistedReadPermission(imageUri)) {
+                if (imageUri.getScheme().equals("file") || hasPersistedReadPermission(imageUri)) {
                     try { img.setImageURI(imageUri); } catch (Exception ignored) { }
                 } else {
                     imageUri = null;
@@ -79,6 +122,8 @@ public class ProfileActivity extends ComponentActivity {
             startDate = c.getString(5) == null ? "" : c.getString(5);
             tvStartDate.setText(startDate);
             tvLastLogin.setText(c.getString(6) == null ? "" : ("Last login: " + c.getString(6)));
+            btnLogout.setVisibility(View.VISIBLE);
+            dividerLogout.setVisibility(View.VISIBLE);
         }
         c.close();
 

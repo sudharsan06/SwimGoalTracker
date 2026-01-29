@@ -8,6 +8,7 @@ public class TrackerPojo {
     public String flyTime;
     public String breastTime;
     public String backTime;
+    public long freeMs, flyMs, breastMs, backMs;
 
     public TrackerPojo(String date, String nutrition, String swimActivity) {
         this.date = date;
@@ -15,11 +16,16 @@ public class TrackerPojo {
         this.swimActivity = swimActivity;
     }
 
-    public TrackerPojo(String date, String freeTime, String flyTime, String breastTime, String backTime) {
+    public TrackerPojo(String date, String freeTime, String flyTime, String breastTime, String backTime,
+                       long freeMs, long flyMs, long breastMs, long backMs) {
         this.date = date;
         this.freeTime = freeTime;
         this.flyTime = flyTime;
         this.breastTime = breastTime;
         this.backTime = backTime;
+        this.freeMs = freeMs;
+        this.flyMs = flyMs;
+        this.breastMs = breastMs;
+        this.backMs = backMs;
     }
 }

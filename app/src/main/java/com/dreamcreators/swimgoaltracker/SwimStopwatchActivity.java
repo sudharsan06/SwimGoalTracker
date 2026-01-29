@@ -299,7 +299,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         public void run() {
             updateLabels();
             if (startFree >= 0 || startBack >= 0 || startBreast >= 0 || startFly >= 0) {
-                handler.postDelayed(this, 100);
+                handler.postDelayed(this, 30);
             }
         }
     };
@@ -320,8 +320,8 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         long totalSeconds = ms / 1000;
         long minutes = totalSeconds / 60;
         long seconds = totalSeconds % 60;
-        long tenths = (ms % 1000) / 100;
-        return String.format(Locale.getDefault(), "%02d:%02d.%d", minutes, seconds, tenths);
+        long hundredths = (ms % 1000) / 10;
+        return String.format(Locale.getDefault(), "%02d:%02d.%02d", minutes, seconds, hundredths);
     }
 
     private void saveSession(String which) {

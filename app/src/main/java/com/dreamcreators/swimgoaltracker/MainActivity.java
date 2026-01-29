@@ -29,13 +29,12 @@ public class MainActivity extends AppCompatActivity {
     public static String userName = "";
 
     private TextView tvDate;
-    private TextView tvCalories;
-    private TextView tvProtein;
-    private TextView tvCarbs;
-    private TextView tvFats, tvUserName;
+    private TextView tvCalories, tvProtein, tvCarbs, tvFats;
+    private TextView tvUserName;
     private LinearLayout lay_freeStyle, lay_backStroke, lay_breastStroke, lay_butterFly;
     private NutritionDbHelper dbHelper;
     private TextView tvBestFree, tvBestBack, tvBestBreast, tvBestFly;
+    private android.widget.ImageView ivProfileIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +42,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        View topBanner = findViewById(R.id.top_banner);
-       // View bottomNav = findViewById(R.id.bottomNav);
-
-        ViewCompat.setOnApplyWindowInsetsListener(topBanner, (v, insets) -> {
+        View headerContent = findViewById(R.id.headerContent);
+        ViewCompat.setOnApplyWindowInsetsListener(headerContent, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(v.getPaddingLeft(), systemBars.top, v.getPaddingRight(), v.getPaddingBottom());
+            int topPadding = systemBars.top + (int)(20 * getResources().getDisplayMetrics().density);
+            v.setPadding(v.getPaddingLeft(), topPadding, v.getPaddingRight(), v.getPaddingBottom());
             return insets;
         });
 
@@ -64,15 +62,8 @@ public class MainActivity extends AppCompatActivity {
         tvBestBreast = findViewById(R.id.tvBestBreast);
         tvBestFly = findViewById(R.id.tvBestFly);
         tvUserName = findViewById(R.id.tvUserName);
-        lay_freeStyle = findViewById(R.id.lay_freeStyle);
-       /* lay_backStroke = findViewById(R.id.lay_backStroke);
-        lay_breastStroke = findViewById(R.id.lay_breastStroke);
-        lay_butterFly = findViewById(R.id.lay_butterFly);
+        ivProfileIcon = findViewById(R.id.ivProfileIcon);
 
-        lay_freeStyle.setOnClickListener(openSwimStopwatch);
-        lay_backStroke.setOnClickListener(openSwimStopwatch);
-        lay_breastStroke.setOnClickListener(openSwimStopwatch);
-        lay_butterFly.setOnClickListener(openSwimStopwatch);*/
 
 
         View.OnClickListener openSwimStopwatch = new View.OnClickListener() {
@@ -125,9 +116,6 @@ public class MainActivity extends AppCompatActivity {
         tvDate.setText("Today: " + today);
         loadTodayNutrition(today);
 
-        findViewById(R.id.layNutritionSummary).setVisibility(View.GONE);
-
-
         tvUserName.setText(getGreetingMessage(userName));
 
 
@@ -149,6 +137,17 @@ public class MainActivity extends AppCompatActivity {
         if (c.moveToFirst()) {
             String uriStr = c.getString(0);
             userName = c.getString(1);
+            
+            if (uriStr != null && !uriStr.isEmpty()) {
+                ivProfileIcon.setImageURI(Uri.parse(uriStr));
+                ivProfileIcon.setPadding(0, 0, 0, 0); // Remove padding if it's a real photo
+                ivProfileIcon.setImageTintList(null); // Remove white tint
+                ivProfileIcon.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+            } else {
+                ivProfileIcon.setImageResource(android.R.drawable.ic_menu_myplaces);
+                ivProfileIcon.setPadding(8, 8, 8, 8); // Restore icon padding
+                ivProfileIcon.setImageTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE));
+            }
         }
         c.close();
     }
@@ -175,7 +174,10 @@ public class MainActivity extends AppCompatActivity {
         }
     };*/
 
+
+
     private void loadTodayNutrition(String date) {
+        if (tvCalories == null) return;
         Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
                 "SELECT calories, protein, carbs, fats FROM daily_nutrition WHERE date = ?",
                 new String[]{date}
@@ -218,9 +220,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        loadUserData();
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         loadTodayNutrition(today);
         loadBestSwimToday(today);
+        tvUserName.setText(getGreetingMessage(userName));
     }
 
     private void loadBestSwimToday(String date) {
@@ -242,8 +246,8 @@ public class MainActivity extends AppCompatActivity {
         long totalSeconds = ms / 1000;
         long minutes = totalSeconds / 60;
         long seconds = totalSeconds % 60;
-        long tenths = (ms % 1000) / 100;
-        return String.format(Locale.getDefault(), "%02d:%02d.%d", minutes, seconds, tenths);
+        long hundredths = (ms % 1000) / 10;
+        return String.format(Locale.getDefault(), "%02d:%02d.%02d", minutes, seconds, hundredths);
     }
 }
 

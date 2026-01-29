@@ -55,7 +55,7 @@ public class SwimEntryActivity extends AppCompatActivity {
         View main = findViewById(R.id.main);
         ViewCompat.setOnApplyWindowInsetsListener(main, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left + 16, systemBars.top, systemBars.right + 16, systemBars.bottom);
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
@@ -74,31 +74,46 @@ public class SwimEntryActivity extends AppCompatActivity {
         // Set initial date
         updateDateDisplay();
 
-        tvSwimDate.setOnClickListener(v -> showDatePickerDialog());
+        findViewById(R.id.lay_datePicker).setOnClickListener(v -> showDatePickerDialog());
 
         String[] swimStyles = {"Freestyle", "Backstroke", "Breaststroke", "Butterfly"};
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item, swimStyles
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_item_dark, swimStyles) {
+            @Override
+            public View getView(int position, View convertView, android.view.ViewGroup parent) {
+                View v = super.getView(position, convertView, parent);
+                if (v instanceof TextView) {
+                    ((TextView) v).setTextColor(getResources().getColor(R.color.lightPrimary));
+                    ((TextView) v).setTypeface(null, android.graphics.Typeface.BOLD);
+                }
+                return v;
+            }
+        };
+        adapter.setDropDownViewResource(R.layout.spinner_item_dark);
         swimStyleSpinner.setAdapter(adapter);
 
         // Check if we came from SwimStopwatchActivity
         fromSwimStopwatch = getIntent().getBooleanExtra("from_swim_stopwatch", false);
         returnStroke = getIntent().getStringExtra("selected_stroke");
 
+        if (returnStroke != null) {
+            for (int i = 0; i < swimStyles.length; i++) {
+                if (swimStyles[i].equalsIgnoreCase(returnStroke)) {
+                    swimStyleSpinner.setSelection(i);
+                    selectedStyle = swimStyles[i].toLowerCase();
+                    break;
+                }
+            }
+        }
+
         swimStyleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selected = swimStyles[position];
-                selectedStyle = selected.toLowerCase();
+                selectedStyle = swimStyles[position].toLowerCase();
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                //selectedStyleText.setText("No style selected");
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
         btn_SaveTiming.setOnClickListener(v -> saveSession(selectedStyle, edtSwimTime.getText().toString()));
 
@@ -195,23 +210,7 @@ public class SwimEntryActivity extends AppCompatActivity {
             
             if (result > 0) {
                 Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
-
-                // Navigate back to SwimStopwatchActivity if we came from there
-                if (fromSwimStopwatch) {
-                    Intent intent = new Intent(SwimEntryActivity.this, SwimStopwatchActivity.class);
-                    if (returnStroke != null) {
-                        intent.putExtra("stroke", returnStroke);
-                    }
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    startActivity(intent);
-                } else {
-                    // Otherwise go to MainActivity
-                    Intent intent = new Intent(SwimEntryActivity.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    startActivity(intent);
-                }
-                finish();
-
+                edtSwimTime.setText(""); // Clear input for next entry
             } else {
                 Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show();
             }
@@ -244,6 +243,6 @@ public class SwimEntryActivity extends AppCompatActivity {
     }
 
     private void updateDateDisplay() {
-        tvSwimDate.setText("Date: " + dateFormat.format(selectedCalendar.getTime()));
+        tvSwimDate.setText(dateFormat.format(selectedCalendar.getTime()));
     }
 }

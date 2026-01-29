@@ -9,96 +9,170 @@
     android:orientation="vertical"
     tools:context=".SwimEntryActivity">
 
-    <TextView
-        android:id="@+id/tvSwimDate"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:text="Date: 2025-10-11"
-        android:textSize="16sp"
-        android:textColor="?android:attr/textColorPrimary"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:layout_margin="4dp"
-        android:background="@drawable/edt_bg"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="16dp"
-        android:drawableEnd="@android:drawable/ic_menu_my_calendar"
-        android:clickable="true"
-        android:focusable="true" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="4dp"
-        android:layout_margin="4dp"
-        android:background="@drawable/edt_bg"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tvSwimStyleTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text ="Select a swim style"
-            android:textSize="18sp"
-            android:textColor="?android:attr/textColorPrimary"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="4dp"/>
-        <Spinner
-            android:id="@+id/swimStyleSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@drawable/spinner_bg"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="16dp"/>
-
-        <TextView
-            android:id="@+id/tvSwimTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text ="Enter Swim Time (in seconds)"
-            android:textSize="18sp"
-            android:textColor="?android:attr/textColorPrimary"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="4dp"/>
-
-        <EditText
-            android:id="@+id/edtSwimTime"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/edt_bg"
-            android:hint="e.g., 20.5"
-            android:inputType="numberDecimal"
-            android:paddingHorizontal="16dp"
-            android:textColorHint="?android:attr/textColorSecondary"
-            android:textSize="14sp"/>
-
-        <Button
-            android:id="@+id/btn_SaveTiming"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="Save Timing"/>
-    </LinearLayout>
-    
-    <View
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Date Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:id="@+id/lay_datePicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="SWIM DATE"
+                            android:textColor="@color/steel_blue"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.05" />
+
+                        <TextView
+                            android:id="@+id/tvSwimDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="2025-10-11"
+                            android:textColor="@color/lightPrimary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@android:drawable/ic_menu_my_calendar"
+                        app:tint="@color/lightPrimary" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Form Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SWIM DETAILS"
+                        android:textColor="@color/lightPrimary"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"
+                        android:layout_marginBottom="16dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text ="Pick Swim Style"
+                        android:textSize="13sp"
+                        android:textColor="@color/steel_blue"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp"/>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="#F5F5F5"
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="#DDDDDD"
+                        app:strokeWidth="1dp">
+
+                        <Spinner
+                            android:id="@+id/swimStyleSpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text ="Recorded Time"
+                        android:textSize="13sp"
+                        android:textColor="@color/steel_blue"
+                        android:textStyle="bold"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Seconds (e.g. 20.59)"
+                        app:boxStrokeColor="@color/lightPrimary"
+                        app:hintTextColor="@color/lightPrimary"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edtSwimTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"
+                            android:textColor="@color/lightPrimary"
+                            android:textStyle="bold"
+                            android:textSize="16sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_SaveTiming"
+                        android:layout_width="match_parent"
+                        android:layout_height="54dp"
+                        android:layout_marginTop="24dp"
+                        android:text="SAVE RECORD"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="8dp"
+                        app:backgroundTint="@color/lightPrimary" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         app:adSize="BANNER"
         app:adUnitId="ca-app-pub-3940256099942544/6300978111"
         tools:ignore="MissingClass" />

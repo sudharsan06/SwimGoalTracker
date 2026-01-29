@@ -47,14 +47,6 @@
     <color name="lightText">#023E8A</color>
     <color name="lightSurface">#FFFFFF</color>
 
-    <!-- Dark Theme -->
-    <color name="darkPrimary">#023E8A</color>
-    <color name="darkSecondary">#48CAE4</color>
-    <color name="darkAccent">#FF6F61</color>
-    <color name="darkBackground">@color/midnight_blue</color>
-    <color name="darkText">#FFFFFF</color>
-    <color name="darkSurface">#121212</color>
-
     <color name="midnight_blue">#102A43</color>
     <color name="steel_blue">#627D98</color>
     <color name="sun_glow">#FFE29A</color>
@@ -62,7 +54,7 @@
     <color name="pale">#DFF6F9</color>
     <color name="sun_gold">#FFD166</color>
     <color name="lightPrimaryDark">#005F91</color>
-    <color name="darkPrimaryDark">#012052</color>
+
 
 
 

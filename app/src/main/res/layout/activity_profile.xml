@@ -1,212 +1,302 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg_light"
     android:fitsSystemWindows="true">
-    <LinearLayout
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <!--   <com.google.android.material.appbar.MaterialToolbar
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:title="Profile" />-->
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@color/teal_primary"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:paddingBottom="40dp">
 
-            <ImageView
-                android:id="@+id/imgProfile"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center_horizontal"
-                android:scaleType="centerCrop"
-                android:src="@android:drawable/ic_menu_camera" />
+            <!-- Header Section -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="180dp">
 
-            <Button
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:background="@color/lightPrimary" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    app:cardCornerRadius="60dp"
+                    app:cardElevation="8dp"
+                    app:strokeColor="@color/white"
+                    app:strokeWidth="4dp">
+
+                    <ImageView
+                        android:id="@+id/imgProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@android:drawable/ic_menu_camera" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="24dp"
+                    android:text="My Profile"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnPickImage"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:backgroundTint="@color/white"
-                android:layout_marginTop="8dp"
-                android:textColor="@color/textSecondary"
-                android:text="UPLOAD" />
-        </LinearLayout>
+                android:layout_marginTop="6dp"
+                android:text="Change Photo"
+                android:textColor="@color/lightPrimary"
+                app:icon="@android:drawable/ic_menu_add" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:paddingBottom="16dp"
-                android:text="Edit Profile"
-                android:textColor="@color/textSecondary"
-                android:textSize="16sp" />
-
-            <EditText
-                android:id="@+id/etName"
+            <!-- Core Info Card -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="@drawable/edt_bg"
-                android:paddingLeft="12dp"
-                android:hint="Enter swimmer name"
-                android:inputType="textCapWords"
-                android:paddingRight="12dp"
-                android:textColor="@color/teal_primary"
-                android:textColorHint="@color/card_shadow" />
-
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_marginTop="8dp"
-                android:paddingBottom="16dp"
-                android:text="Age"
-                android:textColor="@color/textSecondary"
-                android:textColorHint="@color/textPrimary"
-                android:textSize="16sp" />
-
-            <EditText
-                android:id="@+id/etAge"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:inputType="number"
-                android:hint="Enter Age"
-                android:background="@drawable/edt_bg"
-                android:paddingLeft="12dp"
-                android:textColor="@color/teal_primary"
-                android:textColorHint="@color/card_shadow" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:paddingBottom="16dp"
-                android:layout_marginTop="8dp"
-                android:text="Height (cm)"
-                android:textColor="@color/textSecondary"
-                android:textSize="16sp" />
-
-            <EditText
-                android:id="@+id/etHeight"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:inputType="numberDecimal"
-                android:background="@drawable/edt_bg"
-                android:hint="Enter height"
-                android:paddingLeft="12dp"
-                android:textColor="@color/teal_primary"
-                android:textColorHint="@color/card_shadow" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:paddingBottom="16dp"
-                android:layout_marginTop="8dp"
-
-                android:text="Weight (kg)"
-                android:textColorHint="@color/card_shadow"
-                android:textColor="@color/textSecondary"
-                android:textSize="16sp" />
-
-            <EditText
-                android:id="@+id/etWeight"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:inputType="numberDecimal"
-                android:background="@drawable/edt_bg"
-                android:hint="Enter weight"
-                android:paddingLeft="12dp"
-                android:textColor="@color/teal_primary"
-                android:textColorHint="@color/card_shadow" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Start Date"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:textSize="16sp"
-                android:textColor="@color/textSecondary" />
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
 
-            <Button
-                android:id="@+id/btnPickStartDate"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:text="Personal Information"
+                        android:textColor="@color/lightPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Full Name"
+                        app:startIconDrawable="@android:drawable/ic_menu_myplaces">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textCapWords" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
+                            android:hint="Age">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etAge"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:hint="Height (cm)">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etHeight"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:hint="Weight (kg)">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etWeight"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Goal Info Card -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableTop="@drawable/ic_calendar"
-                android:drawablePadding="0dp"
-                android:paddingTop="16dp"
-                android:text="Pick Date" />
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
 
-            <TextView
-                android:id="@+id/tvStartDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textColor="@color/textSecondary" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:text="Training Started"
+                        android:textColor="@color/lightPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:id="@+id/btnPickStartDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingVertical="12dp">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_calendar"
+                            app:tint="@color/lightPrimary" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Swimming Start Date"
+                                android:textColor="@color/textSecondary"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/tvStartDate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Set your start date"
+                                android:textColor="@color/text_dark"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:alpha="0.3"
+                            android:src="@android:drawable/ic_menu_edit" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:id="@+id/tvLastLogin"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:textColor="@color/textSecondary" />
-        </LinearLayout>
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:text="Last login: 2026-01-29"
+                android:textColor="@color/textSecondary"
+                android:textSize="12sp" />
 
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:orientation="horizontal"
-            android:paddingTop="8dp">
-
-            <Button
-                android:id="@+id/btnSkip"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:backgroundTint="@color/gray"
-                android:text="Skip" />
-
-            <Button
+            <!-- Action Buttons -->
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSaveProfile"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:textColor="@color/black"
-                android:backgroundTint="@color/aquaTint"
-                android:text="Save" />
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="16dp"
+                android:text="Update Profile"
+                android:textSize="16sp"
+                app:cornerRadius="12dp" />
 
-            <Button
-                android:id="@+id/btnLogout"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:textColor="@color/white"
-                android:backgroundTint="@color/my_custom_app_bar_color"
-                android:text="Logout" />
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSkip"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Skip"
+                    android:textColor="@color/textSecondary" />
+
+                <View
+                    android:id="@+id/btnLogoutDivider"
+                    android:layout_width="1dp"
+                    android:layout_height="24dp"
+                    android:alpha="0.2"
+                    android:visibility="gone"
+                    android:background="@color/textSecondary" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLogout"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    android:text="Logout"
+                    android:textColor="@color/orange" />
+
+            </LinearLayout>
+
         </LinearLayout>
+    </ScrollView>
 
-    </LinearLayout>
-
-</ScrollView>
-
-
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

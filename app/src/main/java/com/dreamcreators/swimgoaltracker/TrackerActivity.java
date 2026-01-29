@@ -55,13 +55,14 @@ public class TrackerActivity extends AppCompatActivity {
         updateList(30);
 
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
-        
-        ViewCompat.setOnApplyWindowInsetsListener(tvTrackerTitle, (v, insets) -> {
+        android.view.View trackerHeader = findViewById(R.id.trackerHeader);
+
+        ViewCompat.setOnApplyWindowInsetsListener(trackerHeader, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(v.getPaddingLeft(), systemBars.top, v.getPaddingRight(), v.getPaddingBottom());
+            v.setPadding(v.getPaddingLeft(), systemBars.top + (int)(8 * getResources().getDisplayMetrics().density), v.getPaddingRight(), v.getPaddingBottom());
             return insets;
         });
-
+        
         ViewCompat.setOnApplyWindowInsetsListener(bottomNav, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), systemBars.bottom);
@@ -95,8 +96,9 @@ public class TrackerActivity extends AppCompatActivity {
         String title = limit == -1 ? "All Records" : "Last " + limit + " Records";
         tvTrackerTitle.setText(title);
         
-        List<TrackerPojo> items = loadRecords(limit);
-        adapter = new TrackerListAdapter(this, items);
+        List<TrackerPojo> items = new ArrayList<>();
+        long[] bestTimes = loadRecords(limit, items);
+        adapter = new TrackerListAdapter(this, items, bestTimes[0], bestTimes[1], bestTimes[2], bestTimes[3]);
         recyclerView.setAdapter(adapter);
     }
 
@@ -131,10 +133,10 @@ public class TrackerActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private List<TrackerPojo> loadRecords(int limit) {
-        List<TrackerPojo> result = new ArrayList<>();
+    private long[] loadRecords(int limit, List<TrackerPojo> result) {
+        long minFree = Long.MAX_VALUE, minFly = Long.MAX_VALUE, minBreast = Long.MAX_VALUE, minBack = Long.MAX_VALUE;
         
-        // Query to get the last X distinct dates that have swim data
+        // Query to get the last X distinct dates that have swim data, ordered by date descending
         String limitClause = limit == -1 ? "" : " LIMIT " + limit;
         String dateQuery = "SELECT DISTINCT date FROM swim_sessions ORDER BY date DESC" + limitClause;
         
@@ -162,16 +164,27 @@ public class TrackerActivity extends AppCompatActivity {
             }
             c2.close();
 
+            if (freeMs > 0 && freeMs < minFree) minFree = freeMs;
+            if (flyMs > 0 && flyMs < minFly) minFly = flyMs;
+            if (breastMs > 0 && breastMs < minBreast) minBreast = breastMs;
+            if (backMs > 0 && backMs < minBack) minBack = backMs;
+
             result.add(new TrackerPojo(
                     date,
                     formatMs(freeMs),
                     formatMs(flyMs),
                     formatMs(breastMs),
-                    formatMs(backMs)
+                    formatMs(backMs),
+                    freeMs, flyMs, breastMs, backMs
             ));
         }
 
-        return result;
+        return new long[]{
+            minFree == Long.MAX_VALUE ? 0 : minFree,
+            minFly == Long.MAX_VALUE ? 0 : minFly,
+            minBreast == Long.MAX_VALUE ? 0 : minBreast,
+            minBack == Long.MAX_VALUE ? 0 : minBack
+        };
     }
 
 
@@ -179,8 +192,8 @@ public class TrackerActivity extends AppCompatActivity {
         long totalSeconds = ms / 1000;
         long minutes = totalSeconds / 60;
         long seconds = totalSeconds % 60;
-        long tenths = (ms % 1000) / 100;
-        return String.format(Locale.getDefault(), "%02d:%02d.%d", minutes, seconds, tenths);
+        long hundredths = (ms % 1000) / 10;
+        return String.format(Locale.getDefault(), "%02d:%02d.%02d", minutes, seconds, hundredths);
     }
 }
 

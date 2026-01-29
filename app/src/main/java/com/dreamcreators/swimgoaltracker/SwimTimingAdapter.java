@@ -63,7 +63,7 @@ public class SwimTimingAdapter extends RecyclerView.Adapter<SwimTimingAdapter.Vi
         // Entry number based on attempt count (latest entry has highest number)
         int attemptNumber = entries.size() - position;
         String timeAgo = formatTimeAgo(entry.getCreatedAtMs(), nowMs);
-        holder.tvEntryNumber.setText("Entry #" + attemptNumber + " " + timeAgo);
+        holder.tvEntryNumber.setText("Entry #" + attemptNumber + " - " + timeAgo);
         
         // Format and display timing
         String formattedTime = formatMs(entry.getTimeMs());
@@ -101,8 +101,8 @@ public class SwimTimingAdapter extends RecyclerView.Adapter<SwimTimingAdapter.Vi
         long totalSeconds = ms / 1000;
         long minutes = totalSeconds / 60;
         long seconds = totalSeconds % 60;
-        long tenths = (ms % 1000) / 100;
-        return String.format(Locale.getDefault(), "%02d:%02d.%d", minutes, seconds, tenths);
+        long hundredths = (ms % 1000) / 10;
+        return String.format(Locale.getDefault(), "%02d:%02d.%02d", minutes, seconds, hundredths);
     }
 
     private String formatTimeAgo(long createdAtMs, long nowMs) {
@@ -111,7 +111,9 @@ public class SwimTimingAdapter extends RecyclerView.Adapter<SwimTimingAdapter.Vi
         if (diffMs < 0) diffMs = 0;
 
         long totalSeconds = diffMs / 1000;
-        long minutes = totalSeconds / 60;
+        long totalMinutes = totalSeconds / 60;
+        long hours = totalMinutes / 60;
+        long minutes = totalMinutes % 60;
         long seconds = totalSeconds % 60;
 
         // Latest / very recent
@@ -119,20 +121,31 @@ public class SwimTimingAdapter extends RecyclerView.Adapter<SwimTimingAdapter.Vi
             return "Just now";
         }
 
-        // Show seconds for < 1 minute
-        if (minutes == 0) {
-            if (seconds == 1) {
-                return "At 1 sec ago";
+        // Show hours and minutes for >= 1 hour
+        if (hours > 0) {
+            String hourText = hours == 1 ? "1 hour" : hours + " hours";
+            if (minutes == 0) {
+                return hourText + " ago";
             } else {
-                return "At " + seconds + " secs ago";
+                String minText = minutes == 1 ? "1 min" : minutes + " mins";
+                return hourText + " " + minText + " ago";
             }
         }
 
-        // Show minutes for >= 1 minute
-        if (minutes == 1) {
-            return "At 1 min ago";
+        // Show seconds for < 1 minute
+        if (totalMinutes == 0) {
+            if (seconds == 1) {
+                return "1 sec ago";
+            } else {
+                return seconds + " secs ago";
+            }
+        }
+
+        // Show minutes for >= 1 minute and < 1 hour
+        if (totalMinutes == 1) {
+            return "1 min ago";
         } else {
-            return "At " + minutes + " mins ago";
+            return totalMinutes + " mins ago";
         }
     }
 }
