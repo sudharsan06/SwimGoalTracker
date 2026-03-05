@@ -3,7 +3,7 @@
     <style name="Base.Theme.SwimGoalTracker" parent="Theme.AppCompat.Light">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="android:statusBarColor">@color/my_custom_status_bar_color</item>
+        <item name="android:statusBarColor">@color/midnight_blue</item>
         <item name="colorPrimary">@color/my_custom_app_bar_color</item>
         <item name="colorPrimaryVariant">#0B3C5D</item>
         <item name="colorOnPrimary">@color/white</item>
@@ -17,7 +17,7 @@
         <item name="colorAccent">@color/lightAccent</item>
         <item name="android:textColorSecondary">@color/textSecondary</item>
         <item name="android:windowBackground">@color/white</item>
-        <item name="android:statusBarColor">@color/lightPrimaryDark</item>
+        <item name="android:statusBarColor">@color/midnight_blue</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
 
@@ -29,7 +29,7 @@
         <item name="colorAccent">@color/lightAccent</item>
         <item name="android:textColorSecondary">@color/textSecondary</item>
         <item name="android:windowBackground">@color/white</item>
-        <item name="android:statusBarColor">@color/lightPrimaryDark</item>
+        <item name="android:statusBarColor">@color/midnight_blue</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
 
@@ -62,7 +62,7 @@
     <style name="UCropTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowTranslucentStatus">false</item>
-        <item name="android:statusBarColor">@color/lightPrimaryDark</item>
+        <item name="android:statusBarColor">@color/midnight_blue</item>
     </style>
 
 

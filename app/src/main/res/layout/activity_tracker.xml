@@ -4,32 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_light">
+    android:background="@color/bg_light"
+    android:fitsSystemWindows="true">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <!-- Removed AppBarLayout because we use the system ActionBar -->
+
+    <LinearLayout
+        android:id="@+id/trackerHeader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:elevation="0dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="8dp">
 
-        <LinearLayout
-            android:id="@+id/trackerHeader"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvTrackerTitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="16dp"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp">
-
-            <TextView
-                android:id="@+id/tvTrackerTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Last 30 Records"
-                android:textColor="@color/lightPrimary"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="Last 30 Records"
+            android:textColor="@color/lightPrimary"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <!-- Fixed Header Row -->
         <LinearLayout
@@ -89,13 +85,6 @@
                 android:textSize="10sp"
                 android:textStyle="bold" />
         </LinearLayout>
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listTracker"
@@ -104,12 +93,13 @@
             android:layout_weight="1"
             android:clipToPadding="false"
             android:paddingTop="4dp"
-            android:paddingBottom="80dp" />
+            android:paddingBottom="8dp" />
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             app:adSize="BANNER"
             app:adUnitId="ca-app-pub-3940256099942544/6300978111"
             tools:ignore="MissingClass" />
@@ -121,7 +111,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/white"
+        android:background="#EDFFFFFF"
         app:elevation="8dp"
         app:itemHorizontalTranslationEnabled="false"
         app:itemIconTint="@color/nav_item_color"

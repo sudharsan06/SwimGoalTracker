@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_filter"
+        android:icon="@drawable/ic_filter_list_white"
+        android:title="Filter"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/filter_30"
+                android:title="Last 30 Days" />
+            <item
+                android:id="@+id/filter_60"
+                android:title="Last 60 Days" />
+            <item
+                android:id="@+id/filter_1year"
+                android:title="Last 1 Year" />
+            <item
+                android:id="@+id/filter_all"
+                android:title="All Records" />
+        </menu>
+    </item>
+</menu>

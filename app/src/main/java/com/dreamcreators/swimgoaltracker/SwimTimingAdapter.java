@@ -38,6 +38,7 @@ public class SwimTimingAdapter extends RecyclerView.Adapter<SwimTimingAdapter.Vi
         TextView tvTiming;
         TextView tvBestLabel;
         View btnDelete;
+        View itemContainer;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -45,6 +46,7 @@ public class SwimTimingAdapter extends RecyclerView.Adapter<SwimTimingAdapter.Vi
             tvTiming = itemView.findViewById(R.id.tvTiming);
             tvBestLabel = itemView.findViewById(R.id.tvBestLabel);
             btnDelete = itemView.findViewById(R.id.btnDelete);
+            itemContainer = itemView.findViewById(R.id.itemContainer);
         }
     }
 
@@ -72,17 +74,20 @@ public class SwimTimingAdapter extends RecyclerView.Adapter<SwimTimingAdapter.Vi
         // Highlight best time
         if (entry.getTimeMs() == bestTime && bestTime > 0) {
             holder.tvBestLabel.setVisibility(View.VISIBLE);
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.teal_primary));
+            // Elegant highlighted state for BEST entry
+            holder.itemContainer.setBackground(ContextCompat.getDrawable(context, R.drawable.watercolor_gradient));
             holder.tvTiming.setTextColor(ContextCompat.getColor(context, R.color.white));
             holder.tvEntryNumber.setTextColor(ContextCompat.getColor(context, R.color.white));
+            holder.tvBestLabel.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#FFD60A")));
+            holder.tvBestLabel.setTextColor(android.graphics.Color.BLACK);
+            ((android.widget.ImageView)holder.btnDelete).setColorFilter(ContextCompat.getColor(context, R.color.white));
         } else {
             holder.tvBestLabel.setVisibility(View.GONE);
-            Drawable bg = ContextCompat.getDrawable(context, R.drawable.edt_bg);
-            if (bg != null) {
-                holder.itemView.setBackground(bg);
-            }
-            holder.tvTiming.setTextColor(ContextCompat.getColor(context, R.color.teal_primary));
-            holder.tvEntryNumber.setTextColor(ContextCompat.getColor(context, R.color.textSecondary));
+            holder.itemContainer.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_glass_card));
+            holder.tvTiming.setTextColor(ContextCompat.getColor(context, R.color.lightPrimary));
+            holder.tvEntryNumber.setTextColor(ContextCompat.getColor(context, R.color.steel_blue));
+            holder.tvBestLabel.setBackgroundTintList(null);
+            ((android.widget.ImageView)holder.btnDelete).setColorFilter(ContextCompat.getColor(context, R.color.midnight_blue));
         }
 
         holder.btnDelete.setOnClickListener(v -> {

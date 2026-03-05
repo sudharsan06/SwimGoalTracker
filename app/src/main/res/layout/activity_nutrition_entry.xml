@@ -1,22 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/bg_light"
+    android:fitsSystemWindows="true">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:elevation="4dp" />
-    </com.google.android.material.appbar.AppBarLayout>
-
+    <!-- Removed custom Toolbar to use system ActionBar -->
 
     <ScrollView
         android:layout_width="match_parent"
@@ -28,14 +19,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
-
-            <!--     <com.google.android.material.appbar.MaterialToolbar
-                     android:id="@+id/toolbar"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:title="Nutrition Entry"
-                     app:navigationIcon="@drawable/ic_arrow_back_24"
-                     app:navigationIconTint="@android:color/white" />-->
 
             <TextView
                 android:id="@+id/tvEntryDate"
@@ -102,14 +85,6 @@
                     android:paddingHorizontal="16dp"
                     android:textSize="14sp" />
             </LinearLayout>
-            <!--<EditText
-                android:id="@+id/etProtein"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Protein (g)"
-                android:inputType="number"
-                android:textColor="@color/textSecondary"
-                android:textColorHint="@color/textPrimary" />-->
 
             <!-- Carbs Input -->
             <LinearLayout
@@ -139,14 +114,7 @@
                     android:paddingHorizontal="16dp"
                     android:textSize="14sp" />
             </LinearLayout>
-            <!--<EditText
-                android:id="@+id/etCarbs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Carbs (g)"
-                android:inputType="number"
-                android:textColor="@color/textSecondary"
-                android:textColorHint="@color/textPrimary" />-->
+
             <!-- Fats Input -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -175,19 +143,11 @@
                     android:paddingHorizontal="16dp"
                     android:textSize="14sp" />
             </LinearLayout>
-            <!--<EditText
-                android:id="@+id/etFats"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Fats (g)"
-                android:inputType="number"
-                android:textColor="@color/textSecondary"
-                android:textColorHint="@color/textPrimary" />-->
 
         </LinearLayout>
 
     </ScrollView>
-    <!-- Save Session Button -->
+
     <Button
         android:id="@+id/btnSaveNutrition"
         android:layout_width="match_parent"
@@ -198,7 +158,5 @@
         android:textColor="?attr/colorOnPrimary"
         android:backgroundTint="?attr/colorPrimary"
         android:layout_margin="16dp" />
+
 </LinearLayout>
-
-
-

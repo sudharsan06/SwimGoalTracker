@@ -66,7 +66,7 @@ public class ProfileActivity extends ComponentActivity {
 
         UCrop.Options options = new UCrop.Options();
         options.setToolbarColor(getResources().getColor(R.color.lightPrimary));
-        options.setStatusBarColor(getResources().getColor(R.color.lightPrimaryDark));
+        options.setStatusBarColor(getResources().getColor(R.color.midnight_blue));
         options.setToolbarWidgetColor(getResources().getColor(R.color.white));
         options.setActiveControlsWidgetColor(getResources().getColor(R.color.lightAccent));
         options.setCompressionFormat(android.graphics.Bitmap.CompressFormat.JPEG);
@@ -86,6 +86,9 @@ public class ProfileActivity extends ComponentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
         setContentView(R.layout.activity_profile);
 
         dbHelper = new NutritionDbHelper(this);

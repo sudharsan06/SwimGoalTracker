@@ -19,11 +19,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import androidx.activity.EdgeToEdge;
-import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ import java.util.List;
 import java.util.Locale;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import androidx.core.view.WindowCompat;
 
 public class SwimStopwatchActivity extends AppCompatActivity {
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -50,20 +53,14 @@ public class SwimStopwatchActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
-        getWindow().setStatusBarColor(getColor(R.color.lightPrimaryDark));
+        getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
         setContentView(R.layout.activity_swim_stopwatch);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        setTitle("Swim timer counter");
-        // Setup toolbar
-       /* Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }*/
+        }
 
         tvDate = findViewById(R.id.tvSwimDate);
         tvFree = findViewById(R.id.tvFree);
@@ -71,11 +68,11 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         tvBreast = findViewById(R.id.tvBreast);
         tvFly = findViewById(R.id.tvFly);
 
-        // Sections for each stroke (used to show/hide based on selected style from dashboard)
-        LinearLayout sectionFree = findViewById(R.id.sectionFree);
-        LinearLayout sectionBack = findViewById(R.id.sectionBack);
-        LinearLayout sectionBreast = findViewById(R.id.sectionBreast);
-        LinearLayout sectionFly = findViewById(R.id.sectionFly);
+        // Sections for each stroke
+        View sectionFree = findViewById(R.id.sectionFree);
+        View sectionBack = findViewById(R.id.sectionBack);
+        View sectionBreast = findViewById(R.id.sectionBreast);
+        View sectionFly = findViewById(R.id.sectionFly);
 
         Button btnFreeStart = findViewById(R.id.btnFreeStart);
         Button btnFreeStop = findViewById(R.id.btnFreeStop);
@@ -94,7 +91,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         Button btn_save_breast = findViewById(R.id.btn_save_breast);
         Button btn_save_fly = findViewById(R.id.btn_save_fly);
 
-        // RecyclerView for entries list (shared for whichever style is visible)
+        // RecyclerView for entries list
         tvEntriesHeader = findViewById(R.id.tvEntriesHeader);
         recyclerViewEntries = findViewById(R.id.recyclerViewEntries);
         recyclerViewEntries.setLayoutManager(new LinearLayoutManager(this));
@@ -102,17 +99,12 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         dbHelper = new NutritionDbHelper(this);
 
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        tvDate.setText("Date: " + today);
+        tvDate.setText("DATE: " + today);
 
-        // Adjust UI based on which stroke was tapped on the dashboard
-        // Dashboard passes extras: "Freestyle", "Backstroke", "Breaststroke", "Butterfly"
-        // Also check if we're returning from SwimEntryActivity
+        // Adjust UI based on stroke intent
         String stroke = getIntent().getStringExtra("stroke");
         if (stroke != null) {
             selectedStroke = stroke;
-        }
-        if (stroke != null) {
-            // Default: hide all, then show only the selected section
             sectionFree.setVisibility(View.GONE);
             sectionBack.setVisibility(View.GONE);
             sectionBreast.setVisibility(View.GONE);
@@ -120,24 +112,32 @@ public class SwimStopwatchActivity extends AppCompatActivity {
 
             if ("Freestyle".equalsIgnoreCase(stroke)) {
                 sectionFree.setVisibility(View.VISIBLE);
-                setTitle("Freestyle timer");
+                setTitle("Freestyle Timer");
                 loadTodayEntries("free", today);
             } else if ("Backstroke".equalsIgnoreCase(stroke)) {
                 sectionBack.setVisibility(View.VISIBLE);
-                setTitle("Backstroke timer");
+                setTitle("Backstroke Timer");
                 loadTodayEntries("back", today);
             } else if ("Breaststroke".equalsIgnoreCase(stroke)) {
                 sectionBreast.setVisibility(View.VISIBLE);
-                setTitle("Breaststroke timer");
+                setTitle("Breaststroke Timer");
                 loadTodayEntries("breast", today);
             } else if ("Butterfly".equalsIgnoreCase(stroke)) {
                 sectionFly.setVisibility(View.VISIBLE);
-                setTitle("Butterfly timer");
+                setTitle("Butterfly Timer");
                 loadTodayEntries("fly", today);
             }
         } else {
-            // If opened from menu, default to freestyle list
+            setTitle("Swim Timer");
             loadTodayEntries("free", today);
+        }
+
+        // Initialize Ads
+        MobileAds.initialize(this, initializationStatus -> {});
+        AdView adView = findViewById(R.id.adView);
+        if (adView != null) {
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
         }
 
         btnFreeStart.setOnClickListener(v -> startTimer("free"));
@@ -162,18 +162,6 @@ public class SwimStopwatchActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
         
-        ViewCompat.setOnApplyWindowInsetsListener(tvDate, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(v.getPaddingLeft(), systemBars.top, v.getPaddingRight(), v.getPaddingBottom());
-            return insets;
-        });
-
-        ViewCompat.setOnApplyWindowInsetsListener(bottomNav, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), systemBars.bottom);
-            return insets;
-        });
-
         bottomNav.setSelectedItemId(R.id.nav_home);
         bottomNav.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();

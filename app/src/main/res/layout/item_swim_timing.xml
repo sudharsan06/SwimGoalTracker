@@ -1,61 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
-    android:background="@drawable/edt_bg"
-    android:padding="12dp"
-    android:layout_marginBottom="8dp"
-    android:gravity="center_vertical">
+    android:layout_marginBottom="12dp"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:id="@+id/itemContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:background="@drawable/bg_glass_card"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvEntryNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.02"
+                android:text="Attempt #2 • 3 mins ago"
+                android:textColor="@color/steel_blue"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvTiming"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="00:24.50"
+                android:textColor="@color/lightPrimary"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/tvEntryNumber"
+            android:id="@+id/tvBestLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Entry #1"
-            android:textSize="12sp"
-            android:textColor="@color/textSecondary" />
-
-        <TextView
-            android:id="@+id/tvTiming"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="00:00.0"
-            android:textSize="20sp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/watercolor_gradient"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:text="⭐ BEST"
+            android:textColor="@color/white"
+            android:textSize="10sp"
             android:textStyle="bold"
-            android:textColor="@color/teal_primary"
-            android:layout_marginTop="4dp"
-            android:fontFamily="monospace" />
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/btnDelete"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Delete"
+            android:padding="10dp"
+            android:src="@drawable/ic_delete_24"
+            app:tint="@color/midnight_blue" />
+
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvBestLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="⭐ Best"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:textColor="@color/colorAccent"
-        android:visibility="gone"
-        android:background="@drawable/edt_bg"
-        android:paddingHorizontal="8dp"
-        android:paddingVertical="4dp"
-        android:layout_marginEnd="8dp"/>
-
-    <ImageButton
-        android:id="@+id/btnDelete"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_delete_24"
-        app:tint="@color/black"
-        android:contentDescription="Delete entry" />
-
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>
