@@ -16,12 +16,14 @@ import android.widget.Toast;
 import android.app.DatePickerDialog;
 import java.util.Calendar;
 
+import android.util.Log;
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -48,9 +50,10 @@ public class SwimEntryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        androidx.core.view.WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
+        getWindow().setStatusBarColor(getColor(R.color.status_indigo));
         setContentView(R.layout.activity_swim_entry);
 
         View main = findViewById(R.id.main);
@@ -113,11 +116,17 @@ public class SwimEntryActivity extends AppCompatActivity {
         });
         btn_SaveTiming.setOnClickListener(v -> saveSession(selectedStyle, edtSwimTime.getText().toString()));
 
-        MobileAds.initialize(this, initializationStatus -> {
-        });
         AdView adView = findViewById(R.id.adView);
         if (adView != null) {
-            adView.loadAd(new AdRequest.Builder().build());
+            adView.setAdListener(new com.google.android.gms.ads.AdListener() {
+                @Override
+                public void onAdFailedToLoad(LoadAdError loadAdError) {
+                    Log.e("SwimEntryActivity", "Ad failed: " + loadAdError.getCode() + " " + loadAdError.getMessage());
+                }
+            });
+            MobileAds.initialize(this, initializationStatus -> {
+                adView.loadAd(new AdRequest.Builder().build());
+            });
         }
     }
 

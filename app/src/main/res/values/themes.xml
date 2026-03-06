@@ -16,9 +16,7 @@
         <item name="colorSecondary">@color/lightSecondary</item>
         <item name="colorAccent">@color/lightAccent</item>
         <item name="android:textColorSecondary">@color/textSecondary</item>
-        <item name="android:windowBackground">@color/white</item>
         <item name="android:statusBarColor">@color/midnight_blue</item>
-        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="AppTheme_NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -30,7 +28,10 @@
         <item name="android:textColorSecondary">@color/textSecondary</item>
         <item name="android:windowBackground">@color/white</item>
         <item name="android:statusBarColor">@color/midnight_blue</item>
-        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <style name="CustomTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/midnight_blue</item>
     </style>
 
     <!-- Custom button style -->
@@ -59,10 +60,15 @@
         <item name="android:windowBackground">?attr/colorSurface</item>
     </style>
 
+
+
+
     <style name="UCropTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:statusBarColor">@color/midnight_blue</item>
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="28">never</item>
+        <item name="android:windowOptOutEdgeToEdgeEnforcement" tools:targetApi="35">true</item>
     </style>
 
 

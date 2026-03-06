@@ -48,6 +48,8 @@
     <color name="lightSurface">#FFFFFF</color>
 
     <color name="midnight_blue">#102A43</color>
+    <color name="midnight_blue_darker">#081524</color>
+    <color name="status_indigo">#560591</color>
     <color name="steel_blue">#627D98</color>
     <color name="sun_glow">#FFE29A</color>
     <color name="tropical_cyan">#06BEE1</color>

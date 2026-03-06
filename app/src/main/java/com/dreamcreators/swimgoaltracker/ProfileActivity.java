@@ -26,6 +26,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import androidx.core.view.WindowCompat;
+
 public class ProfileActivity extends ComponentActivity {
 
     private NutritionDbHelper dbHelper;
@@ -36,6 +38,13 @@ public class ProfileActivity extends ComponentActivity {
             new ActivityResultContracts.OpenDocument(),
             uri -> {
                 if (uri != null) {
+                    try {
+                        getContentResolver().takePersistableUriPermission(
+                                uri,
+                                Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        );
+                    } catch (SecurityException ignored) {
+                    }
                     startCrop(uri);
                 }
             }
@@ -49,9 +58,12 @@ public class ProfileActivity extends ComponentActivity {
                     if (resultUri != null) {
                         // Grant persistable permission ONLY if it's a content URI. 
                         // Cached file URIs don't need it.
+                        Uri previousImageUri = imageUri;
                         imageUri = resultUri;
                         ImageView img = findViewById(R.id.imgProfile);
                         img.setImageURI(imageUri);
+                        persistProfileImageUri(imageUri);
+                        deleteOwnedProfileImageIfReplaced(previousImageUri, imageUri);
                     }
                 } else if (result.getResultCode() == UCrop.RESULT_ERROR) {
                     final Throwable cropError = UCrop.getError(result.getData());
@@ -62,7 +74,10 @@ public class ProfileActivity extends ComponentActivity {
 
     private void startCrop(Uri uri) {
         String destinationFileName = "cropped_profile_" + System.currentTimeMillis() + ".jpg";
-        Uri destinationUri = Uri.fromFile(new File(getCacheDir(), destinationFileName));
+        File outDir = new File(getFilesDir(), "profile_images");
+        //noinspection ResultOfMethodCallIgnored
+        outDir.mkdirs();
+        Uri destinationUri = Uri.fromFile(new File(outDir, destinationFileName));
 
         UCrop.Options options = new UCrop.Options();
         options.setToolbarColor(getResources().getColor(R.color.lightPrimary));
@@ -80,15 +95,17 @@ public class ProfileActivity extends ComponentActivity {
                 .withOptions(options)
                 .getIntent(this);
 
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         cropImage.launch(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
+        getWindow().setStatusBarColor(getColor(R.color.status_indigo));
         setContentView(R.layout.activity_profile);
 
         dbHelper = new NutritionDbHelper(this);
@@ -112,8 +129,8 @@ public class ProfileActivity extends ComponentActivity {
             String uriStr = c.getString(0);
             if (uriStr != null && !uriStr.isEmpty()) {
                 imageUri = Uri.parse(uriStr);
-                if (imageUri.getScheme().equals("file") || hasPersistedReadPermission(imageUri)) {
-                    try { img.setImageURI(imageUri); } catch (Exception ignored) { }
+                if (isReadableImageUri(imageUri)) {
+                    try { img.setImageURI(imageUri); } catch (Exception ignored) { imageUri = null; }
                 } else {
                     imageUri = null;
                 }
@@ -202,6 +219,50 @@ public class ProfileActivity extends ComponentActivity {
         }
         startActivity(new Intent(this, MainActivity.class));
         finish();
+    }
+
+    private void persistProfileImageUri(Uri uri) {
+        if (dbHelper == null || uri == null) return;
+        ContentValues values = new ContentValues();
+        values.put("id", 1);
+        values.put("image_uri", uri.toString());
+        long updated = dbHelper.getWritableDatabase().update("profile", values, "id=1", null);
+        if (updated == 0) {
+            dbHelper.getWritableDatabase().insert("profile", null, values);
+        }
+    }
+
+    private boolean isReadableImageUri(Uri uri) {
+        if (uri == null) return false;
+        String scheme = uri.getScheme();
+        if ("file".equalsIgnoreCase(scheme)) {
+            return new File(uri.getPath() == null ? "" : uri.getPath()).exists();
+        }
+        if ("content".equalsIgnoreCase(scheme)) {
+            return hasPersistedReadPermission(uri);
+        }
+        return false;
+    }
+
+    private void deleteOwnedProfileImageIfReplaced(Uri previous, Uri next) {
+        if (previous == null || next == null) return;
+        if (previous.equals(next)) return;
+        if (!"file".equalsIgnoreCase(previous.getScheme())) return;
+
+        try {
+            String prevPath = previous.getPath();
+            if (prevPath == null) return;
+            File prevFile = new File(prevPath);
+
+            File ownedDir = new File(getFilesDir(), "profile_images");
+            String ownedDirPath = ownedDir.getCanonicalPath() + File.separator;
+            String prevCanonical = prevFile.getCanonicalPath();
+            if (prevCanonical.startsWith(ownedDirPath) && prevFile.exists()) {
+                //noinspection ResultOfMethodCallIgnored
+                prevFile.delete();
+            }
+        } catch (Exception ignored) {
+        }
     }
 
     private int parseIntSafe(String s) {

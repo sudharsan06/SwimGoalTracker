@@ -12,12 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import androidx.activity.EdgeToEdge;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowCompat;
+import android.util.Log;
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 
 import java.text.SimpleDateFormat;
@@ -37,9 +37,10 @@ public class TrackerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
+        getWindow().setStatusBarColor(getColor(R.color.status_indigo));
         setContentView(R.layout.activity_tracker);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -73,11 +74,17 @@ public class TrackerActivity extends AppCompatActivity {
             return false;
         });
 
-        MobileAds.initialize(this, initializationStatus -> {
-        });
         AdView adView = findViewById(R.id.adView);
         if (adView != null) {
-            adView.loadAd(new AdRequest.Builder().build());
+            adView.setAdListener(new com.google.android.gms.ads.AdListener() {
+                @Override
+                public void onAdFailedToLoad(LoadAdError loadAdError) {
+                    Log.e("TrackerActivity", "Ad failed: " + loadAdError.getCode() + " " + loadAdError.getMessage());
+                }
+            });
+            MobileAds.initialize(this, initializationStatus -> {
+                adView.loadAd(new AdRequest.Builder().build());
+            });
         }
     }
 

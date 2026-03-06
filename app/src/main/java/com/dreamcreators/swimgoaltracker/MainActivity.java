@@ -15,8 +15,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import android.util.Log;
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -107,10 +110,18 @@ public class MainActivity extends AppCompatActivity {
         });
         findViewById(R.id.btnOpenProfile).setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
 
-        MobileAds.initialize(this, initializationStatus -> {
-        });
         AdView adView = findViewById(R.id.adView);
-        adView.loadAd(new AdRequest.Builder().build());
+        if (adView != null) {
+            adView.setAdListener(new com.google.android.gms.ads.AdListener() {
+                @Override
+                public void onAdFailedToLoad(LoadAdError loadAdError) {
+                    Log.e("MainActivity", "Ad failed: " + loadAdError.getCode() + " " + loadAdError.getMessage());
+                }
+            });
+            MobileAds.initialize(this, initializationStatus -> {
+                adView.loadAd(new AdRequest.Builder().build());
+            });
+        }
 
         dbHelper = new NutritionDbHelper(this);
         loadUserData();
@@ -141,17 +152,46 @@ public class MainActivity extends AppCompatActivity {
             userName = c.getString(1);
             
             if (uriStr != null && !uriStr.isEmpty()) {
-                ivProfileIcon.setImageURI(Uri.parse(uriStr));
-                ivProfileIcon.setPadding(0, 0, 0, 0); // Remove padding if it's a real photo
-                ivProfileIcon.setImageTintList(null); // Remove white tint
-                ivProfileIcon.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+                Uri uri = Uri.parse(uriStr);
+                boolean canRead =
+                        "file".equalsIgnoreCase(uri.getScheme()) ||
+                        ("content".equalsIgnoreCase(uri.getScheme()) && hasPersistedReadPermission(uri));
+                if (canRead) {
+                    try {
+                        ivProfileIcon.setImageURI(uri);
+                        ivProfileIcon.setPadding(0, 0, 0, 0); // Remove padding if it's a real photo
+                        ivProfileIcon.setImageTintList(null); // Remove white tint
+                        ivProfileIcon.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+                    } catch (Exception e) {
+                        setDefaultProfileIcon();
+                    }
+                } else {
+                    setDefaultProfileIcon();
+                }
             } else {
-                ivProfileIcon.setImageResource(android.R.drawable.ic_menu_myplaces);
-                ivProfileIcon.setPadding(8, 8, 8, 8); // Restore icon padding
-                ivProfileIcon.setImageTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE));
+                setDefaultProfileIcon();
             }
         }
         c.close();
+    }
+
+    private void setDefaultProfileIcon() {
+        ivProfileIcon.setImageResource(android.R.drawable.ic_menu_myplaces);
+        ivProfileIcon.setPadding(8, 8, 8, 8); // Restore icon padding
+        ivProfileIcon.setImageTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE));
+        ivProfileIcon.setScaleType(android.widget.ImageView.ScaleType.CENTER_INSIDE);
+    }
+
+    private boolean hasPersistedReadPermission(Uri uri) {
+        try {
+            for (android.content.UriPermission p : getContentResolver().getPersistedUriPermissions()) {
+                if (p.getUri().equals(uri) && p.isReadPermission()) {
+                    return true;
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return false;
     }
 
   /*  private View.OnClickListener openSwimStopwatch = new View.OnClickListener() {

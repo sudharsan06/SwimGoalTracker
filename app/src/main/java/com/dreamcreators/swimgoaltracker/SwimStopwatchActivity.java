@@ -22,8 +22,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import android.util.Log;
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 
 import java.text.SimpleDateFormat;
@@ -54,9 +57,10 @@ public class SwimStopwatchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
+        getWindow().setStatusBarColor(getColor(R.color.status_indigo));
         setContentView(R.layout.activity_swim_stopwatch);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -133,11 +137,17 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         }
 
         // Initialize Ads
-        MobileAds.initialize(this, initializationStatus -> {});
         AdView adView = findViewById(R.id.adView);
         if (adView != null) {
-            AdRequest adRequest = new AdRequest.Builder().build();
-            adView.loadAd(adRequest);
+            adView.setAdListener(new com.google.android.gms.ads.AdListener() {
+                @Override
+                public void onAdFailedToLoad(LoadAdError loadAdError) {
+                    Log.e("SwimStopwatchActivity", "Ad failed: " + loadAdError.getCode() + " " + loadAdError.getMessage());
+                }
+            });
+            MobileAds.initialize(this, initializationStatus -> {
+                adView.loadAd(new AdRequest.Builder().build());
+            });
         }
 
         btnFreeStart.setOnClickListener(v -> startTimer("free"));
