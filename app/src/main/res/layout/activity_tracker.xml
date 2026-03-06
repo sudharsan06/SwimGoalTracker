@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_light"
     android:fitsSystemWindows="true">
 
     <!-- Removed AppBarLayout because we use the system ActionBar -->
@@ -14,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:background="@color/bg_light"
         android:paddingTop="8dp">
 
         <TextView

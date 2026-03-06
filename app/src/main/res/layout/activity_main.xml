@@ -51,7 +51,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:text="SwimGoalTracker"
+                    android:text="SwimminGo"
                     android:textColor="@color/white"
                     android:textSize="24sp"
                     android:textStyle="bold|italic"
@@ -165,7 +165,7 @@
                                     android:layout_height="wrap_content"
                                     android:letterSpacing="0.05"
                                     android:text="FREESTYLE"
-                                    android:textColor="@color/steel_blue"
+                                    android:textColor="@color/white"
                                     android:textSize="14sp"
                                     android:textStyle="bold" />
 
@@ -222,7 +222,7 @@
                                     android:layout_height="wrap_content"
                                     android:letterSpacing="0.05"
                                     android:text="BACKSTROKE"
-                                    android:textColor="@color/steel_blue"
+                                    android:textColor="@color/white"
                                     android:textSize="14sp"
                                     android:textStyle="bold" />
 
@@ -279,7 +279,7 @@
                                     android:layout_height="wrap_content"
                                     android:letterSpacing="0.05"
                                     android:text="BREASTSTROKE"
-                                    android:textColor="@color/steel_blue"
+                                    android:textColor="@color/white"
                                     android:textSize="14sp"
                                     android:textStyle="bold" />
 
@@ -336,7 +336,7 @@
                                     android:layout_height="wrap_content"
                                     android:letterSpacing="0.05"
                                     android:text="BUTTERFLY"
-                                    android:textColor="@color/steel_blue"
+                                    android:textColor="@color/white"
                                     android:textSize="14sp"
                                     android:textStyle="bold" />
 

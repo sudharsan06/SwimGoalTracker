@@ -4,32 +4,24 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.ViewHolder> {
+public class DailyAttemptsAdapter extends RecyclerView.Adapter<DailyAttemptsAdapter.ViewHolder> {
     private List<TrackerPojo> items;
     private Context context;
     private long minFree, minFly, minBreast, minBack;
 
-    public interface OnItemClickListener {
-        void onItemClick(String date);
-    }
-
-    private OnItemClickListener listener;
-
-    public TrackerListAdapter(Context context, List<TrackerPojo> items, long minFree, long minFly, long minBreast, long minBack, OnItemClickListener listener) {
+    public DailyAttemptsAdapter(Context context, List<TrackerPojo> items, long minFree, long minFly, long minBreast, long minBack) {
         this.context = context;
         this.items = items;
         this.minFree = minFree;
         this.minFly = minFly;
         this.minBreast = minBreast;
         this.minBack = minBack;
-        this.listener = listener;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -39,6 +31,7 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
         public ViewHolder(View itemView) {
             super(itemView);
             tvDate = itemView.findViewById(R.id.tv_date);
+            tvDate.setGravity(android.view.Gravity.CENTER);
             tvFree = itemView.findViewById(R.id.tv_free);
             tvFly = itemView.findViewById(R.id.tv_fly);
             tvBreast = itemView.findViewById(R.id.tv_breast);
@@ -61,16 +54,16 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         TrackerPojo log = items.get(position);
-        holder.tvDate.setText(log.date);
+        
+        // Show attempt index or time
+        if (log.swimActivity != null && !log.swimActivity.isEmpty()) {
+            holder.tvDate.setText(log.swimActivity);
+        } else {
+            holder.tvDate.setText("Attempt " + (position + 1));
+        }
         
         holder.tvFree.setText(log.freeTime);
         holder.layFree.setBackgroundResource(log.freeMs > 0 && log.freeMs == minFree ? R.drawable.item_bg_best : R.drawable.item_bg_rounded);
-        
-        holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onItemClick(log.date);
-            }
-        });
         
         holder.tvFly.setText(log.flyTime);
         holder.layFly.setBackgroundResource(log.flyMs > 0 && log.flyMs == minFly ? R.drawable.item_bg_best : R.drawable.item_bg_rounded);

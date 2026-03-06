@@ -37,10 +37,9 @@ public class TrackerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().setStatusBarColor(getColor(R.color.status_indigo));
+        getWindow().setStatusBarColor(getColor(R.color.dark_night));
         setContentView(R.layout.activity_tracker);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -94,7 +93,9 @@ public class TrackerActivity extends AppCompatActivity {
         
         List<TrackerPojo> items = new ArrayList<>();
         long[] bestTimes = loadRecords(limit, items);
-        adapter = new TrackerListAdapter(this, items, bestTimes[0], bestTimes[1], bestTimes[2], bestTimes[3]);
+        adapter = new TrackerListAdapter(this, items, bestTimes[0], bestTimes[1], bestTimes[2], bestTimes[3], date -> {
+            DailyAttemptsDialog.newInstance(date).show(getSupportFragmentManager(), "daily_attempts");
+        });
         recyclerView.setAdapter(adapter);
     }
 
