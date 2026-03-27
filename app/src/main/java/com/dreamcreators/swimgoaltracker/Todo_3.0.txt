@@ -1,0 +1,22 @@
+V1 (Java)
+---------
+1. Login with email id and one device has to register with one email id.
+2. Add profile screen input validation.
+3. Add swimming pool distance option.
+4. Add Fire store to store swimmer details
+5. Add firebase notification.
+6. Add Basic chart to show the progress insights.
+7. Add personalised basic goals setter to reach certain goal.
+8. Add max 2 login basic UI.
+
+V2 (React Native)
+-----------------
+1. Add Fire store to store swimmer details
+2. Add animated charts to show the progress insights.
+3. Add personalised goals setter to reach certain goal.
+4. Add firebase notification.
+5. Add switch swimmer logins maximum 2.
+6. Add swimming pool distance option.
+7. Login with email id and one device has to register with one email id.
+8. Add profile screen input validation.
+9. add Instruction screen before dive into the application for first time.
