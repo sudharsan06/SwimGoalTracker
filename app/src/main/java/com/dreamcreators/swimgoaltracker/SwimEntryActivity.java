@@ -53,7 +53,7 @@ public class SwimEntryActivity extends AppCompatActivity {
         androidx.core.view.WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().setStatusBarColor(getColor(R.color.status_indigo));
+        getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
         setContentView(R.layout.activity_swim_entry);
 
         View main = findViewById(R.id.main);
