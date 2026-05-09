@@ -8,11 +8,11 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import androidx.core.view.WindowCompat;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import android.util.Log;
 
 import com.google.android.gms.ads.AdRequest;
@@ -20,19 +20,21 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class TrackerActivity extends AppCompatActivity {
 
     private NutritionDbHelper dbHelper;
-    private RecyclerView recyclerView;
-    private TrackerListAdapter adapter;
     private TextView tvTrackerTitle;
+    private ViewPager2 viewPager;
+    private TabLayout tabLayout;
+    private TrackerPagerAdapter pagerAdapter;
+
+    // Cached data to pass to fragments
+    private List<TrackerPojo> currentItems = new ArrayList<>();
+    private long[] currentBestTimes = new long[4];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,17 +49,38 @@ public class TrackerActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Swim Tracker");
         }
 
-        recyclerView = findViewById(R.id.listTracker);
         tvTrackerTitle = findViewById(R.id.tvTrackerTitle);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        viewPager = findViewById(R.id.viewPager);
+        tabLayout = findViewById(R.id.tabLayout);
 
         dbHelper = new NutritionDbHelper(this);
 
-        updateList(30);
+        // Setup ViewPager2 + Tabs
+        pagerAdapter = new TrackerPagerAdapter(this);
+        // Keep BOTH fragments alive off-screen so RecordsFragment is ready immediately
+        viewPager.setOffscreenPageLimit(1);
+        viewPager.setAdapter(pagerAdapter);
+
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            if (position == 0) {
+                tab.setText("📊 Chart");
+            } else {
+                tab.setText("📋 Records");
+            }
+        }).attach();
+
+        // Push data to whatever fragment is visible when the user swipes
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                pushDataToFragments();
+            }
+        });
+
+        // Load data - post so fragments have time to attach on first frame
+        viewPager.post(() -> updateList(30));
 
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
-        android.view.View trackerHeader = findViewById(R.id.trackerHeader);
-
         bottomNav.setSelectedItemId(R.id.nav_tracker);
         bottomNav.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -67,7 +90,15 @@ public class TrackerActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             } else if (itemId == R.id.nav_tracker) {
-                // Already on Tracker
+                return true;
+            } else if (itemId == R.id.nav_goals) {
+                startActivity(new Intent(this, GoalsActivity.class));
+                return true;
+            } else if (itemId == R.id.nav_alerts) {
+                startActivity(new Intent(this, AlertsActivity.class));
+                return true;
+            } else if (itemId == R.id.nav_profile) {
+                startActivity(new Intent(this, ProfileActivity.class));
                 return true;
             }
             return false;
@@ -91,12 +122,30 @@ public class TrackerActivity extends AppCompatActivity {
         String title = limit == -1 ? "All Records" : "Last " + limit + " Records";
         tvTrackerTitle.setText(title);
         
-        List<TrackerPojo> items = new ArrayList<>();
-        long[] bestTimes = loadRecords(limit, items);
-        adapter = new TrackerListAdapter(this, items, bestTimes[0], bestTimes[1], bestTimes[2], bestTimes[3], date -> {
-            DailyAttemptsDialog.newInstance(date).show(getSupportFragmentManager(), "daily_attempts");
-        });
-        recyclerView.setAdapter(adapter);
+        currentItems.clear();
+        currentBestTimes = loadRecords(limit, currentItems);
+        
+        // Push data to both fragments
+        pushDataToFragments();
+    }
+
+    private void pushDataToFragments() {
+        ChartFragment chartFragment = pagerAdapter.getChartFragment();
+        if (chartFragment.isAdded()) {
+            chartFragment.updateChart(currentItems, currentBestTimes);
+        }
+
+        RecordsFragment recordsFragment = pagerAdapter.getRecordsFragment();
+        if (recordsFragment.isAdded()) {
+            recordsFragment.updateRecords(currentItems, currentBestTimes);
+        } else {
+            // Fragment not attached yet — retry after it has been drawn
+            viewPager.post(() -> {
+                if (recordsFragment.isAdded()) {
+                    recordsFragment.updateRecords(currentItems, currentBestTimes);
+                }
+            });
+        }
     }
 
     @Override
@@ -132,12 +181,12 @@ public class TrackerActivity extends AppCompatActivity {
 
     private long[] loadRecords(int limit, List<TrackerPojo> result) {
         long minFree = Long.MAX_VALUE, minFly = Long.MAX_VALUE, minBreast = Long.MAX_VALUE, minBack = Long.MAX_VALUE;
+        int activeProfileId = ProfileManager.getActiveProfileId(this);
         
-        // Query to get the last X distinct dates that have swim data, ordered by date descending
         String limitClause = limit == -1 ? "" : " LIMIT " + limit;
-        String dateQuery = "SELECT DISTINCT date FROM swim_sessions ORDER BY date DESC" + limitClause;
+        String dateQuery = "SELECT DISTINCT date FROM swim_sessions WHERE profile_id = ? ORDER BY date DESC" + limitClause;
         
-        Cursor dateCursor = dbHelper.getReadableDatabase().rawQuery(dateQuery, null);
+        Cursor dateCursor = dbHelper.getReadableDatabase().rawQuery(dateQuery, new String[]{String.valueOf(activeProfileId)});
         List<String> dates = new ArrayList<>();
         if (dateCursor.moveToFirst()) {
             do {
@@ -147,11 +196,10 @@ public class TrackerActivity extends AppCompatActivity {
         dateCursor.close();
 
         for (String date : dates) {
-            // Swim session query
             long freeMs = 0, backMs = 0, breastMs = 0, flyMs = 0;
             Cursor c2 = dbHelper.getReadableDatabase().rawQuery(
-                    "SELECT MIN(NULLIF(freestyle_ms, 0)), MIN(NULLIF(backstroke_ms, 0)), MIN(NULLIF(breaststroke_ms, 0)), MIN(NULLIF(butterfly_ms, 0)) FROM swim_sessions WHERE date = ?",
-                    new String[]{date}
+                    "SELECT MIN(NULLIF(freestyle_ms, 0)), MIN(NULLIF(backstroke_ms, 0)), MIN(NULLIF(breaststroke_ms, 0)), MIN(NULLIF(butterfly_ms, 0)) FROM swim_sessions WHERE date = ? AND profile_id = ?",
+                    new String[]{date, String.valueOf(activeProfileId)}
             );
             if (c2.moveToFirst()) {
                 freeMs = c2.isNull(0) ? 0 : c2.getLong(0);
@@ -184,7 +232,6 @@ public class TrackerActivity extends AppCompatActivity {
         };
     }
 
-
     private String formatMs(long ms) {
         long totalSeconds = ms / 1000;
         long minutes = totalSeconds / 60;
@@ -193,5 +240,3 @@ public class TrackerActivity extends AppCompatActivity {
         return String.format(Locale.getDefault(), "%02d:%02d.%02d", minutes, seconds, hundredths);
     }
 }
-
-

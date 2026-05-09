@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "280989570232",
+    "firebase_url": "https://swimmingo-default-rtdb.firebaseio.com",
+    "project_id": "swimmingo",
+    "storage_bucket": "swimmingo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:280989570232:android:ff4af04d72de21be6f104d",
+        "android_client_info": {
+          "package_name": "com.dreamcreators.swimgoaltracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "280989570232-c8sc3bqce5s601qst6soko8ln91p4mg5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dreamcreators.swimgoaltracker",
+            "certificate_hash": "4d77bbd98260daa94102f5554f6df77cf9133eb7"
+          }
+        },
+        {
+          "client_id": "280989570232-atk7rcei3qrrr9d839e5bnovpj01dple.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4d_EXbjud3KLFZ5n0rxfV6qHvfHr7tLo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "280989570232-atk7rcei3qrrr9d839e5bnovpj01dple.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

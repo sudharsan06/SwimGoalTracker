@@ -349,6 +349,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 // This allows multiple attempts per day, and MIN() query will find the best time
                 ContentValues values = new ContentValues();
                 values.put("date", date);
+                values.put("profile_id", ProfileManager.getActiveProfileId(this));
                 
                 // Only set the selected style, others will default to 0
                 // This allows tracking multiple attempts and finding the best time using MIN()
@@ -408,6 +409,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         // This allows multiple attempts per day, and MIN() query will find the best time
         ContentValues values = new ContentValues();
         values.put("date", date);
+        values.put("profile_id", ProfileManager.getActiveProfileId(this));
         
         // Only set the selected style, others will default to 0
         // This allows tracking multiple attempts and finding the best time using MIN()
@@ -457,9 +459,10 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         }
 
         // Query database for today's entries of this style (non-zero values only), newest first
+        int activeProfileId = ProfileManager.getActiveProfileId(this);
         Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
-                "SELECT id, " + columnName + ", created_at FROM swim_sessions WHERE date = ? AND " + columnName + " > 0 ORDER BY created_at DESC",
-                new String[]{date}
+                "SELECT id, " + columnName + ", created_at FROM swim_sessions WHERE date = ? AND " + columnName + " > 0 AND profile_id = ? ORDER BY created_at DESC",
+                new String[]{date, String.valueOf(activeProfileId)}
         );
 
         List<SwimTimingEntry> entries = new ArrayList<>();

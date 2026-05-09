@@ -11,6 +11,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,16 +25,23 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import androidx.core.view.WindowCompat;
 
 public class ProfileActivity extends ComponentActivity {
 
+    public static final String EXTRA_PROFILE_ID = "profile_id";
+    public static final String EXTRA_SETUP_MODE = "setup_mode";
+
     private NutritionDbHelper dbHelper;
     private Uri imageUri;
     private String startDate = "";
+    private int targetProfileId = 1;
+    private boolean isSetupMode = false;
 
     private final ActivityResultLauncher<String[]> pickImage = registerForActivityResult(
             new ActivityResultContracts.OpenDocument(),
@@ -110,12 +119,18 @@ public class ProfileActivity extends ComponentActivity {
 
         dbHelper = new NutritionDbHelper(this);
 
+        // Determine which profile slot we're editing
+        targetProfileId = getIntent().getIntExtra(EXTRA_PROFILE_ID,
+                ProfileManager.getActiveProfileId(this));
+        if (targetProfileId < 1 || targetProfileId > 2) targetProfileId = 1;
+        isSetupMode = getIntent().getBooleanExtra(EXTRA_SETUP_MODE, false);
+
         ImageView img = findViewById(R.id.imgProfile);
         View btnPick = findViewById(R.id.btnPickImage);
         EditText etName = findViewById(R.id.etName);
         EditText etAge = findViewById(R.id.etAge);
-        EditText etHeight = findViewById(R.id.etHeight);
-        EditText etWeight = findViewById(R.id.etWeight);
+        Spinner spinnerHeight = findViewById(R.id.spinnerHeight);
+        Spinner spinnerWeight = findViewById(R.id.spinnerWeight);
         View btnPickStartDate = findViewById(R.id.btnPickStartDate);
         TextView tvStartDate = findViewById(R.id.tvStartDate);
         TextView tvLastLogin = findViewById(R.id.tvLastLogin);
@@ -123,8 +138,36 @@ public class ProfileActivity extends ComponentActivity {
         View btnSkip = findViewById(R.id.btnSkip);
         View btnLogout = findViewById(R.id.btnLogout);
         View dividerLogout = findViewById(R.id.btnLogoutDivider);
+        
+        View btnPoolDistance = findViewById(R.id.btnPoolDistance);
+        
+        btnPoolDistance.setOnClickListener(v -> {
+            startActivity(new Intent(this, PoolDistanceActivity.class));
+        });
 
-        Cursor c = dbHelper.getReadableDatabase().rawQuery("SELECT image_uri, name, age, height, weight, start_date, last_login FROM profile WHERE id=1", null);
+        // Populate height spinner: 50cm to 250cm
+        List<String> heightList = new ArrayList<>();
+        heightList.add("Select Height");
+        for (int i = 50; i <= 250; i++) {
+            heightList.add(i + " cm");
+        }
+        ArrayAdapter<String> heightAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, heightList);
+        heightAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerHeight.setAdapter(heightAdapter);
+
+        // Populate weight spinner: 10kg to 200kg
+        List<String> weightList = new ArrayList<>();
+        weightList.add("Select Weight");
+        for (int i = 10; i <= 200; i++) {
+            weightList.add(i + " kg");
+        }
+        ArrayAdapter<String> weightAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, weightList);
+        weightAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerWeight.setAdapter(weightAdapter);
+
+        Cursor c = dbHelper.getReadableDatabase().rawQuery(
+                "SELECT image_uri, name, age, height, weight, start_date, last_login, pool_distance FROM profile WHERE id=?",
+                new String[]{String.valueOf(targetProfileId)});
         if (c.moveToFirst()) {
             String uriStr = c.getString(0);
             if (uriStr != null && !uriStr.isEmpty()) {
@@ -137,13 +180,26 @@ public class ProfileActivity extends ComponentActivity {
             }
             etName.setText(c.getString(1));
             etAge.setText(String.valueOf(c.getInt(2)));
-            etHeight.setText(String.valueOf(c.getFloat(3)));
-            etWeight.setText(String.valueOf(c.getFloat(4)));
+
+            // Pre-select height in spinner
+            int savedHeight = Math.round(c.getFloat(3));
+            if (savedHeight >= 50 && savedHeight <= 250) {
+                spinnerHeight.setSelection(savedHeight - 50 + 1); // +1 for "Select Height"
+            }
+
+            // Pre-select weight in spinner
+            int savedWeight = Math.round(c.getFloat(4));
+            if (savedWeight >= 10 && savedWeight <= 200) {
+                spinnerWeight.setSelection(savedWeight - 10 + 1); // +1 for "Select Weight"
+            }
+
             startDate = c.getString(5) == null ? "" : c.getString(5);
             tvStartDate.setText(startDate);
             tvLastLogin.setText(c.getString(6) == null ? "" : ("Last login: " + c.getString(6)));
             btnLogout.setVisibility(View.VISIBLE);
             dividerLogout.setVisibility(View.VISIBLE);
+            
+            // Pool distance is at index 7. Let onResume handle updating the TextView though, to keep it fresh
         }
         c.close();
 
@@ -173,19 +229,46 @@ public class ProfileActivity extends ComponentActivity {
                 Toast.makeText(this, "Please enter your name", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            String ageStr = etAge.getText().toString().trim();
+            int age = parseIntSafe(ageStr);
+            if (ageStr.isEmpty() || age <= 0 || age > 120) {
+                Toast.makeText(this, "Please enter a valid age (1-120)", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String heightStr = spinnerHeight.getSelectedItem().toString();
+            if (spinnerHeight.getSelectedItemPosition() == 0) {
+                Toast.makeText(this, "Please select a valid height", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            int height = parseIntSafe(heightStr.replace(" cm", ""));
+
+            String weightStr = spinnerWeight.getSelectedItem().toString();
+            if (spinnerWeight.getSelectedItemPosition() == 0) {
+                Toast.makeText(this, "Please select a valid weight", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            int weight = parseIntSafe(weightStr.replace(" kg", ""));
+
+            if (startDate == null || startDate.trim().isEmpty()) {
+                Toast.makeText(this, "Please select a start date", Toast.LENGTH_SHORT).show();
+                return;
+            }
             
             ContentValues values = new ContentValues();
-            values.put("id", 1);
+            values.put("id", targetProfileId);
             values.put("image_uri", imageUri == null ? null : imageUri.toString());
             values.put("name", name);
-            values.put("age", parseIntSafe(etAge.getText().toString()));
-            values.put("height", parseFloatSafe(etHeight.getText().toString()));
-            values.put("weight", parseFloatSafe(etWeight.getText().toString()));
+            values.put("age", age);
+            values.put("height", (float) height);
+            values.put("weight", (float) weight);
             values.put("start_date", startDate);
             String now = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Calendar.getInstance().getTime());
             values.put("last_login", now);
 
-            long updated = dbHelper.getWritableDatabase().update("profile", values, "id=1", null);
+            long updated = dbHelper.getWritableDatabase().update("profile", values,
+                    "id=" + targetProfileId, null);
             if (updated == 0) {
                 long inserted = dbHelper.getWritableDatabase().insert("profile", null, values);
                 if (inserted <= 0) {
@@ -194,6 +277,7 @@ public class ProfileActivity extends ComponentActivity {
                 }
             }
             Toast.makeText(this, "Profile saved", Toast.LENGTH_SHORT).show();
+            ProfileManager.setActiveProfileId(this, targetProfileId);
             proceedToMain();
         });
 
@@ -202,31 +286,68 @@ public class ProfileActivity extends ComponentActivity {
         btnLogout.setOnClickListener(v -> {
             ContentValues values = new ContentValues();
             values.put("last_login", (String) null);
-            dbHelper.getWritableDatabase().update("profile", values, "id=1", null);
+            dbHelper.getWritableDatabase().update("profile", values,
+                    "id=" + targetProfileId, null);
+
+            // Sign out of Firebase (handles Email/Password perfectly)
+            com.google.firebase.auth.FirebaseAuth.getInstance().signOut();
+            
+            // Sign out of Google to force account picker prompt next time
+            com.google.android.gms.auth.api.signin.GoogleSignInOptions gso = new com.google.android.gms.auth.api.signin.GoogleSignInOptions.Builder(com.google.android.gms.auth.api.signin.GoogleSignInOptions.DEFAULT_SIGN_IN).build();
+            com.google.android.gms.auth.api.signin.GoogleSignIn.getClient(this, gso).signOut();
+
             Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
-            finishAffinity();
-            System.runFinalization();
-            System.exit(0);
+            
+            // Redirect to Login Screen
+            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (dbHelper != null) {
+            Cursor c = dbHelper.getReadableDatabase().rawQuery("SELECT pool_distance FROM profile WHERE id=?", new String[]{String.valueOf(targetProfileId)});
+            if (c.moveToFirst()) {
+                int dist = c.getInt(0);
+                TextView tvPoolDistance = findViewById(R.id.tvPoolDistance);
+                if (tvPoolDistance != null) {
+                    if (dist == 0) {
+                        tvPoolDistance.setText("Open Water");
+                    } else {
+                        tvPoolDistance.setText(dist + " metres");
+                    }
+                }
+            }
+            c.close();
+        }
+    }
     private void proceedToMain() {
-        // Hide keyboard
         View currentFocus = getCurrentFocus();
         if (currentFocus != null) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
         }
-        startActivity(new Intent(this, MainActivity.class));
+        if (isSetupMode) {
+            // Return to Switch Swimmer so user can choose which profile to continue as
+            Intent i = new Intent(this, SwitchSwimmerActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(i);
+        } else {
+            startActivity(new Intent(this, MainActivity.class));
+        }
         finish();
     }
 
     private void persistProfileImageUri(Uri uri) {
         if (dbHelper == null || uri == null) return;
         ContentValues values = new ContentValues();
-        values.put("id", 1);
+        values.put("id", targetProfileId);
         values.put("image_uri", uri.toString());
-        long updated = dbHelper.getWritableDatabase().update("profile", values, "id=1", null);
+        long updated = dbHelper.getWritableDatabase().update("profile", values, "id=" + targetProfileId, null);
         if (updated == 0) {
             dbHelper.getWritableDatabase().insert("profile", null, values);
         }

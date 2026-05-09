@@ -6,94 +6,53 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <!-- Removed AppBarLayout because we use the system ActionBar -->
-
     <LinearLayout
         android:id="@+id/trackerHeader"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/bg_light"
-        android:paddingTop="8dp">
+        android:background="@color/bg_light">
 
-        <TextView
-            android:id="@+id/tvTrackerTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="8dp"
-            android:text="Last 30 Records"
-            android:textColor="@color/lightPrimary"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <!-- Fixed Header Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#F5F7F9"
             android:orientation="horizontal"
-            android:paddingVertical="10dp"
-            android:paddingHorizontal="16dp">
+            android:gravity="center_vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp">
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.2"
-                android:text="DATE"
-                android:textColor="@color/textSecondary"
-                android:textSize="10sp"
-                android:textStyle="bold" />
-
-            <TextView
+                android:id="@+id/tvTrackerTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:text="FREE"
-                android:textColor="@color/textSecondary"
-                android:textSize="10sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="FLY"
-                android:textColor="@color/textSecondary"
-                android:textSize="10sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="BREAST"
-                android:textColor="@color/textSecondary"
-                android:textSize="10sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="BACK"
-                android:textColor="@color/textSecondary"
-                android:textSize="10sp"
+                android:text="Last 30 Records"
+                android:textColor="@color/lightPrimary"
+                android:textSize="20sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listTracker"
+        <!-- TabLayout for switching views -->
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bg_light"
+            app:tabGravity="fill"
+            app:tabMode="fixed"
+            app:tabIndicatorColor="@color/lightPrimary"
+            app:tabSelectedTextColor="@color/lightPrimary"
+            app:tabTextColor="@color/textSecondary"
+            app:tabIndicatorHeight="3dp"
+            app:tabRippleColor="@color/lightPrimary" />
+
+        <!-- ViewPager2 for swipeable content -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:clipToPadding="false"
-            android:paddingTop="4dp"
-            android:paddingBottom="8dp" />
+            android:layout_weight="1" />
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"

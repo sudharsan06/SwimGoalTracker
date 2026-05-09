@@ -26,10 +26,30 @@
             android:name=".SwimEntryActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".PoolDistanceActivity"
+            android:theme="@style/AppTheme_NoActionBar"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
+        <activity
+            android:name=".SwitchSwimmerActivity"
+            android:theme="@style/AppTheme_NoActionBar"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <property
+            android:name="android.adservices.AD_SERVICES_CONFIG"
+            android:resource="@xml/gma_ad_services_config"
+            tools:replace="android:resource" />
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-6508060827158792~8719408639" />
-
         <activity
             android:name=".SwimStopwatchActivity"
             android:configChanges="orientation|screenSize"
@@ -66,7 +86,20 @@
             android:name=".ProfileActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false"
-            android:screenOrientation="portrait"  />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme_NoActionBar" />
+
+        <activity
+            android:name=".GoalsActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".AlertsActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"

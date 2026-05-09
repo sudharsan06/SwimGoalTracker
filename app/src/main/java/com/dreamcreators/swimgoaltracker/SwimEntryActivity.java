@@ -197,6 +197,7 @@ public class SwimEntryActivity extends AppCompatActivity {
             // This allows multiple attempts per day, and MIN() query will find the best time
             ContentValues values = new ContentValues();
             values.put("date", date);
+            values.put("profile_id", ProfileManager.getActiveProfileId(this));
             values.put("created_at", System.currentTimeMillis());
             
             // Only set the selected style, others will default to 0

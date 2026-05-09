@@ -81,6 +81,19 @@
                         app:tint="@color/white" />
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Switch Badge overlay for Profile icon -->
+                <ImageView
+                    android:id="@+id/ivSwitchProfileBadge"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:background="@drawable/circle_bg_blue"
+                    android:padding="2dp"
+                    android:src="@android:drawable/ic_popup_sync"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/btnOpenProfile"
+                    app:layout_constraintEnd_toEndOf="@id/btnOpenProfile"
+                    app:tint="@color/white" />
+
                 <TextView
                     android:id="@+id/tvUserName"
                     android:layout_width="wrap_content"

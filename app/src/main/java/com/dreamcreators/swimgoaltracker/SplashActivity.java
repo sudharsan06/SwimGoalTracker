@@ -16,21 +16,48 @@ public class SplashActivity extends ComponentActivity {
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
         setContentView(R.layout.activity_splash);
-
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            NutritionDbHelper db = new NutritionDbHelper(this);
-            boolean needsProfile = true;
-            Cursor c = db.getReadableDatabase().rawQuery("SELECT name FROM profile WHERE id=1", null);
-            if (c.moveToFirst()) {
-                String name = c.getString(0);
-                needsProfile = (name == null || name.trim().isEmpty());
-            }
-            c.close();
+            try {
+                com.google.firebase.auth.FirebaseAuth mAuth = com.google.firebase.auth.FirebaseAuth.getInstance();
+                if (mAuth.getCurrentUser() == null) {
+                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                    finish();
+                } else {
+                    String deviceId = android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+                    com.google.firebase.database.FirebaseDatabase.getInstance().getReference("device_mapping")
+                            .child(mAuth.getCurrentUser().getUid())
+                            .addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+                                @Override
+                                public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists() && !deviceId.equals(dataSnapshot.getValue(String.class))) {
+                                        mAuth.signOut();
+                                        android.widget.Toast.makeText(SplashActivity.this, "This account is registered on another device.", android.widget.Toast.LENGTH_LONG).show();
+                                        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                                        finish();
+                                    } else {
+                                        navigateNext();
+                                    }
+                                }
 
-            Intent next = new Intent(SplashActivity.this, needsProfile ? ProfileActivity.class : MainActivity.class);
-            startActivity(next);
-            finish();
-        }, 4000);
+                                @Override
+                                public void onCancelled(com.google.firebase.database.DatabaseError databaseError) {
+                                    navigateNext();
+                                }
+                            });
+                }
+            } catch (Exception e) {
+                // In case google-services.json is missing or other initialization error
+                startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                finish();
+            }
+        }, 1500);
+    }
+    
+    private void navigateNext() {
+        Intent next = new Intent(SplashActivity.this, SwitchSwimmerActivity.class);
+        next.putExtra(SwitchSwimmerActivity.EXTRA_FROM_LOGIN, true);
+        startActivity(next);
+        finish();
     }
 }
 

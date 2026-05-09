@@ -9,6 +9,10 @@ activity = "1.11.0"
 constraintlayout = "2.2.1"
 gmsAds = "23.4.0"
 ucrop = "2.2.10"
+googleServices = "4.4.4"
+firebaseBom = "33.5.1"
+playServicesAuth = "21.2.0"
+mpandroidchart = "v3.1.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -20,7 +24,12 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "gmsAds" }
 ucrop = { group = "com.github.yalantis", name = "ucrop", version.ref = "ucrop" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database" }
+play-services-auth-lib = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
+mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpandroidchart" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }

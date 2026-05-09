@@ -108,7 +108,9 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), systemBars.bottom);
             return insets;
         });
-        findViewById(R.id.btnOpenProfile).setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
+        // Profile icon → Switch Swimmer screen
+        findViewById(R.id.btnOpenProfile).setOnClickListener(v ->
+                startActivity(new Intent(this, SwitchSwimmerActivity.class)));
 
         AdView adView = findViewById(R.id.adView);
         if (adView != null) {
@@ -134,19 +136,38 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNav.setSelectedItemId(R.id.nav_home);
         bottomNav.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.nav_home) {
-                // Already on Dashboard
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
                 return true;
-            } else if (item.getItemId() == R.id.nav_tracker) {
+            } else if (id == R.id.nav_tracker) {
                 startActivity(new Intent(this, TrackerActivity.class));
+                return true;
+            } else if (id == R.id.nav_goals) {
+                startActivity(new Intent(this, GoalsActivity.class));
+                return true;
+            } else if (id == R.id.nav_alerts) {
+                startActivity(new Intent(this, AlertsActivity.class));
+                return true;
+            } else if (id == R.id.nav_profile) {
+                startActivity(new Intent(this, ProfileActivity.class));
                 return true;
             }
             return false;
         });
     }
 
+   /* @Override
+    protected void onResume() {
+        super.onResume();
+        if (dbHelper != null) {
+            loadUserData();
+            tvUserName.setText(getGreetingMessage(userName));
+        }
+    }*/
+
     private void loadUserData() {
-        Cursor c = dbHelper.getReadableDatabase().rawQuery("SELECT image_uri, name, age, height, weight, start_date, last_login FROM profile WHERE id=1", null);
+        int activeProfileId = ProfileManager.getActiveProfileId(this);
+        Cursor c = dbHelper.getReadableDatabase().rawQuery("SELECT image_uri, name, age, height, weight, start_date, last_login FROM profile WHERE id=?", new String[]{String.valueOf(activeProfileId)});
         if (c.moveToFirst()) {
             String uriStr = c.getString(0);
             userName = c.getString(1);
@@ -173,6 +194,15 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         c.close();
+        
+        android.widget.ImageView ivSwitchBadge = findViewById(R.id.ivSwitchProfileBadge);
+        if (ivSwitchBadge != null) {
+            if (ProfileManager.getProfiles(this).size() > 1) {
+                ivSwitchBadge.setVisibility(android.view.View.VISIBLE);
+            } else {
+                ivSwitchBadge.setVisibility(android.view.View.GONE);
+            }
+        }
     }
 
     private void setDefaultProfileIcon() {
@@ -270,10 +300,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadBestSwimToday(String date) {
+        int activeProfileId = ProfileManager.getActiveProfileId(this);
         // Use NULLIF to convert 0 to NULL, so MIN() ignores zeros and finds the best (lowest) non-zero time
         Cursor c = dbHelper.getReadableDatabase().rawQuery(
-                "SELECT MIN(NULLIF(freestyle_ms, 0)), MIN(NULLIF(backstroke_ms, 0)), MIN(NULLIF(breaststroke_ms, 0)), MIN(NULLIF(butterfly_ms, 0)) FROM swim_sessions WHERE date = ?",
-                new String[]{date}
+                "SELECT MIN(NULLIF(freestyle_ms, 0)), MIN(NULLIF(backstroke_ms, 0)), MIN(NULLIF(breaststroke_ms, 0)), MIN(NULLIF(butterfly_ms, 0)) FROM swim_sessions WHERE date = ? AND profile_id = ?",
+                new String[]{date, String.valueOf(activeProfileId)}
         );
         if (c.moveToFirst()) {
             tvBestFree.setText(formatMs(c.isNull(0) ? 0 : c.getLong(0)));

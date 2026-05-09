@@ -28,3 +28,6 @@
 -keep public class com.google.android.gms.ads.** {
    public *;
 }
+
+# MPAndroidChart
+-keep class com.github.mikephil.charting.** { *; }
