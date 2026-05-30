@@ -94,6 +94,14 @@ public class AlertsActivity extends AppCompatActivity {
         tvReminderTime.setText(String.format(Locale.getDefault(), "%02d:%02d %s", displayHour, reminderMinute, amPm));
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
+
     private void setupBottomNav() {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
         bottomNav.setSelectedItemId(R.id.nav_alerts);
