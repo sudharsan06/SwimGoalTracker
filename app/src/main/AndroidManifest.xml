@@ -30,6 +30,7 @@
             android:name=".screens.PoolDistanceActivity"
             android:theme="@style/AppTheme_NoActionBar"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
 
         <activity
@@ -93,6 +94,7 @@
             android:name=".screens.GoalsActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
 
         <activity

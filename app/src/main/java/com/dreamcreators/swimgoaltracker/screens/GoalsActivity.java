@@ -2,10 +2,14 @@ package com.dreamcreators.swimgoaltracker.screens;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.dreamcreators.swimgoaltracker.db.ProfileManager;
 import com.dreamcreators.swimgoaltracker.R;
@@ -24,6 +28,9 @@ public class GoalsActivity extends AppCompatActivity {
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
+        WindowInsetsControllerCompat controller =
+                WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        controller.setAppearanceLightStatusBars(true);
         setContentView(R.layout.activity_goals);
 
         etWeeklySessions = findViewById(R.id.etWeeklySessions);
@@ -66,6 +73,24 @@ public class GoalsActivity extends AppCompatActivity {
         });
 
         setupBottomNav();
+
+        View rootView = findViewById(android.R.id.content);
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            Rect r = new Rect();
+            rootView.getWindowVisibleDisplayFrame(r);
+
+            int screenHeight = rootView.getRootView().getHeight();
+            int keypadHeight = screenHeight - r.bottom;
+
+            boolean isKeyboardVisible = keypadHeight > screenHeight * 0.15;
+
+            if (isKeyboardVisible) {
+                bottomNav.setVisibility(View.GONE);
+            } else {
+                bottomNav.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private void setupBottomNav() {

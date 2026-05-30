@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Locale;
 
 import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 public class ProfileActivity extends ComponentActivity {
 
@@ -117,6 +118,9 @@ public class ProfileActivity extends ComponentActivity {
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
+        WindowInsetsControllerCompat controller =
+                WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        controller.setAppearanceLightStatusBars(true);
         setContentView(R.layout.activity_profile);
 
         dbHelper = new NutritionDbHelper(this);
