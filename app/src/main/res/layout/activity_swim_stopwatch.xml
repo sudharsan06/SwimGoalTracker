@@ -29,12 +29,22 @@
                     android:id="@+id/tvSwimDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="4dp"
                     android:text="DATE: 2026-01-29"
                     android:textColor="@color/midnight_blue"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.05" />
+
+                <TextView
+                    android:id="@+id/tvPoolDistanceInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:text="Current tracking uses a 25m pool. Change the pool distance in Profile."
+                    android:textColor="@color/steel_blue"
+                    android:textSize="13sp"
+                    android:lineSpacingMultiplier="1.2" />
 
                 <!-- Dynamic Timer Section Block -->
                 <FrameLayout

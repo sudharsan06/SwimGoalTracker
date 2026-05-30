@@ -50,6 +50,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
     private long startFly = -1, elapsedFly = 0;
 
     private TextView tvDate;
+    private TextView tvPoolDistanceInfo;
     private TextView tvFree, tvBack, tvBreast, tvFly;
     private TextView tvEntriesHeader;
     private NutritionDbHelper dbHelper;
@@ -72,6 +73,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         }
 
         tvDate = findViewById(R.id.tvSwimDate);
+        tvPoolDistanceInfo = findViewById(R.id.tvPoolDistanceInfo);
         tvFree = findViewById(R.id.tvFree);
         tvBack = findViewById(R.id.tvBack);
         tvBreast = findViewById(R.id.tvBreast);
@@ -187,6 +189,15 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.nav_tracker) {
                 startActivity(new Intent(this, TrackerActivity.class));
+                return true;
+            } else if (itemId == R.id.nav_goals) {
+                startActivity(new Intent(this, GoalsActivity.class));
+                return true;
+            } else if (itemId == R.id.nav_alerts) {
+                startActivity(new Intent(this, AlertsActivity.class));
+                return true;
+            } else if (itemId == R.id.nav_profile) {
+                startActivity(new Intent(this, ProfileActivity.class));
                 return true;
             }
             return false;
@@ -503,6 +514,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        updatePoolDistanceInfo();
         // Refresh entries when activity resumes (e.g., when returning from manual entry)
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         
@@ -525,6 +537,37 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         } else {
             // Default to freestyle list if nothing specific selected
             loadTodayEntries("free", today);
+        }
+    }
+
+    private void updatePoolDistanceInfo() {
+        int activeProfileId = ProfileManager.getActiveProfileId(this);
+        int poolDistance = 18; // default
+        try {
+            Cursor c = dbHelper.getReadableDatabase().rawQuery(
+                    "SELECT pool_distance FROM profile WHERE id = ?",
+                    new String[]{String.valueOf(activeProfileId)}
+            );
+            if (c.moveToFirst()) {
+                poolDistance = c.getInt(0);
+            }
+            c.close();
+        } catch (Exception e) {
+            Log.e("SwimStopwatchActivity", "Error loading pool distance", e);
+        }
+
+        String distanceText;
+        if (poolDistance == 0) {
+            distanceText = "Open Water";
+        } else {
+            distanceText = poolDistance + "m";
+        }
+        
+        String htmlText = "Current tracking uses a <b><font color='#102A43'>" + distanceText + "</font></b> pool. Change the pool distance in Profile screen.";
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            tvPoolDistanceInfo.setText(android.text.Html.fromHtml(htmlText, android.text.Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            tvPoolDistanceInfo.setText(android.text.Html.fromHtml(htmlText));
         }
     }
 

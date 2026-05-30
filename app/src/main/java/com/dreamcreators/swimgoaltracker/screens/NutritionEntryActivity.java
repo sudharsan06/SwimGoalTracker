@@ -108,6 +108,15 @@ public class NutritionEntryActivity extends AppCompatActivity {
                 } else if (itemId == R.id.nav_tracker) {
                     startActivity(new Intent(this, TrackerActivity.class));
                     return true;
+                } else if (itemId == R.id.nav_goals) {
+                    startActivity(new Intent(this, GoalsActivity.class));
+                    return true;
+                } else if (itemId == R.id.nav_alerts) {
+                    startActivity(new Intent(this, AlertsActivity.class));
+                    return true;
+                } else if (itemId == R.id.nav_profile) {
+                    startActivity(new Intent(this, ProfileActivity.class));
+                    return true;
                 }
                 return false;
             });
