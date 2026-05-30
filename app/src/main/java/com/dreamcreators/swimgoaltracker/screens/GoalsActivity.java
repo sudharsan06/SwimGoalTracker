@@ -1,4 +1,4 @@
-package com.dreamcreators.swimgoaltracker;
+package com.dreamcreators.swimgoaltracker.screens;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,6 +7,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.dreamcreators.swimgoaltracker.db.ProfileManager;
+import com.dreamcreators.swimgoaltracker.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;

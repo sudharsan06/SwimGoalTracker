@@ -1,4 +1,4 @@
-package com.dreamcreators.swimgoaltracker;
+package com.dreamcreators.swimgoaltracker.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.dreamcreators.swimgoaltracker.R;
+import com.dreamcreators.swimgoaltracker.pojo.TrackerPojo;
 
 import java.util.List;
 

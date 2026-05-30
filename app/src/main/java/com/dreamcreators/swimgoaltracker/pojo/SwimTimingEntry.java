@@ -1,4 +1,4 @@
-package com.dreamcreators.swimgoaltracker;
+package com.dreamcreators.swimgoaltracker.pojo;
 
 public class SwimTimingEntry {
     private long id;

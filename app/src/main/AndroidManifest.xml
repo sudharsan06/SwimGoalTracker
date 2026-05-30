@@ -23,22 +23,22 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
-            android:name=".SwimEntryActivity"
+            android:name=".screens.SwimEntryActivity"
             android:exported="false" />
 
         <activity
-            android:name=".PoolDistanceActivity"
+            android:name=".screens.PoolDistanceActivity"
             android:theme="@style/AppTheme_NoActionBar"
             android:screenOrientation="portrait"
             android:exported="false" />
 
         <activity
-            android:name=".SwitchSwimmerActivity"
+            android:name=".screens.SwitchSwimmerActivity"
             android:theme="@style/AppTheme_NoActionBar"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".screens.LoginActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 
@@ -51,28 +51,28 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-6508060827158792~8719408639" />
         <activity
-            android:name=".SwimStopwatchActivity"
+            android:name=".screens.SwimStopwatchActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".NutritionEntryActivity"
+            android:name=".screens.NutritionEntryActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".TrackerActivity"
+            android:name=".screens.TrackerActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MainActivity"
+            android:name=".screens.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme_NoActionBar" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".screens.SplashActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:screenOrientation="portrait">
@@ -83,20 +83,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ProfileActivity"
+            android:name=".screens.ProfileActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme_NoActionBar" />
 
         <activity
-            android:name=".GoalsActivity"
+            android:name=".screens.GoalsActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".AlertsActivity"
+            android:name=".screens.AlertsActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait" />

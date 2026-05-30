@@ -1,4 +1,4 @@
-package com.dreamcreators.swimgoaltracker;
+package com.dreamcreators.swimgoaltracker.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.dreamcreators.swimgoaltracker.R;
+import com.dreamcreators.swimgoaltracker.pojo.TrackerPojo;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;

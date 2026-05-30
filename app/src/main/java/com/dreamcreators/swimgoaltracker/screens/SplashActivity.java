@@ -1,12 +1,13 @@
-package com.dreamcreators.swimgoaltracker;
+package com.dreamcreators.swimgoaltracker.screens;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
 import androidx.activity.ComponentActivity;
+
+import com.dreamcreators.swimgoaltracker.R;
 
 public class SplashActivity extends ComponentActivity {
     @Override

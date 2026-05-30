@@ -1,4 +1,4 @@
-package com.dreamcreators.swimgoaltracker;
+package com.dreamcreators.swimgoaltracker.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +10,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.dreamcreators.swimgoaltracker.utility.DailyAttemptsDialog;
+import com.dreamcreators.swimgoaltracker.R;
+import com.dreamcreators.swimgoaltracker.adapter.TrackerListAdapter;
+import com.dreamcreators.swimgoaltracker.pojo.TrackerPojo;
+import com.dreamcreators.swimgoaltracker.screens.TrackerActivity;
 
 import java.util.List;
 

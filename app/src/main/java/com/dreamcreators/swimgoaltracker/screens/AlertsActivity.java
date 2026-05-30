@@ -1,4 +1,4 @@
-package com.dreamcreators.swimgoaltracker;
+package com.dreamcreators.swimgoaltracker.screens;
 
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.dreamcreators.swimgoaltracker.db.ProfileManager;
+import com.dreamcreators.swimgoaltracker.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 

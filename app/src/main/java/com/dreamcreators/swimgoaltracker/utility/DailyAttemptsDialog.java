@@ -1,4 +1,4 @@
-package com.dreamcreators.swimgoaltracker;
+package com.dreamcreators.swimgoaltracker.utility;
 
 import android.app.Dialog;
 import android.database.Cursor;
@@ -9,11 +9,15 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.widget.TextView;
+
+import com.dreamcreators.swimgoaltracker.R;
+import com.dreamcreators.swimgoaltracker.adapter.DailyAttemptsAdapter;
+import com.dreamcreators.swimgoaltracker.db.NutritionDbHelper;
+import com.dreamcreators.swimgoaltracker.pojo.TrackerPojo;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

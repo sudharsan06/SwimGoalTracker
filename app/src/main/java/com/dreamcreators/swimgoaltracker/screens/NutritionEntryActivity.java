@@ -1,4 +1,4 @@
-package com.dreamcreators.swimgoaltracker;
+package com.dreamcreators.swimgoaltracker.screens;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,9 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.WindowCompat;
 
+import com.dreamcreators.swimgoaltracker.db.NutritionDbHelper;
+import com.dreamcreators.swimgoaltracker.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.SimpleDateFormat;

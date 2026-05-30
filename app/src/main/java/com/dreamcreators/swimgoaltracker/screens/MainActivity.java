@@ -1,15 +1,13 @@
-package com.dreamcreators.swimgoaltracker;
+package com.dreamcreators.swimgoaltracker.screens;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -17,6 +15,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import android.util.Log;
 
+import com.dreamcreators.swimgoaltracker.db.NutritionDbHelper;
+import com.dreamcreators.swimgoaltracker.db.ProfileManager;
+import com.dreamcreators.swimgoaltracker.R;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;

@@ -1,8 +1,7 @@
-package com.dreamcreators.swimgoaltracker;
+package com.dreamcreators.swimgoaltracker.screens;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -18,6 +17,9 @@ import java.util.Calendar;
 
 import android.util.Log;
 
+import com.dreamcreators.swimgoaltracker.db.NutritionDbHelper;
+import com.dreamcreators.swimgoaltracker.db.ProfileManager;
+import com.dreamcreators.swimgoaltracker.R;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
@@ -25,13 +27,8 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.activity.EdgeToEdge;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 public class SwimEntryActivity extends AppCompatActivity {

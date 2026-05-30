@@ -1,4 +1,4 @@
-package com.dreamcreators.swimgoaltracker;
+package com.dreamcreators.swimgoaltracker.screens;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,6 +10,13 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.dreamcreators.swimgoaltracker.fragments.ChartFragment;
+import com.dreamcreators.swimgoaltracker.db.NutritionDbHelper;
+import com.dreamcreators.swimgoaltracker.db.ProfileManager;
+import com.dreamcreators.swimgoaltracker.R;
+import com.dreamcreators.swimgoaltracker.fragments.RecordsFragment;
+import com.dreamcreators.swimgoaltracker.adapter.TrackerPagerAdapter;
+import com.dreamcreators.swimgoaltracker.pojo.TrackerPojo;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;

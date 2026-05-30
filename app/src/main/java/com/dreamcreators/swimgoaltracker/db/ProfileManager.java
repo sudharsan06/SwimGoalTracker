@@ -1,7 +1,6 @@
-package com.dreamcreators.swimgoaltracker;
+package com.dreamcreators.swimgoaltracker.db;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 
 import java.util.ArrayList;

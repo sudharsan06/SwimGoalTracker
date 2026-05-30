@@ -1,4 +1,4 @@
-package com.dreamcreators.swimgoaltracker;
+package com.dreamcreators.swimgoaltracker.screens;
 
 import android.content.ContentValues;
 import android.content.Intent;
@@ -10,17 +10,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import com.dreamcreators.swimgoaltracker.db.NutritionDbHelper;
+import com.dreamcreators.swimgoaltracker.db.ProfileManager;
+import com.dreamcreators.swimgoaltracker.R;
+import com.dreamcreators.swimgoaltracker.adapter.SwimTimingAdapter;
+import com.dreamcreators.swimgoaltracker.pojo.SwimTimingEntry;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.util.Log;
 

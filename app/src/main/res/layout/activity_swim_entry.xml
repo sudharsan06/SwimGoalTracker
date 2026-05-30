@@ -7,7 +7,7 @@
     android:background="@color/colorBackground"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    tools:context=".SwimEntryActivity">
+    tools:context=".screens.SwimEntryActivity">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

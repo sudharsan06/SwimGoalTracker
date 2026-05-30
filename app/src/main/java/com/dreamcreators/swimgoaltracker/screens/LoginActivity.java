@@ -1,4 +1,4 @@
-package com.dreamcreators.swimgoaltracker;
+package com.dreamcreators.swimgoaltracker.screens;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.activity.ComponentActivity;
 
+import com.dreamcreators.swimgoaltracker.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;

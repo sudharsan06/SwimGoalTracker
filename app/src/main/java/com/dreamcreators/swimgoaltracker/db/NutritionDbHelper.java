@@ -1,4 +1,4 @@
-package com.dreamcreators.swimgoaltracker;
+package com.dreamcreators.swimgoaltracker.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
