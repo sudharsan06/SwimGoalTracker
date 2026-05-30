@@ -377,6 +377,63 @@
                         </RelativeLayout>
                     </com.google.android.material.card.MaterialCardView>
 
+                    <!-- IM Row -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        app:cardBackgroundColor="@android:color/transparent"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="0dp">
+
+                        <RelativeLayout
+                            android:id="@+id/lay_im"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_glass_card"
+                            android:gravity="center_vertical"
+                            android:padding="20dp">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:letterSpacing="0.05"
+                                    android:text="IM (INDIVIDUAL MEDLEY)"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:alpha="0.6"
+                                    android:text="Tap to record Medley"
+                                    android:textColor="@color/steel_blue"
+                                    android:textSize="10sp"
+                                    android:textStyle="italic" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tvBestIM"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:text="00:00.00"
+                                android:textColor="@color/lightPrimary"
+                                android:textSize="26sp"
+                                android:textStyle="bold" />
+                        </RelativeLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
                 </LinearLayout>
 
                 <!-- Daily Nutrition (Hidden for future use) -->

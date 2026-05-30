@@ -37,9 +37,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvDate;
     private TextView tvCalories, tvProtein, tvCarbs, tvFats;
     private TextView tvUserName;
-    private LinearLayout lay_freeStyle, lay_backStroke, lay_breastStroke, lay_butterFly;
+    private LinearLayout lay_freeStyle, lay_backStroke, lay_breastStroke, lay_butterFly, lay_im;
     private NutritionDbHelper dbHelper;
-    private TextView tvBestFree, tvBestBack, tvBestBreast, tvBestFly;
+    private TextView tvBestFree, tvBestBack, tvBestBreast, tvBestFly, tvBestIM;
     private android.widget.ImageView ivProfileIcon;
 
     @Override
@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         tvBestBack = findViewById(R.id.tvBestBack);
         tvBestBreast = findViewById(R.id.tvBestBreast);
         tvBestFly = findViewById(R.id.tvBestFly);
+        tvBestIM = findViewById(R.id.tvBestIM);
         tvUserName = findViewById(R.id.tvUserName);
         ivProfileIcon = findViewById(R.id.ivProfileIcon);
 
@@ -93,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
                     stroke = "Breaststroke";
                 } else if (viewId == R.id.lay_butterFly) {
                     stroke = "Butterfly";
+                } else if (viewId == R.id.lay_im) {
+                    stroke = "IM";
                 } else {
                     // Optional: handle an unexpected view click
                     return;
@@ -106,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.lay_backStroke).setOnClickListener(openSwimStopwatch);
         findViewById(R.id.lay_breastStroke).setOnClickListener(openSwimStopwatch);
         findViewById(R.id.lay_butterFly).setOnClickListener(openSwimStopwatch);
+        findViewById(R.id.lay_im).setOnClickListener(openSwimStopwatch);
 
 
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
@@ -309,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
         int activeProfileId = ProfileManager.getActiveProfileId(this);
         // Use NULLIF to convert 0 to NULL, so MIN() ignores zeros and finds the best (lowest) non-zero time
         Cursor c = dbHelper.getReadableDatabase().rawQuery(
-                "SELECT MIN(NULLIF(freestyle_ms, 0)), MIN(NULLIF(backstroke_ms, 0)), MIN(NULLIF(breaststroke_ms, 0)), MIN(NULLIF(butterfly_ms, 0)) FROM swim_sessions WHERE date = ? AND profile_id = ?",
+                "SELECT MIN(NULLIF(freestyle_ms, 0)), MIN(NULLIF(backstroke_ms, 0)), MIN(NULLIF(breaststroke_ms, 0)), MIN(NULLIF(butterfly_ms, 0)), MIN(NULLIF(im_ms, 0)) FROM swim_sessions WHERE date = ? AND profile_id = ?",
                 new String[]{date, String.valueOf(activeProfileId)}
         );
         if (c.moveToFirst()) {
@@ -317,6 +321,7 @@ public class MainActivity extends AppCompatActivity {
             tvBestBack.setText(formatMs(c.isNull(1) ? 0 : c.getLong(1)));
             tvBestBreast.setText(formatMs(c.isNull(2) ? 0 : c.getLong(2)));
             tvBestFly.setText(formatMs(c.isNull(3) ? 0 : c.getLong(3)));
+            tvBestIM.setText(formatMs(c.isNull(4) ? 0 : c.getLong(4)));
         }
         c.close();
     }

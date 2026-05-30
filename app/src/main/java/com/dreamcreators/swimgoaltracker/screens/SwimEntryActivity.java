@@ -77,7 +77,7 @@ public class SwimEntryActivity extends AppCompatActivity {
 
         findViewById(R.id.lay_datePicker).setOnClickListener(v -> showDatePickerDialog());
 
-        String[] swimStyles = {"Freestyle", "Backstroke", "Breaststroke", "Butterfly"};
+        String[] swimStyles = {"Freestyle", "Backstroke", "Breaststroke", "Butterfly", "IM"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_item_dark, swimStyles) {
             @Override
@@ -156,14 +156,19 @@ public class SwimEntryActivity extends AppCompatActivity {
             return;
         }
 
-        double seconds = (double) 0.0;
-       /* try {
-             seconds = Long.parseLong();
+        double seconds;
+        try {
+            seconds = Double.parseDouble(inputSeconds.trim());
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Invalid input: must be a number", Toast.LENGTH_SHORT).show();
-        }*/
+            throwAlertMessage("Invalid input. Please enter a number (e.g. 65.5).");
+            return;
+        }
 
-        seconds = Double.parseDouble(inputSeconds.trim());
+        if (seconds <= 0) {
+            throwAlertMessage("Time must be greater than 0 seconds.");
+            return;
+        }
+
         long milliseconds = (long) (seconds * 1000);
 
         if (milliseconds <= 10000) {
@@ -192,7 +197,13 @@ public class SwimEntryActivity extends AppCompatActivity {
     private void saveSessionWithSelectedValue(String which) {
         String date = dateFormat.format(selectedCalendar.getTime());
         if (which != null && !which.isEmpty()) {
-            Double seconds = Double.parseDouble(edtSwimTime.getText().toString().trim());
+            double seconds;
+            try {
+                seconds = Double.parseDouble(edtSwimTime.getText().toString().trim());
+            } catch (NumberFormatException e) {
+                throwAlertMessage("Invalid input. Please enter a valid number.");
+                return;
+            }
             long milliseconds = (long) (seconds * 1000);
             
             // Always insert a new entry for each attempt
@@ -212,6 +223,8 @@ public class SwimEntryActivity extends AppCompatActivity {
                 values.put("breaststroke_ms", milliseconds);
             } else if (which.equalsIgnoreCase("butterfly") || which.equalsIgnoreCase("Butterfly")) {
                 values.put("butterfly_ms", milliseconds);
+            } else if (which.equalsIgnoreCase("im") || which.equalsIgnoreCase("IM")) {
+                values.put("im_ms", milliseconds);
             }
             
             long result = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);

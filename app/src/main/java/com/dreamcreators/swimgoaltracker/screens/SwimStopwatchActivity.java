@@ -1,5 +1,7 @@
 package com.dreamcreators.swimgoaltracker.screens;
 
+import static android.view.View.VISIBLE;
+
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -49,10 +51,19 @@ public class SwimStopwatchActivity extends AppCompatActivity {
     private long startBreast = -1, elapsedBreast = 0;
     private long startFly = -1, elapsedFly = 0;
 
+    // IM (Individual Medley) timing fields
+    private long startIM = -1, elapsedIM = 0;
+    private long imSplitFly = 0, imSplitBack = 0, imSplitBreast = 0, imSplitFree = 0;
+    private int imStrokeIndex = 0; // 0=Fly, 1=Back, 2=Breast, 3=Free, 4=Done
+    private TextView tvIM, tvImFlyVal, tvImBackVal, tvImBreastVal, tvImFreeVal;
+    private View layImFly, layImBack, layImBreast, layImFree;
+
     private TextView tvDate;
     private TextView tvPoolDistanceInfo;
     private TextView tvFree, tvBack, tvBreast, tvFly;
     private TextView tvEntriesHeader;
+    private android.widget.Spinner spinnerImFilter;
+    private int currentImFilter = 1; // Default: 1 = Last 30 Days
     private NutritionDbHelper dbHelper;
     private RecyclerView recyclerViewEntries;
     private String selectedStroke = null;
@@ -84,6 +95,22 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         View sectionBack = findViewById(R.id.sectionBack);
         View sectionBreast = findViewById(R.id.sectionBreast);
         View sectionFly = findViewById(R.id.sectionFly);
+        View sectionIM = findViewById(R.id.sectionIM);
+
+        // IM views
+        tvIM = findViewById(R.id.tvIM);
+        tvImFlyVal = findViewById(R.id.tvImFlyVal);
+        tvImBackVal = findViewById(R.id.tvImBackVal);
+        tvImBreastVal = findViewById(R.id.tvImBreastVal);
+        tvImFreeVal = findViewById(R.id.tvImFreeVal);
+        layImFly = findViewById(R.id.layImFly);
+        layImBack = findViewById(R.id.layImBack);
+        layImBreast = findViewById(R.id.layImBreast);
+        layImFree = findViewById(R.id.layImFree);
+        Button btnIMStart = findViewById(R.id.btnIMStart);
+        Button btnIMNext = findViewById(R.id.btnIMNext);
+        Button btnIMReset = findViewById(R.id.btnIMReset);
+        Button btn_save_im = findViewById(R.id.btn_save_im);
 
         Button btnFreeStart = findViewById(R.id.btnFreeStart);
         Button btnFreeStop = findViewById(R.id.btnFreeStop);
@@ -104,6 +131,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
 
         // RecyclerView for entries list
         tvEntriesHeader = findViewById(R.id.tvEntriesHeader);
+        spinnerImFilter = findViewById(R.id.spinnerImFilter);
         recyclerViewEntries = findViewById(R.id.recyclerViewEntries);
         recyclerViewEntries.setLayoutManager(new LinearLayoutManager(this));
 
@@ -120,23 +148,65 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             sectionBack.setVisibility(View.GONE);
             sectionBreast.setVisibility(View.GONE);
             sectionFly.setVisibility(View.GONE);
+            sectionIM.setVisibility(View.GONE);
 
             if ("Freestyle".equalsIgnoreCase(stroke)) {
-                sectionFree.setVisibility(View.VISIBLE);
+                sectionFree.setVisibility(VISIBLE);
                 setTitle("Freestyle Timer");
+                selectedStroke = "Freestyle";
+                tvEntriesHeader.setText("TODAY'S SESSIONS");
+                spinnerImFilter.setVisibility(View.GONE);
                 loadTodayEntries("free", today);
             } else if ("Backstroke".equalsIgnoreCase(stroke)) {
-                sectionBack.setVisibility(View.VISIBLE);
+                sectionBack.setVisibility(VISIBLE);
                 setTitle("Backstroke Timer");
+                selectedStroke = "Backstroke";
                 loadTodayEntries("back", today);
+                tvEntriesHeader.setText("TODAY'S SESSIONS");
+                spinnerImFilter.setVisibility(View.GONE);
             } else if ("Breaststroke".equalsIgnoreCase(stroke)) {
-                sectionBreast.setVisibility(View.VISIBLE);
+                sectionBreast.setVisibility(VISIBLE);
                 setTitle("Breaststroke Timer");
                 loadTodayEntries("breast", today);
+                selectedStroke = "Breaststroke";
+                tvEntriesHeader.setText("TODAY'S SESSIONS");
+                spinnerImFilter.setVisibility(View.GONE);
             } else if ("Butterfly".equalsIgnoreCase(stroke)) {
-                sectionFly.setVisibility(View.VISIBLE);
+                sectionFly.setVisibility(VISIBLE);
                 setTitle("Butterfly Timer");
                 loadTodayEntries("fly", today);
+                tvEntriesHeader.setText("TODAY'S SESSIONS");
+                spinnerImFilter.setVisibility(View.GONE);
+                selectedStroke = "Butterfly";
+                tvDate.setText(today);
+                loadTodayEntries("fly", today);
+            } else if ("IM".equalsIgnoreCase(stroke)) {
+                getSupportActionBar().setTitle("IM Timer");
+                sectionIM.setVisibility(VISIBLE);
+                tvEntriesHeader.setText("IM SESSIONS");
+                spinnerImFilter.setVisibility(VISIBLE);
+                selectedStroke = "IM";
+                tvDate.setText(today);
+                
+                // Initialize Spinner
+                String[] filters = {"Today", "Last 30 Days", "Last 60 Days", "Last 1 Year", "All Records"};
+                android.widget.ArrayAdapter<String> spinnerAdapter = new android.widget.ArrayAdapter<>(this, android.R.layout.simple_spinner_item, filters);
+                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerImFilter.setAdapter(spinnerAdapter);
+                spinnerImFilter.setSelection(currentImFilter);
+                
+                spinnerImFilter.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                        currentImFilter = position;
+                        loadTodayEntries("im", today);
+                    }
+
+                    @Override
+                    public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+                });
+                
+                loadTodayEntries("im", today);
             }
         } else {
             setTitle("Swim Timer");
@@ -157,25 +227,30 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             });
         }
 
-        btnFreeStart.setOnClickListener(v -> startTimer("free"));
-        btnFreeStop.setOnClickListener(v -> stopTimer("free"));
-        btnFreeReset.setOnClickListener(v -> resetTimer("free"));
-        btn_save_free.setOnClickListener(v -> saveSession("free"));
+        btnFreeStart.setOnClickListener(v -> { vibrate(); startTimer("free"); });
+        btnFreeStop.setOnClickListener(v -> { vibrate(); stopTimer("free"); });
+        btnFreeReset.setOnClickListener(v -> { vibrate(); resetTimer("free"); });
+        btn_save_free.setOnClickListener(v -> { vibrate(); saveSession("free"); });
 
-        btnBackStart.setOnClickListener(v -> startTimer("back"));
-        btnBackStop.setOnClickListener(v -> stopTimer("back"));
-        btnBackReset.setOnClickListener(v -> resetTimer("back"));
-        btn_save_back.setOnClickListener(v -> saveSession("back"));
+        btnBackStart.setOnClickListener(v -> { vibrate(); startTimer("back"); });
+        btnBackStop.setOnClickListener(v -> { vibrate(); stopTimer("back"); });
+        btnBackReset.setOnClickListener(v -> { vibrate(); resetTimer("back"); });
+        btn_save_back.setOnClickListener(v -> { vibrate(); saveSession("back"); });
 
-        btnBreastStart.setOnClickListener(v -> startTimer("breast"));
-        btnBreastStop.setOnClickListener(v -> stopTimer("breast"));
-        btnBreastReset.setOnClickListener(v -> resetTimer("breast"));
-        btn_save_breast.setOnClickListener(v -> saveSession("breast"));
+        btnBreastStart.setOnClickListener(v -> { vibrate(); startTimer("breast"); });
+        btnBreastStop.setOnClickListener(v -> { vibrate(); stopTimer("breast"); });
+        btnBreastReset.setOnClickListener(v -> { vibrate(); resetTimer("breast"); });
+        btn_save_breast.setOnClickListener(v -> { vibrate(); saveSession("breast"); });
 
-        btnFlyStart.setOnClickListener(v -> startTimer("fly"));
-        btnFlyStop.setOnClickListener(v -> stopTimer("fly"));
-        btnFlyReset.setOnClickListener(v -> resetTimer("fly"));
-        btn_save_fly.setOnClickListener(v -> saveSession("fly"));
+        btnFlyStart.setOnClickListener(v -> { vibrate(); startTimer("fly"); });
+        btnFlyStop.setOnClickListener(v -> { vibrate(); stopTimer("fly"); });
+        btnFlyReset.setOnClickListener(v -> { vibrate(); resetTimer("fly"); });
+        btn_save_fly.setOnClickListener(v -> { vibrate(); saveSession("fly"); });
+
+        btnIMStart.setOnClickListener(v -> { vibrate(); startIMTimer(); });
+        btnIMNext.setOnClickListener(v -> { vibrate(); nextIMStroke(); });
+        btnIMReset.setOnClickListener(v -> { vibrate(); resetIMTimer(); });
+        btn_save_im.setOnClickListener(v -> { vibrate(); saveSession("im"); });
 
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
         
@@ -202,6 +277,71 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+
+    private void startIMTimer() {
+        // Initialize IM timer with Fly stroke first
+        startIM = System.currentTimeMillis();
+        imSplitFly = imSplitBack = imSplitBreast = imSplitFree = 0;
+        imStrokeIndex = 0;
+        updateImSplitHighlight();
+        handler.post(tick);
+    }
+
+    private void nextIMStroke() {
+        if (startIM < 0) return;
+        long now = System.currentTimeMillis();
+        long split = now - startIM;
+        switch (imStrokeIndex) {
+            case 0: imSplitFly = split; break;
+            case 1: imSplitBack = split; break;
+            case 2: imSplitBreast = split; break;
+            case 3: imSplitFree = split; break;
+        }
+        updateImSplitValues();
+        imStrokeIndex++;
+        if (imStrokeIndex < 4) {
+            startIM = now;
+            updateImSplitHighlight();
+        } else {
+            elapsedIM = imSplitFly + imSplitBack + imSplitBreast + imSplitFree;
+            startIM = -1;
+            tvIM.setText(formatMs(elapsedIM));
+            clearImHighlight();
+        }
+    }
+
+    private void resetIMTimer() {
+        startIM = -1;
+        elapsedIM = 0;
+        imSplitFly = imSplitBack = imSplitBreast = imSplitFree = 0;
+        imStrokeIndex = 0;
+        tvIM.setText(formatMs(0));
+        updateImSplitValues();
+        clearImHighlight();
+    }
+
+    private void updateImSplitValues() {
+        tvImFlyVal.setText(formatMs(imSplitFly));
+        tvImBackVal.setText(formatMs(imSplitBack));
+        tvImBreastVal.setText(formatMs(imSplitBreast));
+        tvImFreeVal.setText(formatMs(imSplitFree));
+    }
+
+    private void updateImSplitHighlight() {
+        float low = 0.5f, high = 1.0f;
+        layImFly.setAlpha(imStrokeIndex == 0 ? high : low);
+        layImBack.setAlpha(imStrokeIndex == 1 ? high : low);
+        layImBreast.setAlpha(imStrokeIndex == 2 ? high : low);
+        layImFree.setAlpha(imStrokeIndex == 3 ? high : low);
+    }
+
+    private void clearImHighlight() {
+        float low = 0.5f;
+        layImFly.setAlpha(low);
+        layImBack.setAlpha(low);
+        layImBreast.setAlpha(low);
+        layImFree.setAlpha(low);
     }
 
     @Override
@@ -282,6 +422,12 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                     startFly = -1;
                 }
                 break;
+            case "im":
+                if (startIM >= 0) {
+                    elapsedIM += now - startIM;
+                    startIM = -1;
+                }
+                break;
         }
         updateLabels();
     }
@@ -304,6 +450,9 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 startFly = -1;
                 elapsedFly = 0;
                 break;
+            case "im":
+                resetIMTimer();
+                break;
         }
         updateLabels();
     }
@@ -312,7 +461,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         @Override
         public void run() {
             updateLabels();
-            if (startFree >= 0 || startBack >= 0 || startBreast >= 0 || startFly >= 0) {
+            if (startFree >= 0 || startBack >= 0 || startBreast >= 0 || startFly >= 0 || startIM >= 0) {
                 handler.postDelayed(this, 30);
             }
         }
@@ -324,10 +473,46 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         long showBack = elapsedBack + (startBack >= 0 ? now - startBack : 0);
         long showBreast = elapsedBreast + (startBreast >= 0 ? now - startBreast : 0);
         long showFly = elapsedFly + (startFly >= 0 ? now - startFly : 0);
+        long imTotal = 0L;
+        if (imStrokeIndex > 0) {
+            // sum of completed splits
+            imTotal += imSplitFly + imSplitBack + imSplitBreast + imSplitFree;
+        }
+        if (startIM >= 0) {
+            // add current running split
+            long elapsedCurrent = now - startIM;
+            long completed = 0L;
+            switch (imStrokeIndex) {
+                case 0: // Fly in progress
+                    completed = 0L;
+                    break;
+                case 1: // Back in progress, Fly completed
+                    completed = imSplitFly;
+                    break;
+                case 2: // Breast in progress, Fly+Back completed
+                    completed = imSplitFly + imSplitBack;
+                    break;
+                case 3: // Free in progress, Fly+Back+Breast completed
+                    completed = imSplitFly + imSplitBack + imSplitBreast;
+                    break;
+                case 4: // Done
+                    completed = imSplitFly + imSplitBack + imSplitBreast + imSplitFree;
+                    break;
+            }
+            imTotal = completed + elapsedCurrent;
+        } else {
+            // Not running, total is sum of splits
+            imTotal = imSplitFly + imSplitBack + imSplitBreast + imSplitFree;
+        }
         tvFree.setText(formatMs(showFree));
         tvBack.setText(formatMs(showBack));
         tvBreast.setText(formatMs(showBreast));
         tvFly.setText(formatMs(showFly));
+        tvIM.setText(formatMs(imTotal));
+        tvImFlyVal.setText(formatMs(imSplitFly));
+        tvImBackVal.setText(formatMs(imSplitBack));
+        tvImBreastVal.setText(formatMs(imSplitBreast));
+        tvImFreeVal.setText(formatMs(imSplitFree));
     }
 
     private String formatMs(long ms) {
@@ -339,9 +524,41 @@ public class SwimStopwatchActivity extends AppCompatActivity {
     }
 
     private void saveSession(String which) {
-
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         long createdAt = System.currentTimeMillis();
+        
+        if (which.equals("im")) {
+            // Validate: all 4 strokes must be completed
+            if (imStrokeIndex < 4 && startIM >= 0) {
+                Toast.makeText(this, "Complete all 4 strokes before saving", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            long totalMS = elapsedIM;
+            if (totalMS <= 0) {
+                // fallback: sum of splits
+                totalMS = imSplitFly + imSplitBack + imSplitBreast + imSplitFree;
+            }
+            if (totalMS <= 0) {
+                Toast.makeText(this, "No IM time recorded to save", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            ContentValues values = new ContentValues();
+            values.put("date", date);
+            values.put("profile_id", ProfileManager.getActiveProfileId(this));
+            values.put("im_ms", totalMS);
+            values.put("created_at", createdAt);
+            long id = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);
+            if (id > 0) {
+                Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+                stopTimer(which);
+                resetTimer(which);
+                loadTodayEntries(which, date);
+            } else {
+                Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+
         long now = System.currentTimeMillis();
         long showFree = elapsedFree + (startFree >= 0 ? now - startFree : 0);
         long showBack = elapsedBack + (startBack >= 0 ? now - startBack : 0);
@@ -361,14 +578,10 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             } else if (which.equals("fly") && showFly < 10000) {
                 ThrowAlertDialog("fly");
             } else {
-                // proceed to save - always insert new entry for each attempt
-                // This allows multiple attempts per day, and MIN() query will find the best time
                 ContentValues values = new ContentValues();
                 values.put("date", date);
                 values.put("profile_id", ProfileManager.getActiveProfileId(this));
                 
-                // Only set the selected style, others will default to 0
-                // This allows tracking multiple attempts and finding the best time using MIN()
                 if (which.equals("free")) {
                     values.put("freestyle_ms", showFree);
                 } else if (which.equals("back")) {
@@ -377,18 +590,17 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                     values.put("breaststroke_ms", showBreast);
                 } else if (which.equals("fly")) {
                     values.put("butterfly_ms", showFly);
+                } else if (which.equals("im")) {
+                    values.put("im_ms", elapsedIM);
                 }
                 values.put("created_at", createdAt);
                 
                 long id = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);
                 if (id > 0) {
                     Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
-                    // Stop and reset the timer after saving
                     stopTimer(which);
                     resetTimer(which);
-                    // Refresh the entries list
-                    String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-                    loadTodayEntries(which, today);
+                    loadTodayEntries(which, date);
                 } else {
                     Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show();
                 }
@@ -401,18 +613,15 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 .setTitle("Warning")
                 .setMessage("The recorded time for " + which + " is less than 10 seconds. Are you sure you want to save it?")
                 .setPositiveButton("Yes", (dialog, whichButton) -> {
-                    // User confirmed, proceed to save
                     saveSessionWithSelectedValue(which);
                 })
                 .setNegativeButton("No", (dialog, whichButton) -> {
-                    // User cancelled, do nothing
                     dialog.dismiss();
                 })
                 .show();
     }
 
     private void saveSessionWithSelectedValue(String which) {
-
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         long createdAt = System.currentTimeMillis();
         long now = System.currentTimeMillis();
@@ -421,14 +630,10 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         long showBreast = elapsedBreast + (startBreast >= 0 ? now - startBreast : 0);
         long showFly = elapsedFly + (startFly >= 0 ? now - startFly : 0);
 
-        // Always insert new entry for each attempt
-        // This allows multiple attempts per day, and MIN() query will find the best time
         ContentValues values = new ContentValues();
         values.put("date", date);
         values.put("profile_id", ProfileManager.getActiveProfileId(this));
         
-        // Only set the selected style, others will default to 0
-        // This allows tracking multiple attempts and finding the best time using MIN()
         if (which.equals("free")) {
             values.put("freestyle_ms", showFree);
         } else if (which.equals("back")) {
@@ -443,12 +648,9 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         long id = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);
         if (id > 0) {
             Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
-            // Stop and reset the timer after saving
             stopTimer(which);
             resetTimer(which);
-            // Refresh the entries list
-            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-            loadTodayEntries(which, today);
+            loadTodayEntries(which, date);
         } else {
             Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show();
         }
@@ -470,15 +672,40 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             case "fly":
                 columnName = "butterfly_ms";
                 break;
+            case "im":
+                columnName = "im_ms";
+                break;
             default:
                 return;
         }
 
-        // Query database for today's entries of this style (non-zero values only), newest first
+        String whereClause;
+        String[] queryArgs;
         int activeProfileId = ProfileManager.getActiveProfileId(this);
+
+        if ("im".equals(style)) {
+            if (currentImFilter == 0) { // Today
+                whereClause = "date = ? AND " + columnName + " > 0 AND profile_id = ?";
+                queryArgs = new String[]{date, String.valueOf(activeProfileId)};
+            } else if (currentImFilter == 4) { // All Records
+                whereClause = columnName + " > 0 AND profile_id = ?";
+                queryArgs = new String[]{String.valueOf(activeProfileId)};
+            } else {
+                int days = currentImFilter == 1 ? 30 : (currentImFilter == 2 ? 60 : 365);
+                java.util.Calendar cal = java.util.Calendar.getInstance();
+                cal.add(java.util.Calendar.DAY_OF_YEAR, -days);
+                String pastDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(cal.getTime());
+                whereClause = "date >= ? AND " + columnName + " > 0 AND profile_id = ?";
+                queryArgs = new String[]{pastDate, String.valueOf(activeProfileId)};
+            }
+        } else {
+            whereClause = "date = ? AND " + columnName + " > 0 AND profile_id = ?";
+            queryArgs = new String[]{date, String.valueOf(activeProfileId)};
+        }
+
         Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
-                "SELECT id, " + columnName + ", created_at FROM swim_sessions WHERE date = ? AND " + columnName + " > 0 AND profile_id = ? ORDER BY created_at DESC",
-                new String[]{date, String.valueOf(activeProfileId)}
+                "SELECT id, " + columnName + ", created_at, date FROM swim_sessions WHERE " + whereClause + " ORDER BY created_at DESC",
+                queryArgs
         );
 
         List<SwimTimingEntry> entries = new ArrayList<>();
@@ -488,8 +715,9 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             long id = cursor.getLong(0);
             long timeMs = cursor.getLong(1);
             long createdAt = cursor.isNull(2) ? 0 : cursor.getLong(2);
+            String entryDate = cursor.isNull(3) ? date : cursor.getString(3);
             if (timeMs > 0) {
-                entries.add(new SwimTimingEntry(id, timeMs, createdAt));
+                entries.add(new SwimTimingEntry(id, timeMs, createdAt, entryDate));
                 if (timeMs < bestTime) {
                     bestTime = timeMs;
                 }
@@ -498,11 +726,9 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         cursor.close();
 
         if (entries.isEmpty()) {
-            // No entries: hide header and clear list
-            tvEntriesHeader.setVisibility(View.GONE);
+            // No entries: clear list
             recyclerViewEntries.setAdapter(null);
         } else {
-            tvEntriesHeader.setVisibility(View.VISIBLE);
             long nowMs = System.currentTimeMillis();
             SwimTimingAdapter adapter = new SwimTimingAdapter(this, entries, bestTime == Long.MAX_VALUE ? 0 : bestTime, nowMs, entry -> {
                 deleteEntry(entry.getId(), style, date);
@@ -533,10 +759,12 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 loadTodayEntries("breast", today);
             } else if ("Butterfly".equalsIgnoreCase(selectedStroke)) {
                 loadTodayEntries("fly", today);
+            } else if ("IM".equalsIgnoreCase(selectedStroke)) {
+                loadTodayEntries("im", today);
+            } else {
+                // Default to freestyle list if nothing specific selected
+                loadTodayEntries("free", today);
             }
-        } else {
-            // Default to freestyle list if nothing specific selected
-            loadTodayEntries("free", today);
         }
     }
 
@@ -586,5 +814,16 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
+    }
+
+    private void vibrate() {
+        android.os.Vibrator v = (android.os.Vibrator) getSystemService(android.content.Context.VIBRATOR_SERVICE);
+        if (v != null) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                v.vibrate(android.os.VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                v.vibrate(50);
+            }
+        }
     }
 }

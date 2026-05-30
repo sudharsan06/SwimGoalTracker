@@ -129,6 +129,7 @@ public class TrackerActivity extends AppCompatActivity {
             });
         }
     }
+
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(this, MainActivity.class);
@@ -136,6 +137,7 @@ public class TrackerActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
     private void updateList(int limit) {
         String title = limit == -1 ? "All Records" : "Last " + limit + " Records";
         tvTrackerTitle.setText(title);
@@ -238,7 +240,8 @@ public class TrackerActivity extends AppCompatActivity {
                     formatMs(flyMs),
                     formatMs(breastMs),
                     formatMs(backMs),
-                    freeMs, flyMs, breastMs, backMs
+                    "00:00.00",
+                    freeMs, flyMs, breastMs, backMs, 0
             ));
         }
 

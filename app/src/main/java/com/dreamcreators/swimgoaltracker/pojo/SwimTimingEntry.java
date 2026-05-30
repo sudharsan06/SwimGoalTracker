@@ -4,11 +4,13 @@ public class SwimTimingEntry {
     private long id;
     private long timeMs;
     private long createdAtMs;
+    private String date;
 
-    public SwimTimingEntry(long id, long timeMs, long createdAtMs) {
+    public SwimTimingEntry(long id, long timeMs, long createdAtMs, String date) {
         this.id = id;
         this.timeMs = timeMs;
         this.createdAtMs = createdAtMs;
+        this.date = date;
     }
 
     public long getId() {
@@ -21,5 +23,9 @@ public class SwimTimingEntry {
 
     public long getCreatedAtMs() {
         return createdAtMs;
+    }
+
+    public String getDate() {
+        return date;
     }
 }

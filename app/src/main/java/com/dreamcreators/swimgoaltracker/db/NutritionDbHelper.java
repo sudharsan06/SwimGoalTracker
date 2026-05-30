@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class NutritionDbHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "goaltracker.db";
-    public static final int DB_VERSION = 5;
+    public static final int DB_VERSION = 6;
 
     public NutritionDbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -45,6 +45,7 @@ public class NutritionDbHelper extends SQLiteOpenHelper {
                 "backstroke_ms INTEGER NOT NULL DEFAULT 0, " +
                 "breaststroke_ms INTEGER NOT NULL DEFAULT 0, " +
                 "butterfly_ms INTEGER NOT NULL DEFAULT 0, " +
+                "im_ms INTEGER NOT NULL DEFAULT 0, " +
                 "created_at INTEGER NOT NULL DEFAULT 0, " +
                 "pool_distance INTEGER NOT NULL DEFAULT 25" +
                 ")");
@@ -84,6 +85,11 @@ public class NutritionDbHelper extends SQLiteOpenHelper {
             } catch (Exception ignored) {}
             try {
                 db.execSQL("ALTER TABLE swim_sessions ADD COLUMN pool_distance INTEGER NOT NULL DEFAULT 25");
+            } catch (Exception ignored) {}
+        }
+        if (oldVersion < 6) {
+            try {
+                db.execSQL("ALTER TABLE swim_sessions ADD COLUMN im_ms INTEGER NOT NULL DEFAULT 0");
             } catch (Exception ignored) {}
         }
     }

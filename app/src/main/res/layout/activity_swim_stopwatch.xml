@@ -56,6 +56,7 @@
                     <include layout="@layout/layout_timer_backstroke" android:id="@+id/sectionBack" android:visibility="gone" />
                     <include layout="@layout/layout_timer_breaststroke" android:id="@+id/sectionBreast" android:visibility="gone" />
                     <include layout="@layout/layout_timer_butterfly" android:id="@+id/sectionFly" android:visibility="gone" />
+                    <include layout="@layout/layout_timer_im" android:id="@+id/sectionIM" android:visibility="gone" />
 
                 </FrameLayout>
 
@@ -77,6 +78,12 @@
                         android:textSize="13sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.05" />
+
+                    <Spinner
+                        android:id="@+id/spinnerImFilter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView

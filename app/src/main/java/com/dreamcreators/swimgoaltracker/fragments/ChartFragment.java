@@ -106,9 +106,9 @@ public class ChartFragment extends Fragment {
         breastSet.setDrawValues(false);
         backSet.setDrawValues(false);
 
-        float groupSpace = 0.12f;
-        float barSpace = 0.02f;
-        float barWidth = 0.2f;
+        float groupSpace = 0.20f;
+        float barSpace = 0.04f;
+        float barWidth = 0.16f;
 
         BarData data = new BarData(freeSet, flySet, breastSet, backSet);
         data.setBarWidth(barWidth);

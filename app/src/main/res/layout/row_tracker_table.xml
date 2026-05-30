@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="8dp"
-    android:layout_marginVertical="2dp"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="6dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="1dp"
-    app:strokeColor="#F0F0F0"
+    app:cardElevation="2dp"
+    app:strokeColor="#E0E0E0"
     app:strokeWidth="1dp">
 
     <LinearLayout
@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingVertical="12dp"
-        android:paddingHorizontal="8dp"
+        android:paddingHorizontal="12dp"
         android:gravity="center_vertical">
 
         <TextView
@@ -25,8 +25,7 @@
             android:layout_weight="1.2"
             android:text="2024-01-01"
             android:textColor="@color/textPrimary"
-            android:textSize="13sp"
-            android:textStyle="bold" />
+            android:textSize="13sp" />
 
         <FrameLayout
             android:id="@+id/lay_free_container"
@@ -40,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="00:00.00"
-                android:textColor="@color/lightPrimary"
+                android:textColor="@color/textPrimary"
                 android:textSize="13sp" />
         </FrameLayout>
 
@@ -56,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="00:00.00"
-                android:textColor="@color/orange"
+                android:textColor="@color/textPrimary"
                 android:textSize="13sp" />
         </FrameLayout>
 
@@ -72,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="00:00.00"
-                android:textColor="@color/teal_dark"
+                android:textColor="@color/textPrimary"
                 android:textSize="13sp" />
         </FrameLayout>
 

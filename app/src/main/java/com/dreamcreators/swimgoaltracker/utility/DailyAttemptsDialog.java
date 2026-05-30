@@ -90,8 +90,9 @@ public class DailyAttemptsDialog extends DialogFragment {
 
         NutritionDbHelper dbHelper = new NutritionDbHelper(getContext());
         List<TrackerPojo> attempts = new ArrayList<>();
-        
-        long minFree = Long.MAX_VALUE, minFly = Long.MAX_VALUE, minBreast = Long.MAX_VALUE, minBack = Long.MAX_VALUE;
+
+        long minFree = Long.MAX_VALUE, minFly = Long.MAX_VALUE, minBreast = Long.MAX_VALUE,
+             minBack = Long.MAX_VALUE;
 
         Cursor c = dbHelper.getReadableDatabase().rawQuery(
                 "SELECT freestyle_ms, backstroke_ms, breaststroke_ms, butterfly_ms, created_at FROM swim_sessions WHERE date = ? ORDER BY id ASC",
@@ -101,16 +102,16 @@ public class DailyAttemptsDialog extends DialogFragment {
         if (c.moveToFirst()) {
             int attemptCount = 1;
             do {
-                long freeMs = c.isNull(0) ? 0 : c.getLong(0);
-                long backMs = c.isNull(1) ? 0 : c.getLong(1);
+                long freeMs   = c.isNull(0) ? 0 : c.getLong(0);
+                long backMs   = c.isNull(1) ? 0 : c.getLong(1);
                 long breastMs = c.isNull(2) ? 0 : c.getLong(2);
-                long flyMs = c.isNull(3) ? 0 : c.getLong(3);
+                long flyMs    = c.isNull(3) ? 0 : c.getLong(3);
                 long createdAt = c.isNull(4) ? 0 : c.getLong(4);
 
-                if (freeMs > 0 && freeMs < minFree) minFree = freeMs;
-                if (flyMs > 0 && flyMs < minFly) minFly = flyMs;
+                if (freeMs   > 0 && freeMs   < minFree)   minFree   = freeMs;
+                if (flyMs    > 0 && flyMs    < minFly)    minFly    = flyMs;
                 if (breastMs > 0 && breastMs < minBreast) minBreast = breastMs;
-                if (backMs > 0 && backMs < minBack) minBack = backMs;
+                if (backMs   > 0 && backMs   < minBack)   minBack   = backMs;
 
                 TrackerPojo pojo = new TrackerPojo(
                         date,
@@ -118,7 +119,8 @@ public class DailyAttemptsDialog extends DialogFragment {
                         formatMs(flyMs),
                         formatMs(breastMs),
                         formatMs(backMs),
-                        freeMs, flyMs, breastMs, backMs
+                        "00:00.00",
+                        freeMs, flyMs, breastMs, backMs, 0
                 );
 
                 if (createdAt > 0) {
@@ -136,13 +138,16 @@ public class DailyAttemptsDialog extends DialogFragment {
         dbHelper.close();
 
         long[] finalMins = new long[]{
-            minFree == Long.MAX_VALUE ? 0 : minFree,
-            minFly == Long.MAX_VALUE ? 0 : minFly,
+            minFree   == Long.MAX_VALUE ? 0 : minFree,
+            minFly    == Long.MAX_VALUE ? 0 : minFly,
             minBreast == Long.MAX_VALUE ? 0 : minBreast,
-            minBack == Long.MAX_VALUE ? 0 : minBack
+            minBack   == Long.MAX_VALUE ? 0 : minBack
         };
 
-        DailyAttemptsAdapter adapter = new DailyAttemptsAdapter(getContext(), attempts, finalMins[0], finalMins[1], finalMins[2], finalMins[3]);
+        DailyAttemptsAdapter adapter = new DailyAttemptsAdapter(
+                getContext(), attempts,
+                finalMins[0], finalMins[1], finalMins[2], finalMins[3]
+        );
         rvAttempts.setAdapter(adapter);
     }
 
