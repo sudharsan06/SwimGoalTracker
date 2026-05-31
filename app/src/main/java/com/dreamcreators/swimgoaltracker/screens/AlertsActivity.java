@@ -18,6 +18,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.Locale;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import com.dreamcreators.swimgoaltracker.utility.AlertManager;
 
 public class AlertsActivity extends AppCompatActivity {
 
@@ -59,16 +65,31 @@ public class AlertsActivity extends AppCompatActivity {
         switchTraining.setOnCheckedChangeListener((btn, isChecked) -> {
             cardReminderTime.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             prefs.edit().putBoolean("training_reminder_" + activeId, isChecked).apply();
+            if (isChecked) {
+                checkAndRequestNotificationPermission();
+                AlertManager.scheduleTrainingReminder(this, reminderHour, reminderMinute);
+            } else {
+                AlertManager.cancelTrainingReminder(this);
+            }
             Toast.makeText(this, isChecked ? "Training reminder enabled" : "Training reminder disabled", Toast.LENGTH_SHORT).show();
         });
 
         switchRest.setOnCheckedChangeListener((btn, isChecked) -> {
             prefs.edit().putBoolean("rest_alert_" + activeId, isChecked).apply();
+            if (isChecked) {
+                checkAndRequestNotificationPermission();
+                AlertManager.scheduleRestAlert(this);
+            } else {
+                AlertManager.cancelRestAlert(this);
+            }
             Toast.makeText(this, isChecked ? "Rest day alert enabled" : "Rest day alert disabled", Toast.LENGTH_SHORT).show();
         });
 
         switchGoal.setOnCheckedChangeListener((btn, isChecked) -> {
             prefs.edit().putBoolean("goal_alert_" + activeId, isChecked).apply();
+            if (isChecked) {
+                checkAndRequestNotificationPermission();
+            }
             Toast.makeText(this, isChecked ? "Goal alert enabled" : "Goal alert disabled", Toast.LENGTH_SHORT).show();
         });
 
@@ -81,6 +102,9 @@ public class AlertsActivity extends AppCompatActivity {
                         .putInt("reminder_hour_" + activeId, hourOfDay)
                         .putInt("reminder_minute_" + activeId, minute)
                         .apply();
+                if (switchTraining.isChecked()) {
+                    AlertManager.scheduleTrainingReminder(this, hourOfDay, minute);
+                }
             }, reminderHour, reminderMinute, false).show();
         });
 
@@ -126,5 +150,18 @@ public class AlertsActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+
+    private void checkAndRequestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        1003
+                );
+            }
+        }
     }
 }

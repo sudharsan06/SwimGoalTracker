@@ -27,6 +27,16 @@ public class SwimTimingAdapter extends RecyclerView.Adapter<SwimTimingAdapter.Vi
         void onDeleteClick(SwimTimingEntry entry);
     }
 
+    public interface OnItemClickListener {
+        void onItemClick(SwimTimingEntry entry);
+    }
+
+    private OnItemClickListener itemClickListener;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.itemClickListener = listener;
+    }
+
     public SwimTimingAdapter(Context context, List<SwimTimingEntry> entries, long bestTime, long nowMs, OnDeleteClickListener deleteClickListener) {
         this.context = context;
         this.entries = entries;
@@ -100,6 +110,12 @@ public class SwimTimingAdapter extends RecyclerView.Adapter<SwimTimingAdapter.Vi
         holder.btnDelete.setOnClickListener(v -> {
             if (deleteClickListener != null) {
                 deleteClickListener.onDeleteClick(entry);
+            }
+        });
+
+        holder.itemView.setOnClickListener(v -> {
+            if (itemClickListener != null) {
+                itemClickListener.onItemClick(entry);
             }
         });
     }

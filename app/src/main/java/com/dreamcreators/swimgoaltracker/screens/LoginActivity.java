@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.ComponentActivity;
@@ -37,9 +38,9 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class LoginActivity extends ComponentActivity {
 
     private EditText etEmail, etPassword;
-    private Button btnLogin, btnRegister, btnGoogleSignIn;
+    private Button btnLogin, btnGoogleSignIn;
     private ProgressBar progressBar;
-
+    private TextView btnRegister;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
     private String deviceId;

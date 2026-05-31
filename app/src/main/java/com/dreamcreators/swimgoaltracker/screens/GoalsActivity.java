@@ -20,7 +20,7 @@ import com.google.android.material.textfield.TextInputEditText;
 public class GoalsActivity extends AppCompatActivity {
 
     private static final String PREFS = "swim_goals";
-    private TextInputEditText etWeeklySessions, etGoalFree, etGoalFly, etGoalBreast, etGoalBack;
+    private TextInputEditText etWeeklySessions, etGoalFree, etGoalFly, etGoalBreast, etGoalBack, etGoalIM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +38,7 @@ public class GoalsActivity extends AppCompatActivity {
         etGoalFly = findViewById(R.id.etGoalFly);
         etGoalBreast = findViewById(R.id.etGoalBreast);
         etGoalBack = findViewById(R.id.etGoalBack);
+        etGoalIM = findViewById(R.id.etGoalIM);
         MaterialButton btnSave = findViewById(R.id.btnSaveGoals);
 
         // Load saved goals
@@ -48,6 +49,7 @@ public class GoalsActivity extends AppCompatActivity {
         etGoalFly.setText(prefs.getString("goal_fly_" + activeId, ""));
         etGoalBreast.setText(prefs.getString("goal_breast_" + activeId, ""));
         etGoalBack.setText(prefs.getString("goal_back_" + activeId, ""));
+        etGoalIM.setText(prefs.getString("goal_im_" + activeId, ""));
 
         btnSave.setOnClickListener(v -> {
             String weekly = etWeeklySessions.getText().toString().trim();
@@ -55,8 +57,9 @@ public class GoalsActivity extends AppCompatActivity {
             String fly = etGoalFly.getText().toString().trim();
             String breast = etGoalBreast.getText().toString().trim();
             String back = etGoalBack.getText().toString().trim();
+            String im = etGoalIM.getText().toString().trim();
 
-            if (weekly.isEmpty() && free.isEmpty() && fly.isEmpty() && breast.isEmpty() && back.isEmpty()) {
+            if (weekly.isEmpty() && free.isEmpty() && fly.isEmpty() && breast.isEmpty() && back.isEmpty() && im.isEmpty()) {
                 Toast.makeText(this, "Please fill in at least one goal", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -67,6 +70,7 @@ public class GoalsActivity extends AppCompatActivity {
                     .putString("goal_fly_" + activeId, fly)
                     .putString("goal_breast_" + activeId, breast)
                     .putString("goal_back_" + activeId, back)
+                    .putString("goal_im_" + activeId, im)
                     .apply();
 
             Toast.makeText(this, "Goals saved! 🎯", Toast.LENGTH_SHORT).show();

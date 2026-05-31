@@ -550,6 +550,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             long id = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);
             if (id > 0) {
                 Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+                checkGoalAchievement(which, totalMS);
                 stopTimer(which);
                 resetTimer(which);
                 loadTodayEntries(which, date);
@@ -598,6 +599,12 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 long id = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);
                 if (id > 0) {
                     Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+                    
+                    if (which.equals("free")) checkGoalAchievement("free", showFree);
+                    else if (which.equals("back")) checkGoalAchievement("back", showBack);
+                    else if (which.equals("breast")) checkGoalAchievement("breast", showBreast);
+                    else if (which.equals("fly")) checkGoalAchievement("fly", showFly);
+                    
                     stopTimer(which);
                     resetTimer(which);
                     loadTodayEntries(which, date);
@@ -606,6 +613,53 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void checkGoalAchievement(String style, long timeMs) {
+        int activeId = ProfileManager.getActiveProfileId(this);
+        android.content.SharedPreferences alertPrefs = getSharedPreferences("swim_alerts", MODE_PRIVATE);
+        boolean goalAlertEnabled = alertPrefs.getBoolean("goal_alert_" + activeId, false);
+        
+        if (!goalAlertEnabled) return;
+        
+        android.content.SharedPreferences goalPrefs = getSharedPreferences("swim_goals", MODE_PRIVATE);
+        String goalKey = "goal_" + style + "_" + activeId; 
+        String goalStr = goalPrefs.getString(goalKey, "");
+        long goalMs = parseGoalToMs(goalStr);
+        
+        if (goalMs > 0 && timeMs <= goalMs) {
+            showGoalAchievedAlert(style, timeMs, goalMs);
+        }
+    }
+
+    private long parseGoalToMs(String goalStr) {
+        if (goalStr == null || goalStr.trim().isEmpty()) return -1;
+        try {
+            String[] parts = goalStr.split(":");
+            if (parts.length == 2) {
+                long mins = Long.parseLong(parts[0].trim());
+                long secs = Long.parseLong(parts[1].trim());
+                return (mins * 60 + secs) * 1000;
+            } else if (parts.length == 1) { 
+                return Long.parseLong(parts[0].trim()) * 1000;
+            }
+        } catch (Exception e) {}
+        return -1;
+    }
+
+    private void showGoalAchievedAlert(String style, long timeMs, long goalMs) {
+        String styleName = style.substring(0, 1).toUpperCase() + style.substring(1);
+        if ("im".equals(style)) styleName = "IM";
+        
+        String msg = "Congratulations! You just beat your " + styleName + " target time.\n\n" +
+                     "Your Time: " + formatMs(timeMs) + "\n" +
+                     "Target Goal: " + formatMs(goalMs);
+        
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("🎉 Goal Achieved! 🎉")
+                .setMessage(msg)
+                .setPositiveButton("Awesome", null)
+                .show();
     }
 
     private void ThrowAlertDialog(String which) {
@@ -730,8 +784,13 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             recyclerViewEntries.setAdapter(null);
         } else {
             long nowMs = System.currentTimeMillis();
-            SwimTimingAdapter adapter = new SwimTimingAdapter(this, entries, bestTime == Long.MAX_VALUE ? 0 : bestTime, nowMs, entry -> {
+            final long finalBestTime = (bestTime == Long.MAX_VALUE) ? 0 : bestTime;
+            SwimTimingAdapter adapter = new SwimTimingAdapter(this, entries, finalBestTime, nowMs, entry -> {
                 deleteEntry(entry.getId(), style, date);
+            });
+            adapter.setOnItemClickListener(entry -> {
+                boolean isBest = (entry.getTimeMs() == finalBestTime && finalBestTime > 0);
+                showPaceDialog(entry.getTimeMs(), style, isBest);
             });
             recyclerViewEntries.setAdapter(adapter);
         }
@@ -814,6 +873,71 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
+    }
+
+    private void showPaceDialog(long timeMs, String style, boolean isBestTime) {
+        int activeProfileId = ProfileManager.getActiveProfileId(this);
+        int poolDistance = 25; // default
+        try {
+            Cursor c = dbHelper.getReadableDatabase().rawQuery(
+                    "SELECT pool_distance FROM profile WHERE id = ?",
+                    new String[]{String.valueOf(activeProfileId)}
+            );
+            if (c.moveToFirst()) {
+                poolDistance = c.getInt(0);
+                if (poolDistance <= 0) poolDistance = 25;
+            }
+            c.close();
+        } catch (Exception e) {
+            Log.e("SwimStopwatchActivity", "Error loading pool distance", e);
+        }
+
+        float totalSeconds = timeMs / 1000f;
+        float pacePerMeter = totalSeconds / poolDistance;
+
+        String msg = String.format(Locale.getDefault(), "For "+poolDistance+"m, you have swam this "+selectedStroke+" style in %.1f seconds.\nWhat if?\n\n", totalSeconds);
+        msg += "\t\t\t * 25m = " + formatPace(pacePerMeter * 25) + "\n";
+        msg += "\t\t\t * 50m = " + formatPace(pacePerMeter * 50) + "\n";
+        msg += "\t\t\t * 100m = " + formatPace(pacePerMeter * 100);
+
+        CharSequence title = selectedStroke + " Pace Calculator";
+        CharSequence message = msg;
+
+        if (isBestTime) {
+            android.text.SpannableString titleSpannable = new android.text.SpannableString(title);
+            titleSpannable.setSpan(new android.text.style.ForegroundColorSpan(android.graphics.Color.WHITE), 0, title.length(), android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            title = titleSpannable;
+
+            android.text.SpannableString messageSpannable = new android.text.SpannableString(message);
+            messageSpannable.setSpan(new android.text.style.ForegroundColorSpan(android.graphics.Color.WHITE), 0, message.length(), android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            message = messageSpannable;
+        }
+
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("OK", null);
+
+        if (isBestTime) {
+            builder.setBackground(androidx.core.content.ContextCompat.getDrawable(this, R.drawable.watercolor_gradient));
+        }
+
+        androidx.appcompat.app.AlertDialog dialog = builder.create();
+        dialog.show();
+
+        if (isBestTime) {
+            dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setTextColor(android.graphics.Color.WHITE);
+        }
+    }
+
+    private String formatPace(float secondsFloat) {
+        int mins = (int) (secondsFloat / 60);
+        float secs = secondsFloat % 60;
+        if (mins > 0) {
+            return String.format(Locale.getDefault(), "%dmin %.1f seconds", mins, secs);
+        } else {
+            return String.format(Locale.getDefault(), "%.1f seconds", secs);
+        }
     }
 
     private void vibrate() {

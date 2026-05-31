@@ -29,7 +29,7 @@ public class PoolDistanceActivity extends AppCompatActivity {
 
     private MaterialCardView card25m, card50m, cardOpen, cardCustom;
     private RadioButton rb25m, rb50m, rbOpen, rbCustom;
-    private TextView tvLapsToday;
+    private TextView tvLapsToday, tvCustomMeters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +58,7 @@ public class PoolDistanceActivity extends AppCompatActivity {
         rbCustom = findViewById(R.id.ivCheckCustom);
 
         tvLapsToday = findViewById(R.id.tvLapsToday);
+        tvCustomMeters = findViewById(R.id.tvCustomMeters);
 
         card25m.setOnClickListener(v -> selectDistance(25));
         card50m.setOnClickListener(v -> selectDistance(50));
@@ -133,6 +134,7 @@ public class PoolDistanceActivity extends AppCompatActivity {
         } else {
             cardCustom.setCardBackgroundColor(0xFFEAF3FD);
             rbCustom.setChecked(true);
+            tvCustomMeters.setText(distance + "m");
         }
 
         updateLapsDisplay();

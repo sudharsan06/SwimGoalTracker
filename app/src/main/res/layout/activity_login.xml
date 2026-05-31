@@ -16,7 +16,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="SwimminGo"
         android:textColor="@color/white"
         android:textSize="28sp"
         android:textStyle="bold"
@@ -33,7 +33,7 @@
         android:inputType="textEmailAddress"
         android:layout_marginBottom="16dp"
         android:padding="12dp"
-        android:background="#33FFFFFF"/>
+        android:background="@drawable/curved_input_bg"/>
 
     <EditText
         android:id="@+id/etPassword"
@@ -46,7 +46,7 @@
         android:inputType="textPassword"
         android:layout_marginBottom="24dp"
         android:padding="12dp"
-        android:background="#33FFFFFF"/>
+        android:background="@drawable/curved_input_bg"/>
 
     <Button
         android:id="@+id/btnLogin"
@@ -54,16 +54,33 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/teal_primary"
         android:textColor="@color/white"
-        android:text="Login"
+        android:text="Login     "
+        android:background="@drawable/curved_login_bg"
         android:layout_marginBottom="12dp"/>
 
-    <Button
-        android:id="@+id/btnRegister"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/dark_night"
-        android:textColor="@color/white"
-        android:text="Register (New User)"/>
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tvReg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/dark_night"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:text="Don't have a account? "/>
+        <TextView
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/dark_night"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="Sign Up"/>
+    </LinearLayout>
+
 
     <TextView
         android:layout_width="wrap_content"
@@ -81,6 +98,7 @@
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:textStyle="bold"
+        android:drawableLeft="@drawable/ic_google"
         android:text="Continue with Google"/>
 
     <ProgressBar

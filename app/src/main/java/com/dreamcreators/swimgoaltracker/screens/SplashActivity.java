@@ -26,8 +26,7 @@ public class SplashActivity extends ComponentActivity {
             try {
                 com.google.firebase.auth.FirebaseAuth mAuth = com.google.firebase.auth.FirebaseAuth.getInstance();
                 if (mAuth.getCurrentUser() == null) {
-                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-                    finish();
+                    launchLoginOrOnboarding();
                 } else {
                     String deviceId = android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
                     com.google.firebase.database.FirebaseDatabase.getInstance().getReference("device_mapping")
@@ -38,8 +37,7 @@ public class SplashActivity extends ComponentActivity {
                                     if (dataSnapshot.exists() && !deviceId.equals(dataSnapshot.getValue(String.class))) {
                                         mAuth.signOut();
                                         android.widget.Toast.makeText(SplashActivity.this, "This account is registered on another device.", android.widget.Toast.LENGTH_LONG).show();
-                                        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-                                        finish();
+                                        launchLoginOrOnboarding();
                                     } else {
                                         navigateNext();
                                     }
@@ -53,12 +51,22 @@ public class SplashActivity extends ComponentActivity {
                 }
             } catch (Exception e) {
                 // In case google-services.json is missing or other initialization error
-                startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-                finish();
+                launchLoginOrOnboarding();
             }
         }, 1500);
     }
     
+    private void launchLoginOrOnboarding() {
+        android.content.SharedPreferences prefs = getSharedPreferences("app_settings", MODE_PRIVATE);
+        boolean isFirstLaunch = prefs.getBoolean("is_first_launch", true);
+        if (isFirstLaunch) {
+            startActivity(new Intent(SplashActivity.this, InstructionActivity.class));
+        } else {
+            startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+        }
+        finish();
+    }
+
     private void navigateNext() {
         Intent next = new Intent(SplashActivity.this, SwitchSwimmerActivity.class);
         next.putExtra(SwitchSwimmerActivity.EXTRA_FROM_LOGIN, true);

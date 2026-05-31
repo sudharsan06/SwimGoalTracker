@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">SwimminGo</string>
     <string name="app_name_short">SwimminGo</string>
+    <string name="switch_info">Swimmingo is currently a fully offline mobile application with limited support in this version. We are actively working on an online version that will offer many new features and enhancements.If you have any questions, suggestions, or feedback, please feel free to contact us at adminswimmingo@gmail.com.\n\n We are always happy to help and support you.</string>
 </resources>

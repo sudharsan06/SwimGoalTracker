@@ -18,6 +18,8 @@ import com.dreamcreators.swimgoaltracker.db.NutritionDbHelper;
 import com.dreamcreators.swimgoaltracker.db.ProfileManager;
 import com.dreamcreators.swimgoaltracker.R;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.List;
 
@@ -40,6 +42,17 @@ public class SwitchSwimmerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_switch_swimmer);
 
         refreshUI();
+
+        AdView adView = findViewById(R.id.adView);
+        if (adView != null) {
+            adView.setAdListener(new com.google.android.gms.ads.AdListener() {
+                @Override
+                public void onAdLoaded() {
+                    super.onAdLoaded();
+                }
+            });
+            adView.loadAd(new AdRequest.Builder().build());
+        }
     }
 
     @Override
