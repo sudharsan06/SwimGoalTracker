@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_glass_card"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:letterSpacing="0.1"
+            android:text="INDIVIDUAL MEDLEY (IM)"
+            android:textColor="@color/midnight_blue"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <!-- Total Timer -->
+        <TextView
+            android:id="@+id/tvIM"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="12dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="00:00.00"
+            android:textColor="@color/lightPrimary"
+            android:textSize="48sp"
+            android:textStyle="bold" />
+
+        <!-- Splits Container -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp"
+            android:paddingHorizontal="8dp">
+
+            <!-- Fly Split -->
+            <RelativeLayout
+                android:id="@+id/layImFly"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="6dp"
+                android:background="@drawable/item_bg_rounded"
+                android:paddingHorizontal="8dp"
+                android:layout_marginBottom="4dp">
+                <TextView
+                    android:id="@+id/tvLabelImFly"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1. Butterfly (Fly)"
+                    android:textColor="@color/midnight_blue"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tvImFlyVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="00:00.00"
+                    android:textColor="@color/midnight_blue"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <!-- Back Split -->
+            <RelativeLayout
+                android:id="@+id/layImBack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="6dp"
+                android:paddingHorizontal="8dp"
+                android:layout_marginBottom="4dp">
+                <TextView
+                    android:id="@+id/tvLabelImBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2. Backstroke (Back)"
+                    android:textColor="@color/steel_blue"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tvImBackVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="00:00.00"
+                    android:textColor="@color/steel_blue"
+                    android:textSize="13sp" />
+            </RelativeLayout>
+
+            <!-- Breast Split -->
+            <RelativeLayout
+                android:id="@+id/layImBreast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="6dp"
+                android:paddingHorizontal="8dp"
+                android:layout_marginBottom="4dp">
+                <TextView
+                    android:id="@+id/tvLabelImBreast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3. Breaststroke (Breast)"
+                    android:textColor="@color/steel_blue"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tvImBreastVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="00:00.00"
+                    android:textColor="@color/steel_blue"
+                    android:textSize="13sp" />
+            </RelativeLayout>
+
+            <!-- Free Split -->
+            <RelativeLayout
+                android:id="@+id/layImFree"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="6dp"
+                android:paddingHorizontal="8dp">
+                <TextView
+                    android:id="@+id/tvLabelImFree"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4. Freestyle (Free)"
+                    android:textColor="@color/steel_blue"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tvImFreeVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="00:00.00"
+                    android:textColor="@color/steel_blue"
+                    android:textSize="13sp" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <!-- Control Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnIMStart"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="START"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="4dp"
+                app:backgroundTint="#4CAF50"
+                app:cornerRadius="8dp" />
+
+            <!-- LAP / NEXT button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnIMNext"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.3"
+                android:text="NEXT STROKE"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="4dp"
+                app:backgroundTint="@color/orange"
+                app:cornerRadius="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnIMReset"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="RESET"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="4dp"
+                app:backgroundTint="#9E9E9E"
+                app:cornerRadius="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_save_im"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="SAVE"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/lightPrimary"
+                app:cornerRadius="8dp" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
