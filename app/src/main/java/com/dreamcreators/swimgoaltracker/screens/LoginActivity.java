@@ -132,7 +132,14 @@ public class LoginActivity extends ComponentActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        checkDeviceMapping();
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null && !user.isEmailVerified()) {
+                            progressBar.setVisibility(View.GONE);
+                            mAuth.signOut();
+                            Toast.makeText(LoginActivity.this, "Please verify your email address to login.", Toast.LENGTH_LONG).show();
+                        } else {
+                            checkDeviceMapping();
+                        }
                     } else {
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
@@ -149,25 +156,37 @@ public class LoginActivity extends ComponentActivity {
             return;
         }
 
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(this, "Please enter a valid email address", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (password.length() < 6) {
+            Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         progressBar.setVisibility(View.VISIBLE);
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
+                            user.sendEmailVerification().addOnCompleteListener(emailTask -> {
+                                if (emailTask.isSuccessful()) {
+                                    Toast.makeText(LoginActivity.this, "Registration successful. Please check your email to verify your account.", Toast.LENGTH_LONG).show();
+                                }
+                            });
                             mDatabase.child(user.getUid()).setValue(deviceId)
                                     .addOnCompleteListener(dbTask -> {
                                         progressBar.setVisibility(View.GONE);
-                                        if (dbTask.isSuccessful()) {
-                                            navigateToNext();
-                                        } else {
-                                            Toast.makeText(LoginActivity.this, "Failed to register device.", Toast.LENGTH_SHORT).show();
-                                        }
+                                        mAuth.signOut(); // Sign out until they verify
                                     });
                         }
                     } else {
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(LoginActivity.this, "Registration failed.", Toast.LENGTH_SHORT).show();
+                        String errorMsg = task.getException() != null ? task.getException().getMessage() : "Registration failed.";
+                        Toast.makeText(LoginActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
                     }
                 });
     }

@@ -72,7 +72,7 @@
                     <ImageView
                         android:layout_width="36dp"
                         android:layout_height="36dp"
-                        android:src="@android:drawable/ic_menu_gallery"
+                        android:src="@drawable/ic_pool_short_course"
                         app:tint="#1565C0" />
 
                     <LinearLayout
@@ -128,7 +128,7 @@
                     <ImageView
                         android:layout_width="36dp"
                         android:layout_height="36dp"
-                        android:src="@android:drawable/ic_menu_gallery"
+                        android:src="@drawable/ic_pool_long_course"
                         app:tint="#1565C0" />
 
                     <LinearLayout
@@ -184,7 +184,7 @@
                     <ImageView
                         android:layout_width="36dp"
                         android:layout_height="36dp"
-                        android:src="@android:drawable/ic_menu_gallery"
+                        android:src="@drawable/ic_open_water"
                         app:tint="#1565C0" />
 
                     <LinearLayout
@@ -240,7 +240,7 @@
                     <ImageView
                         android:layout_width="36dp"
                         android:layout_height="36dp"
-                        android:src="@android:drawable/ic_menu_gallery"
+                        android:src="@drawable/ic_pool_custom"
                         app:tint="#1565C0" />
 
                     <LinearLayout
