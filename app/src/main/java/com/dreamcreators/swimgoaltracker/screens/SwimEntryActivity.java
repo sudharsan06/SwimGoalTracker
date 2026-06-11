@@ -171,7 +171,7 @@ public class SwimEntryActivity extends AppCompatActivity {
 
         long milliseconds = (long) (seconds * 1000);
 
-        if (milliseconds <= 10000) {
+        if (milliseconds <= 2000) {
             throwAlertAndStore(selectedStyle);
         } else {
             // Save to database
@@ -182,7 +182,7 @@ public class SwimEntryActivity extends AppCompatActivity {
     private void throwAlertAndStore(String which) {
         new MaterialAlertDialogBuilder(this)
                 .setTitle("Warning")
-                .setMessage("The recorded time for " + which + " is less than 10 seconds. Are you sure you want to save it?")
+                .setMessage("The recorded time for " + which + " is less than 2 seconds. Are you sure you want to save it?")
                 .setPositiveButton("Yes", (dialog, whichButton) -> {
                     // User confirmed, proceed to save
                     saveSessionWithSelectedValue(which);

@@ -546,6 +546,10 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             values.put("date", date);
             values.put("profile_id", ProfileManager.getActiveProfileId(this));
             values.put("im_ms", totalMS);
+            values.put("im_butterfly_ms", imSplitFly);
+            values.put("im_backstroke_ms", imSplitBack);
+            values.put("im_breaststroke_ms", imSplitBreast);
+            values.put("im_freestyle_ms", imSplitFree);
             values.put("created_at", createdAt);
             long id = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);
             if (id > 0) {
@@ -570,13 +574,13 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             Toast.makeText(this, "No time recorded to save", Toast.LENGTH_SHORT).show();
             return;
         } else {
-            if (which.equals("free") && showFree < 10000) {
+            if (which.equals("free") && showFree < 2000) {
                 ThrowAlertDialog("free");
-            } else if (which.equals("back") && showBack < 10000) {
+            } else if (which.equals("back") && showBack < 2000) {
                 ThrowAlertDialog("back");
-            } else if (which.equals("breast") && showBreast < 10000) {
+            } else if (which.equals("breast") && showBreast < 2000) {
                 ThrowAlertDialog("breast");
-            } else if (which.equals("fly") && showFly < 10000) {
+            } else if (which.equals("fly") && showFly < 2000) {
                 ThrowAlertDialog("fly");
             } else {
                 ContentValues values = new ContentValues();
@@ -665,7 +669,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
     private void ThrowAlertDialog(String which) {
         new MaterialAlertDialogBuilder(this)
                 .setTitle("Warning")
-                .setMessage("The recorded time for " + which + " is less than 10 seconds. Are you sure you want to save it?")
+                .setMessage("The recorded time for " + which + " is less than 2 seconds. Are you sure you want to save it?")
                 .setPositiveButton("Yes", (dialog, whichButton) -> {
                     saveSessionWithSelectedValue(which);
                 })
@@ -758,7 +762,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         }
 
         Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
-                "SELECT id, " + columnName + ", created_at, date FROM swim_sessions WHERE " + whereClause + " ORDER BY created_at DESC",
+                "SELECT id, " + columnName + ", created_at, date, im_butterfly_ms, im_backstroke_ms, im_breaststroke_ms, im_freestyle_ms FROM swim_sessions WHERE " + whereClause + " ORDER BY created_at DESC",
                 queryArgs
         );
 
@@ -771,7 +775,12 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             long createdAt = cursor.isNull(2) ? 0 : cursor.getLong(2);
             String entryDate = cursor.isNull(3) ? date : cursor.getString(3);
             if (timeMs > 0) {
-                entries.add(new SwimTimingEntry(id, timeMs, createdAt, entryDate));
+                SwimTimingEntry entry = new SwimTimingEntry(id, timeMs, createdAt, entryDate);
+                entry.setSplits(cursor.isNull(4) ? 0 : cursor.getLong(4),
+                                cursor.isNull(5) ? 0 : cursor.getLong(5),
+                                cursor.isNull(6) ? 0 : cursor.getLong(6),
+                                cursor.isNull(7) ? 0 : cursor.getLong(7));
+                entries.add(entry);
                 if (timeMs < bestTime) {
                     bestTime = timeMs;
                 }
@@ -790,7 +799,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             });
             adapter.setOnItemClickListener(entry -> {
                 boolean isBest = (entry.getTimeMs() == finalBestTime && finalBestTime > 0);
-                showPaceDialog(entry.getTimeMs(), style, isBest);
+                showPaceDialog(entry, style, isBest);
             });
             recyclerViewEntries.setAdapter(adapter);
         }
@@ -875,7 +884,8 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void showPaceDialog(long timeMs, String style, boolean isBestTime) {
+    private void showPaceDialog(SwimTimingEntry entry, String style, boolean isBestTime) {
+        long timeMs = entry.getTimeMs();
         int activeProfileId = ProfileManager.getActiveProfileId(this);
         int poolDistance = 25; // default
         try {
@@ -894,14 +904,26 @@ public class SwimStopwatchActivity extends AppCompatActivity {
 
         float totalSeconds = timeMs / 1000f;
         float pacePerMeter = totalSeconds / poolDistance;
+        CharSequence title;
+        CharSequence message;
 
-        String msg = String.format(Locale.getDefault(), "For "+poolDistance+"m, you have swam this "+selectedStroke+" style in %.1f seconds.\nWhat if?\n\n", totalSeconds);
-        msg += "\t\t\t * 25m = " + formatPace(pacePerMeter * 25) + "\n";
-        msg += "\t\t\t * 50m = " + formatPace(pacePerMeter * 50) + "\n";
-        msg += "\t\t\t * 100m = " + formatPace(pacePerMeter * 100);
-
-        CharSequence title = selectedStroke + " Pace Calculator";
-        CharSequence message = msg;
+        if ("im".equalsIgnoreCase(style)) {
+            int totalM = poolDistance * 4;
+            String msg = String.format(Locale.getDefault(), "For "+totalM+"m, you have swam this IM style in %.2f seconds.\n\n", totalSeconds);
+            msg += "\t\t\t * Butterfly = " + formatMs(entry.getFlyMs()) + "\n";
+            msg += "\t\t\t * Backstroke = " + formatMs(entry.getBackMs()) + "\n";
+            msg += "\t\t\t * Breaststroke = " + formatMs(entry.getBreastMs()) + "\n";
+            msg += "\t\t\t * Freestyle = " + formatMs(entry.getFreeMs());
+            title = "IM Pace Calculator";
+            message = msg;
+        } else {
+            String msg = String.format(Locale.getDefault(), "For "+poolDistance+"m, you have swam this "+selectedStroke+" style in %.2f seconds.\nWhat if?\n\n", totalSeconds);
+            msg += "\t\t\t * 25m = " + formatPace(pacePerMeter * 25) + "\n";
+            msg += "\t\t\t * 50m = " + formatPace(pacePerMeter * 50) + "\n";
+            msg += "\t\t\t * 100m = " + formatPace(pacePerMeter * 100);
+            title = selectedStroke + " Pace Calculator";
+            message = msg;
+        }
 
         if (isBestTime) {
             android.text.SpannableString titleSpannable = new android.text.SpannableString(title);
@@ -934,9 +956,9 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         int mins = (int) (secondsFloat / 60);
         float secs = secondsFloat % 60;
         if (mins > 0) {
-            return String.format(Locale.getDefault(), "%dmin %.1f seconds", mins, secs);
+            return String.format(Locale.getDefault(), "%dmin %.2f seconds", mins, secs);
         } else {
-            return String.format(Locale.getDefault(), "%.1f seconds", secs);
+            return String.format(Locale.getDefault(), "%.2f seconds", secs);
         }
     }
 

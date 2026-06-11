@@ -8,12 +8,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.ArrayAdapter;
+import android.widget.NumberPicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import com.dreamcreators.swimgoaltracker.db.NutritionDbHelper;
 import com.dreamcreators.swimgoaltracker.db.ProfileManager;
@@ -27,9 +27,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 import androidx.core.view.WindowCompat;
@@ -135,8 +133,8 @@ public class ProfileActivity extends ComponentActivity {
         View btnPick = findViewById(R.id.btnPickImage);
         EditText etName = findViewById(R.id.etName);
         EditText etAge = findViewById(R.id.etAge);
-        Spinner spinnerHeight = findViewById(R.id.spinnerHeight);
-        Spinner spinnerWeight = findViewById(R.id.spinnerWeight);
+        EditText etHeight = findViewById(R.id.etHeight);
+        EditText etWeight = findViewById(R.id.etWeight);
         View btnPickStartDate = findViewById(R.id.btnPickStartDate);
         TextView tvStartDate = findViewById(R.id.tvStartDate);
         TextView tvLastLogin = findViewById(R.id.tvLastLogin);
@@ -151,25 +149,20 @@ public class ProfileActivity extends ComponentActivity {
             startActivity(new Intent(this, PoolDistanceActivity.class));
         });
 
-        // Populate height spinner: 50cm to 250cm
-        List<String> heightList = new ArrayList<>();
-        heightList.add("Select Height");
-        for (int i = 50; i <= 250; i++) {
-            heightList.add(i + " cm");
-        }
-        ArrayAdapter<String> heightAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, heightList);
-        heightAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerHeight.setAdapter(heightAdapter);
+        etAge.setOnClickListener(v -> {
+            int current = parseIntSafe(etAge.getText().toString());
+            showNumberPicker("Select Age", 1, 120, current == 0 ? 25 : current, "", etAge);
+        });
 
-        // Populate weight spinner: 10kg to 200kg
-        List<String> weightList = new ArrayList<>();
-        weightList.add("Select Weight");
-        for (int i = 10; i <= 200; i++) {
-            weightList.add(i + " kg");
-        }
-        ArrayAdapter<String> weightAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, weightList);
-        weightAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerWeight.setAdapter(weightAdapter);
+        etHeight.setOnClickListener(v -> {
+            int current = parseIntSafe(etHeight.getText().toString().replace(" cm", ""));
+            showNumberPicker("Select Height", 50, 250, current == 0 ? 170 : current, "cm", etHeight);
+        });
+
+        etWeight.setOnClickListener(v -> {
+            int current = parseIntSafe(etWeight.getText().toString().replace(" kg", ""));
+            showNumberPicker("Select Weight", 10, 200, current == 0 ? 70 : current, "kg", etWeight);
+        });
 
         Cursor c = dbHelper.getReadableDatabase().rawQuery(
                 "SELECT image_uri, name, age, height, weight, start_date, last_login, pool_distance FROM profile WHERE id=?",
@@ -190,13 +183,13 @@ public class ProfileActivity extends ComponentActivity {
             // Pre-select height in spinner
             int savedHeight = Math.round(c.getFloat(3));
             if (savedHeight >= 50 && savedHeight <= 250) {
-                spinnerHeight.setSelection(savedHeight - 50 + 1); // +1 for "Select Height"
+                etHeight.setText(savedHeight + " cm");
             }
 
             // Pre-select weight in spinner
             int savedWeight = Math.round(c.getFloat(4));
             if (savedWeight >= 10 && savedWeight <= 200) {
-                spinnerWeight.setSelection(savedWeight - 10 + 1); // +1 for "Select Weight"
+                etWeight.setText(savedWeight + " kg");
             }
 
             startDate = c.getString(5) == null ? "" : c.getString(5);
@@ -243,15 +236,15 @@ public class ProfileActivity extends ComponentActivity {
                 return;
             }
 
-            String heightStr = spinnerHeight.getSelectedItem().toString();
-            if (spinnerHeight.getSelectedItemPosition() == 0) {
+            String heightStr = etHeight.getText().toString();
+            if (heightStr.isEmpty()) {
                 Toast.makeText(this, "Please select a valid height", Toast.LENGTH_SHORT).show();
                 return;
             }
             int height = parseIntSafe(heightStr.replace(" cm", ""));
 
-            String weightStr = spinnerWeight.getSelectedItem().toString();
-            if (spinnerWeight.getSelectedItemPosition() == 0) {
+            String weightStr = etWeight.getText().toString();
+            if (weightStr.isEmpty()) {
                 Toast.makeText(this, "Please select a valid weight", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -417,6 +410,31 @@ public class ProfileActivity extends ComponentActivity {
             }
         } catch (Exception ignored) { }
         return false;
+    }
+
+    private void showNumberPicker(String title, int minValue, int maxValue, int currentValue, String suffix, EditText targetEditText) {
+        NumberPicker numberPicker = new NumberPicker(this);
+        numberPicker.setMinValue(minValue);
+        numberPicker.setMaxValue(maxValue);
+        numberPicker.setValue(currentValue);
+        numberPicker.setWrapSelectorWheel(false);
+        numberPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+
+        // Style the picker with some padding
+        int padding = (int) (24 * getResources().getDisplayMetrics().density);
+        numberPicker.setPadding(0, padding, 0, padding);
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(title)
+                .setView(numberPicker)
+                .setPositiveButton("Confirm", (dialog, which) -> {
+                    String value = suffix.isEmpty()
+                            ? String.valueOf(numberPicker.getValue())
+                            : numberPicker.getValue() + " " + suffix;
+                    targetEditText.setText(value);
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 }
 

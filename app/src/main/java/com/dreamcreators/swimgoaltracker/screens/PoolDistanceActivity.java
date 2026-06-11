@@ -164,7 +164,7 @@ public class PoolDistanceActivity extends AppCompatActivity {
         ContentValues values = new ContentValues();
         values.put("pool_distance", currentDistance);
         dbHelper.getWritableDatabase().update("profile", values, "id = ?", new String[]{String.valueOf(activeProfileId)});
-        Toast.makeText(this, "Saved correctly", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Pool distance stored", Toast.LENGTH_SHORT).show();
         finish();
     }
 }
