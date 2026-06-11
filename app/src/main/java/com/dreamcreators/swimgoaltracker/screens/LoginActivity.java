@@ -1,12 +1,18 @@
 package com.dreamcreators.swimgoaltracker.screens;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +44,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class LoginActivity extends ComponentActivity {
 
     private EditText etEmail, etPassword;
+    private ImageView ivTogglePassword;
+    private boolean isPasswordVisible = false;
     private Button btnLogin, btnGoogleSignIn;
     private ProgressBar progressBar;
     private TextView btnRegister;
@@ -66,6 +74,7 @@ public class LoginActivity extends ComponentActivity {
 
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
+        ivTogglePassword = findViewById(R.id.ivTogglePassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnRegister = findViewById(R.id.btnRegister);
         btnGoogleSignIn = findViewById(R.id.btnGoogleSignIn);
@@ -89,7 +98,7 @@ public class LoginActivity extends ComponentActivity {
                             }
                         } catch (ApiException e) {
                             progressBar.setVisibility(View.GONE);
-                            Toast.makeText(LoginActivity.this, "Google sign in failed.", Toast.LENGTH_SHORT).show();
+                            showMessageDialog(false, "Sign In Failed", "Google sign in failed.");
                         }
                     } else {
                         progressBar.setVisibility(View.GONE);
@@ -97,12 +106,80 @@ public class LoginActivity extends ComponentActivity {
                 }
         );
 
+        etPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    ivTogglePassword.setVisibility(View.VISIBLE);
+                } else {
+                    ivTogglePassword.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        ivTogglePassword.setOnClickListener(v -> {
+            isPasswordVisible = !isPasswordVisible;
+            if (isPasswordVisible) {
+                etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                ivTogglePassword.setImageResource(R.drawable.ic_visibility);
+            } else {
+                etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                ivTogglePassword.setImageResource(R.drawable.ic_visibility_off);
+            }
+            etPassword.setSelection(etPassword.getText().length());
+        });
+
         btnLogin.setOnClickListener(v -> loginUser());
         btnRegister.setOnClickListener(v -> registerUser());
         btnGoogleSignIn.setOnClickListener(v -> {
             progressBar.setVisibility(View.VISIBLE);
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
             googleSignInLauncher.launch(signInIntent);
+        });
+
+        TextView tvForgotPassword = findViewById(R.id.tvForgotPassword);
+        tvForgotPassword.setOnClickListener(v -> {
+            String email = etEmail.getText().toString().trim();
+            if (TextUtils.isEmpty(email)) {
+                showMessageDialog(false, "Input Error", "Please enter your email address first.");
+                return;
+            }
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                showMessageDialog(false, "Invalid Email", "Please enter a valid email address.");
+                return;
+            }
+            progressBar.setVisibility(View.VISIBLE);
+            mAuth.sendPasswordResetEmail(email).addOnCompleteListener(task -> {
+                progressBar.setVisibility(View.GONE);
+                if (task.isSuccessful()) {
+                    showMessageDialog(true, "Email Sent", "Password reset instructions have been sent to your email.");
+                } else {
+                    String errorMsg = task.getException() != null ? task.getException().getMessage() : "Failed to send reset email.";
+                    showMessageDialog(false, "Reset Failed", errorMsg);
+                }
+            });
+        });
+
+        TextView tvSupport = findViewById(R.id.tvSupport);
+        TextView tvVersion = findViewById(R.id.tvVersion);
+
+        try {
+            String versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+            tvVersion.setText("Version " + versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            tvVersion.setText("Version 1.0");
+        }
+
+        tvSupport.setOnClickListener(v -> {
+            Intent callIntent = new Intent(Intent.ACTION_DIAL);
+            callIntent.setData(Uri.parse("tel:9787108096"));
+            startActivity(callIntent);
         });
     }
 
@@ -114,7 +191,7 @@ public class LoginActivity extends ComponentActivity {
                         checkDeviceMapping();
                     } else {
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(LoginActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
+                        showMessageDialog(false, "Authentication Failed", "Please check your credentials and try again.");
                     }
                 });
     }
@@ -124,7 +201,7 @@ public class LoginActivity extends ComponentActivity {
         String password = etPassword.getText().toString().trim();
 
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-            Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show();
+            showMessageDialog(false, "Input Error", "Please enter email and password to login!");
             return;
         }
 
@@ -136,13 +213,13 @@ public class LoginActivity extends ComponentActivity {
                         if (user != null && !user.isEmailVerified()) {
                             progressBar.setVisibility(View.GONE);
                             mAuth.signOut();
-                            Toast.makeText(LoginActivity.this, "Please verify your email address to login.", Toast.LENGTH_LONG).show();
+                            showMessageDialog(false, "Verification Required", "Please verify your email address from your email first to login.");
                         } else {
                             checkDeviceMapping();
                         }
                     } else {
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        showMessageDialog(false, "Authentication Failed", "Please check your email or password.");
                     }
                 });
     }
@@ -152,17 +229,17 @@ public class LoginActivity extends ComponentActivity {
         String password = etPassword.getText().toString().trim();
 
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-            Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show();
+            showMessageDialog(false, "Input Error", "Please enter email and password to register!");
             return;
         }
 
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "Please enter a valid email address", Toast.LENGTH_SHORT).show();
+            showMessageDialog(false, "Invalid Email", "Please enter a valid email address.");
             return;
         }
 
         if (password.length() < 6) {
-            Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show();
+            showMessageDialog(false, "Weak Password", "Password must be at least 6 characters.");
             return;
         }
 
@@ -174,7 +251,7 @@ public class LoginActivity extends ComponentActivity {
                         if (user != null) {
                             user.sendEmailVerification().addOnCompleteListener(emailTask -> {
                                 if (emailTask.isSuccessful()) {
-                                    Toast.makeText(LoginActivity.this, "Registration successful. Please check your email to verify your account.", Toast.LENGTH_LONG).show();
+                                    showMessageDialog(true, "Registration Successful", "Please check your email to verify your account.");
                                 }
                             });
                             mDatabase.child(user.getUid()).setValue(deviceId)
@@ -186,7 +263,7 @@ public class LoginActivity extends ComponentActivity {
                     } else {
                         progressBar.setVisibility(View.GONE);
                         String errorMsg = task.getException() != null ? task.getException().getMessage() : "Registration failed.";
-                        Toast.makeText(LoginActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                        showMessageDialog(false, "Registration Failed", errorMsg);
                     }
                 });
     }
@@ -210,7 +287,7 @@ public class LoginActivity extends ComponentActivity {
                     } else {
                         // Mismatch
                         mAuth.signOut();
-                        Toast.makeText(LoginActivity.this, "This account is registered on another device.", Toast.LENGTH_LONG).show();
+                        showMessageDialog(false, "Device Conflict", "This account is registered on another device.");
                     }
                 } else {
                     // No mapping exists (perhaps user registered before this feature), so set it
@@ -218,7 +295,7 @@ public class LoginActivity extends ComponentActivity {
                         if (task.isSuccessful()) {
                             navigateToNext();
                         } else {
-                            Toast.makeText(LoginActivity.this, "Failed to register device.", Toast.LENGTH_SHORT).show();
+                            showMessageDialog(false, "Error", "Failed to register device.");
                         }
                     });
                 }
@@ -227,7 +304,7 @@ public class LoginActivity extends ComponentActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(LoginActivity.this, "Database error", Toast.LENGTH_SHORT).show();
+                showMessageDialog(false, "Database Error", "An error occurred while connecting to the database.");
             }
         });
     }
@@ -238,5 +315,34 @@ public class LoginActivity extends ComponentActivity {
         next.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(next);
         finish();
+    }
+
+    private void showMessageDialog(boolean isSuccess, String title, String message) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_message, null);
+        builder.setView(dialogView);
+        
+        android.app.AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        ImageView ivIcon = dialogView.findViewById(R.id.ivDialogIcon);
+        TextView tvTitle = dialogView.findViewById(R.id.tvDialogTitle);
+        TextView tvMessage = dialogView.findViewById(R.id.tvDialogMessage);
+        Button btnOk = dialogView.findViewById(R.id.btnDialogOk);
+
+        if (isSuccess) {
+            ivIcon.setImageResource(R.drawable.ic_dialog_success);
+        } else {
+            ivIcon.setImageResource(R.drawable.ic_dialog_error);
+        }
+
+        tvTitle.setText(title);
+        tvMessage.setText(message);
+
+        btnOk.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
     }
 }

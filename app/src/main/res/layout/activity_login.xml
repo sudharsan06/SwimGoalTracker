@@ -26,7 +26,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SwimminGo"
+        android:text="SwimminGO"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:text="Friendly Swim Training Log"
         android:textColor="@color/gray"
-        android:textSize="10sp"
+        android:textSize="12sp"
         android:layout_marginBottom="24dp"/>
 
     <EditText
@@ -53,18 +53,48 @@
         android:padding="12dp"
         android:background="@drawable/curved_input_bg"/>
 
-    <EditText
-        android:id="@+id/etPassword"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Password"
-        android:textColorHint="@color/gray"
+        android:layout_marginBottom="4dp">
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:textColorHint="@color/gray"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/white"
+            android:inputType="textPassword"
+            android:padding="12dp"
+            android:paddingEnd="48dp"
+            android:background="@drawable/curved_input_bg"/>
+
+        <ImageView
+            android:id="@+id/ivTogglePassword"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:padding="12dp"
+            android:src="@drawable/ic_visibility_off"
+            android:tint="@color/white"
+            android:visibility="gone"
+            android:contentDescription="Toggle Password Visibility"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvForgotPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="Forgot Password?"
         android:textColor="@color/white"
-        android:backgroundTint="@color/white"
-        android:inputType="textPassword"
-        android:layout_marginBottom="24dp"
-        android:padding="12dp"
-        android:background="@drawable/curved_input_bg"/>
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp"
+        android:padding="4dp"/>
 
     <Button
         android:id="@+id/btnLogin"
@@ -75,6 +105,53 @@
         android:text="Login     "
         android:background="@drawable/curved_login_bg"
         android:layout_marginBottom="12dp"/>
+
+    <Button
+        android:id="@+id/btnGoogleSignIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:drawableLeft="@drawable/ic_google"
+        android:text="Continue with Google"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <!-- Left Divider Line -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="#CCCCCC" /> <!-- Gray color -->
+
+        <!-- OR Text -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OR"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Right Divider Line -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="#CCCCCC" />
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -92,32 +169,44 @@
             android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/dark_night"
-            android:textColor="@color/white"
-            android:textSize="16sp"
+            android:background="@drawable/curved_login_bg"
+            android:textColor="@color/lightAccent"
+            android:padding="8dp"
+            android:textSize="13sp"
             android:textStyle="bold"
             android:text="Sign Up"/>
     </LinearLayout>
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OR"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"/>
-
-    <Button
-        android:id="@+id/btnGoogleSignIn"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:drawableLeft="@drawable/ic_google"
-        android:text="Continue with Google"/>
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="32dp">
+
+        <TextView
+            android:id="@+id/tvSupport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Contact SwimminGO team for login assistance"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:drawableStart="@drawable/ic_phone_white"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:layout_marginBottom="24dp"
+            android:padding="8dp"/>
+
+        <TextView
+            android:id="@+id/tvVersion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Version"
+            android:textColor="@color/gray"
+            android:textSize="10sp"/>
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"
