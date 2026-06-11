@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:padding="16dp"
+    android:gravity="center"
+    android:background="@drawable/bg_dialog">
+
+    <ImageView
+        android:id="@+id/ivDialogIcon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="12dp"
+        android:src="@drawable/ic_dialog_success" />
+
+    <TextView
+        android:id="@+id/tvDialogTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"
+        android:text="Success" />
+
+    <TextView
+        android:id="@+id/tvDialogMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/gray"
+        android:textSize="12sp"
+        android:textAlignment="center"
+        android:layout_marginBottom="24dp"
+        android:text="Operation completed successfully." />
+
+    <Button
+        android:id="@+id/btnDialogOk"
+        android:layout_width="128dp"
+        android:layout_height="48dp"
+        android:backgroundTint="@color/teal_primary"
+        android:textColor="@color/white"
+        android:text="OK"
+        android:background="@drawable/curved_login_bg" />
+
+</LinearLayout>

@@ -1,0 +1,6 @@
+11/06/2026
+
+1. Add show password option to the password - Done
+2. Email/password authentication check. [Invalid user mail or password] - Done
+3. Add forgot password option - Done
+4. Remove 10 seconds validation in all swim styles.
