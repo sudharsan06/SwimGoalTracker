@@ -11,6 +11,7 @@ import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.graphics.Typeface;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,6 +57,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
     private long imSplitFly = 0, imSplitBack = 0, imSplitBreast = 0, imSplitFree = 0;
     private int imStrokeIndex = 0; // 0=Fly, 1=Back, 2=Breast, 3=Free, 4=Done
     private TextView tvIM, tvImFlyVal, tvImBackVal, tvImBreastVal, tvImFreeVal;
+    private TextView tvLabelImFly, tvLabelImBack, tvLabelImBreast, tvLabelImFree;
     private View layImFly, layImBack, layImBreast, layImFree;
 
     private TextView tvDate;
@@ -103,6 +105,10 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         tvImBackVal = findViewById(R.id.tvImBackVal);
         tvImBreastVal = findViewById(R.id.tvImBreastVal);
         tvImFreeVal = findViewById(R.id.tvImFreeVal);
+        tvLabelImFly = findViewById(R.id.tvLabelImFly);
+        tvLabelImBack = findViewById(R.id.tvLabelImBack);
+        tvLabelImBreast = findViewById(R.id.tvLabelImBreast);
+        tvLabelImFree = findViewById(R.id.tvLabelImFree);
         layImFly = findViewById(R.id.layImFly);
         layImBack = findViewById(R.id.layImBack);
         layImBreast = findViewById(R.id.layImBreast);
@@ -329,19 +335,62 @@ public class SwimStopwatchActivity extends AppCompatActivity {
     }
 
     private void updateImSplitHighlight() {
-        float low = 0.5f, high = 1.0f;
-        layImFly.setAlpha(imStrokeIndex == 0 ? high : low);
-        layImBack.setAlpha(imStrokeIndex == 1 ? high : low);
-        layImBreast.setAlpha(imStrokeIndex == 2 ? high : low);
-        layImFree.setAlpha(imStrokeIndex == 3 ? high : low);
+        int activeColor = getColor(R.color.black);
+        int inactiveColor = getColor(R.color.steel_blue);
+
+        tvLabelImFly.setTextColor(imStrokeIndex == 0 ? activeColor : inactiveColor);
+        tvImFlyVal.setTextColor(imStrokeIndex == 0 ? activeColor : inactiveColor);
+        tvLabelImFly.setTypeface(null, imStrokeIndex == 0 ? Typeface.BOLD : Typeface.NORMAL);
+        tvImFlyVal.setTypeface(null, imStrokeIndex == 0 ? Typeface.BOLD : Typeface.NORMAL);
+
+        tvLabelImBack.setTextColor(imStrokeIndex == 1 ? activeColor : inactiveColor);
+        tvImBackVal.setTextColor(imStrokeIndex == 1 ? activeColor : inactiveColor);
+        tvLabelImBack.setTypeface(null, imStrokeIndex == 1 ? Typeface.BOLD : Typeface.NORMAL);
+        tvImBackVal.setTypeface(null, imStrokeIndex == 1 ? Typeface.BOLD : Typeface.NORMAL);
+
+        tvLabelImBreast.setTextColor(imStrokeIndex == 2 ? activeColor : inactiveColor);
+        tvImBreastVal.setTextColor(imStrokeIndex == 2 ? activeColor : inactiveColor);
+        tvLabelImBreast.setTypeface(null, imStrokeIndex == 2 ? Typeface.BOLD : Typeface.NORMAL);
+        tvImBreastVal.setTypeface(null, imStrokeIndex == 2 ? Typeface.BOLD : Typeface.NORMAL);
+
+        tvLabelImFree.setTextColor(imStrokeIndex == 3 ? activeColor : inactiveColor);
+        tvImFreeVal.setTextColor(imStrokeIndex == 3 ? activeColor : inactiveColor);
+        tvLabelImFree.setTypeface(null, imStrokeIndex == 3 ? Typeface.BOLD : Typeface.NORMAL);
+        tvImFreeVal.setTypeface(null, imStrokeIndex == 3 ? Typeface.BOLD : Typeface.NORMAL);
+
+        layImFly.setAlpha(1.0f);
+        layImBack.setAlpha(1.0f);
+        layImBreast.setAlpha(1.0f);
+        layImFree.setAlpha(1.0f);
     }
 
     private void clearImHighlight() {
-        float low = 0.5f;
-        layImFly.setAlpha(low);
-        layImBack.setAlpha(low);
-        layImBreast.setAlpha(low);
-        layImFree.setAlpha(low);
+        int inactiveColor = getColor(R.color.steel_blue);
+
+        tvLabelImFly.setTextColor(inactiveColor);
+        tvImFlyVal.setTextColor(inactiveColor);
+        tvLabelImFly.setTypeface(null, Typeface.NORMAL);
+        tvImFlyVal.setTypeface(null, Typeface.NORMAL);
+
+        tvLabelImBack.setTextColor(inactiveColor);
+        tvImBackVal.setTextColor(inactiveColor);
+        tvLabelImBack.setTypeface(null, Typeface.NORMAL);
+        tvImBackVal.setTypeface(null, Typeface.NORMAL);
+
+        tvLabelImBreast.setTextColor(inactiveColor);
+        tvImBreastVal.setTextColor(inactiveColor);
+        tvLabelImBreast.setTypeface(null, Typeface.NORMAL);
+        tvImBreastVal.setTypeface(null, Typeface.NORMAL);
+
+        tvLabelImFree.setTextColor(inactiveColor);
+        tvImFreeVal.setTextColor(inactiveColor);
+        tvLabelImFree.setTypeface(null, Typeface.NORMAL);
+        tvImFreeVal.setTypeface(null, Typeface.NORMAL);
+
+        layImFly.setAlpha(1.0f);
+        layImBack.setAlpha(1.0f);
+        layImBreast.setAlpha(1.0f);
+        layImFree.setAlpha(1.0f);
     }
 
     @Override
@@ -528,8 +577,12 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         long createdAt = System.currentTimeMillis();
         
         if (which.equals("im")) {
-            // Validate: all 4 strokes must be completed
-            if (imStrokeIndex < 4 && startIM >= 0) {
+            // If the user taps Save while the final stroke (Freestyle) is running,
+            // automatically finish the stroke and stop the timer for them.
+            if (imStrokeIndex == 3 && startIM >= 0) {
+                nextIMStroke();
+            } else if (imStrokeIndex < 4 && (startIM >= 0 || imSplitFly > 0 || imSplitBack > 0 || imSplitBreast > 0)) {
+                // If they are on strokes 1, 2, or 3, or stopped halfway
                 Toast.makeText(this, "Complete all 4 strokes before saving", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -553,13 +606,14 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             values.put("created_at", createdAt);
             long id = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);
             if (id > 0) {
-                Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Saved ✅", Toast.LENGTH_SHORT).show();
+                updateLastCheckedSessionId(id);
                 checkGoalAchievement(which, totalMS);
                 stopTimer(which);
                 resetTimer(which);
                 loadTodayEntries(which, date);
             } else {
-                Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Save failed ❌", Toast.LENGTH_SHORT).show();
             }
             return;
         }
@@ -602,7 +656,8 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 
                 long id = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);
                 if (id > 0) {
-                    Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Saved ✅", Toast.LENGTH_SHORT).show();
+                    updateLastCheckedSessionId(id);
                     
                     if (which.equals("free")) checkGoalAchievement("free", showFree);
                     else if (which.equals("back")) checkGoalAchievement("back", showBack);
@@ -613,7 +668,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                     resetTimer(which);
                     loadTodayEntries(which, date);
                 } else {
-                    Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Save failed ❌", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -642,10 +697,10 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             String[] parts = goalStr.split(":");
             if (parts.length == 2) {
                 long mins = Long.parseLong(parts[0].trim());
-                long secs = Long.parseLong(parts[1].trim());
-                return (mins * 60 + secs) * 1000;
+                double secs = Double.parseDouble(parts[1].trim());
+                return (long) ((mins * 60 + secs) * 1000);
             } else if (parts.length == 1) { 
-                return Long.parseLong(parts[0].trim()) * 1000;
+                return (long) (Double.parseDouble(parts[0].trim()) * 1000);
             }
         } catch (Exception e) {}
         return -1;
@@ -705,12 +760,13 @@ public class SwimStopwatchActivity extends AppCompatActivity {
 
         long id = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);
         if (id > 0) {
-            Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Saved ✅", Toast.LENGTH_SHORT).show();
+            updateLastCheckedSessionId(id);
             stopTimer(which);
             resetTimer(which);
             loadTodayEntries(which, date);
         } else {
-            Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Save failed ❌", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -834,6 +890,81 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 loadTodayEntries("free", today);
             }
         }
+        
+        // Check if a new session was added (e.g. manually) and verify if it achieved a goal
+        checkNewSessionGoalAchievement();
+    }
+
+    private void updateLastCheckedSessionId(long id) {
+        int activeProfileId = ProfileManager.getActiveProfileId(this);
+        getSharedPreferences("swim_goals_check", MODE_PRIVATE)
+                .edit()
+                .putLong("last_checked_session_id_" + activeProfileId, id)
+                .apply();
+    }
+
+    private void checkNewSessionGoalAchievement() {
+        int activeProfileId = ProfileManager.getActiveProfileId(this);
+        Cursor cursor = null;
+        try {
+            cursor = dbHelper.getReadableDatabase().rawQuery(
+                    "SELECT id, freestyle_ms, backstroke_ms, breaststroke_ms, butterfly_ms, im_ms FROM swim_sessions WHERE profile_id = ? ORDER BY id DESC LIMIT 1",
+                    new String[]{String.valueOf(activeProfileId)}
+            );
+            if (cursor.moveToFirst()) {
+                long latestId = cursor.getLong(0);
+                long freeMs = cursor.getLong(1);
+                long backMs = cursor.getLong(2);
+                long breastMs = cursor.getLong(3);
+                long flyMs = cursor.getLong(4);
+                long imMs = cursor.getLong(5);
+
+                android.content.SharedPreferences prefs = getSharedPreferences("swim_goals_check", MODE_PRIVATE);
+                long lastCheckedId = prefs.getLong("last_checked_session_id_" + activeProfileId, -1);
+
+                // If this is the very first time running, initialize lastCheckedId to the current latest ID
+                // to avoid popping up for old history sessions on startup.
+                if (lastCheckedId == -1) {
+                    prefs.edit().putLong("last_checked_session_id_" + activeProfileId, latestId).apply();
+                    return;
+                }
+
+                if (latestId > lastCheckedId) {
+                    // Mark as checked immediately
+                    prefs.edit().putLong("last_checked_session_id_" + activeProfileId, latestId).apply();
+
+                    // Find which style was saved in this session
+                    String style = null;
+                    long timeMs = 0;
+                    if (freeMs > 0) {
+                        style = "free";
+                        timeMs = freeMs;
+                    } else if (backMs > 0) {
+                        style = "back";
+                        timeMs = backMs;
+                    } else if (breastMs > 0) {
+                        style = "breast";
+                        timeMs = breastMs;
+                    } else if (flyMs > 0) {
+                        style = "fly";
+                        timeMs = flyMs;
+                    } else if (imMs > 0) {
+                        style = "im";
+                        timeMs = imMs;
+                    }
+
+                    if (style != null) {
+                        checkGoalAchievement(style, timeMs);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e("SwimStopwatchActivity", "Error checking new session goal achievement", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
 
     private void updatePoolDistanceInfo() {
@@ -874,10 +1005,10 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 .setPositiveButton("Delete", (dialog, which) -> {
                     int deleted = dbHelper.getWritableDatabase().delete("swim_sessions", "id = ?", new String[]{String.valueOf(id)});
                     if (deleted > 0) {
-                        Toast.makeText(this, "Deleted", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(this, "Deleted", Toast.LENGTH_SHORT).show();
                         loadTodayEntries(style, date);
                     } else {
-                        Toast.makeText(this, "Delete failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Delete failed ❌", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("Cancel", null)
@@ -909,15 +1040,21 @@ public class SwimStopwatchActivity extends AppCompatActivity {
 
         if ("im".equalsIgnoreCase(style)) {
             int totalM = poolDistance * 4;
-            String msg = String.format(Locale.getDefault(), "For "+totalM+"m, you have swam this IM style in %.2f seconds.\n\n", totalSeconds);
-            msg += "\t\t\t * Butterfly = " + formatMs(entry.getFlyMs()) + "\n";
-            msg += "\t\t\t * Backstroke = " + formatMs(entry.getBackMs()) + "\n";
-            msg += "\t\t\t * Breaststroke = " + formatMs(entry.getBreastMs()) + "\n";
-            msg += "\t\t\t * Freestyle = " + formatMs(entry.getFreeMs());
+            boolean isManualEntry = (entry.getFlyMs() == 0 && entry.getBackMs() == 0
+                    && entry.getBreastMs() == 0 && entry.getFreeMs() == 0);
+            String msg = "For "+totalM+"m, you have swam this IM style in " + formatPace(totalSeconds) + ".\n\n";
+            if (isManualEntry) {
+                msg += "Note: Manual entry will not store the individual swim stroke time.";
+            } else {
+                msg += "\t\t\t * Butterfly = " + formatMs(entry.getFlyMs()) + "\n";
+                msg += "\t\t\t * Backstroke = " + formatMs(entry.getBackMs()) + "\n";
+                msg += "\t\t\t * Breaststroke = " + formatMs(entry.getBreastMs()) + "\n";
+                msg += "\t\t\t * Freestyle = " + formatMs(entry.getFreeMs());
+            }
             title = "IM Pace Calculator";
             message = msg;
         } else {
-            String msg = String.format(Locale.getDefault(), "For "+poolDistance+"m, you have swam this "+selectedStroke+" style in %.2f seconds.\nWhat if?\n\n", totalSeconds);
+            String msg = "For "+poolDistance+"m, you have swam this "+selectedStroke+" style in " + formatPace(totalSeconds) + ".\nWhat if?\n\n";
             msg += "\t\t\t * 25m = " + formatPace(pacePerMeter * 25) + "\n";
             msg += "\t\t\t * 50m = " + formatPace(pacePerMeter * 50) + "\n";
             msg += "\t\t\t * 100m = " + formatPace(pacePerMeter * 100);

@@ -105,7 +105,7 @@ public class SwitchSwimmerActivity extends AppCompatActivity {
             tvAddHint.setTextColor(0xFF9E9E9E);
             tvMaxHint.setText("Max 2 swimmers per device\nRemove a profile to add another");
             btnAdd.setOnClickListener(v ->
-                    Toast.makeText(this, "Max 2 swimmers per device", Toast.LENGTH_SHORT).show());
+                    Toast.makeText(this, "Max 2 swimmers per device ⭐", Toast.LENGTH_SHORT).show());
         }
 
         // If no profiles at all → straight to setup
@@ -200,7 +200,7 @@ public class SwitchSwimmerActivity extends AppCompatActivity {
                         }
                     }
                     
-                    Toast.makeText(this, "Profile deleted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Profile deleted ✅", Toast.LENGTH_SHORT).show();
                     refreshUI();
                 })
                 .setNegativeButton("Cancel", null)
@@ -215,7 +215,7 @@ public class SwitchSwimmerActivity extends AppCompatActivity {
     private void openAddProfile() {
         int nextId = ProfileManager.getNextAvailableProfileId(this);
         if (nextId == -1) {
-            Toast.makeText(this, "Max 2 swimmers per device", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Max 2 swimmers per device ⭐", Toast.LENGTH_SHORT).show();
             return;
         }
         Intent intent = new Intent(this, ProfileActivity.class);

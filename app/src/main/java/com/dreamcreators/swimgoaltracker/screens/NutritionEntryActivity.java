@@ -87,11 +87,11 @@ public class NutritionEntryActivity extends AppCompatActivity {
             if (updated == 0) {
                 long inserted = dbHelper.getWritableDatabase().insert("daily_nutrition", null, values);
                 if (inserted <= 0) {
-                    Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Save failed ❌", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
-            Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Saved ✅", Toast.LENGTH_SHORT).show();
             finish();
         });
 

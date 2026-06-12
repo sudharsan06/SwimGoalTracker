@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:padding="24dp"
+    android:gravity="center"
+    android:background="@drawable/bg_dialog">
+
+    <ImageView
+        android:id="@+id/ivTransferIcon"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_dialog_warning" />
+
+    <TextView
+        android:id="@+id/tvTransferTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp"
+        android:text="Device Transfer" />
+
+    <TextView
+        android:id="@+id/tvTransferMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/gray"
+        android:textSize="13sp"
+        android:textAlignment="center"
+        android:lineSpacingExtra="3dp"
+        android:layout_marginBottom="24dp"
+        android:text="This account is currently active on another device. Would you like to deregister it from the previous device and transfer to this one?" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btnTransferCancel"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="#555555"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:text="Cancel"
+            android:background="@drawable/curved_login_bg" />
+
+        <Button
+            android:id="@+id/btnTransferConfirm"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="@color/teal_primary"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:text="Transfer"
+            android:background="@drawable/curved_login_bg" />
+
+    </LinearLayout>
+
+</LinearLayout>

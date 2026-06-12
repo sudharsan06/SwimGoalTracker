@@ -136,9 +136,10 @@
                         android:layout_marginBottom="8dp"/>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/edtSwimTimeLay"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Seconds (e.g. 20.59)"
+                        android:hint="Storke (MM:SS)"
                         app:boxStrokeColor="@color/lightPrimary"
                         app:hintTextColor="@color/lightPrimary"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">

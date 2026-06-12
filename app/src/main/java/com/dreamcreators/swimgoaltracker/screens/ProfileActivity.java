@@ -43,6 +43,7 @@ public class ProfileActivity extends ComponentActivity {
     private String startDate = "";
     private int targetProfileId = 1;
     private boolean isSetupMode = false;
+    private int currentPoolDistance = 25;
 
     private final ActivityResultLauncher<String[]> pickImage = registerForActivityResult(
             new ActivityResultContracts.OpenDocument(),
@@ -78,6 +79,23 @@ public class ProfileActivity extends ComponentActivity {
                 } else if (result.getResultCode() == UCrop.RESULT_ERROR) {
                     final Throwable cropError = UCrop.getError(result.getData());
                     Toast.makeText(this, "Crop error: " + (cropError != null ? cropError.getMessage() : "Unknown"), Toast.LENGTH_SHORT).show();
+                }
+            }
+    );
+
+    private final ActivityResultLauncher<Intent> poolDistanceLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    currentPoolDistance = result.getData().getIntExtra("pool_distance", 25);
+                    TextView tvPoolDistance = findViewById(R.id.tvPoolDistance);
+                    if (tvPoolDistance != null) {
+                        if (currentPoolDistance == 0) {
+                            tvPoolDistance.setText("Open Water");
+                        } else {
+                            tvPoolDistance.setText(currentPoolDistance + " metres");
+                        }
+                    }
                 }
             }
     );
@@ -146,7 +164,9 @@ public class ProfileActivity extends ComponentActivity {
         View btnPoolDistance = findViewById(R.id.btnPoolDistance);
         
         btnPoolDistance.setOnClickListener(v -> {
-            startActivity(new Intent(this, PoolDistanceActivity.class));
+            Intent intent = new Intent(this, PoolDistanceActivity.class);
+            intent.putExtra("current_distance", currentPoolDistance);
+            poolDistanceLauncher.launch(intent);
         });
 
         etAge.setOnClickListener(v -> {
@@ -199,6 +219,15 @@ public class ProfileActivity extends ComponentActivity {
             dividerLogout.setVisibility(View.VISIBLE);
             
             // Pool distance is at index 7. Let onResume handle updating the TextView though, to keep it fresh
+            currentPoolDistance = c.getInt(7);
+            TextView tvPoolDistance = findViewById(R.id.tvPoolDistance);
+            if (tvPoolDistance != null) {
+                if (currentPoolDistance == 0) {
+                    tvPoolDistance.setText("Open Water");
+                } else {
+                    tvPoolDistance.setText(currentPoolDistance + " metres");
+                }
+            }
         }
         c.close();
 
@@ -263,6 +292,7 @@ public class ProfileActivity extends ComponentActivity {
             values.put("height", (float) height);
             values.put("weight", (float) weight);
             values.put("start_date", startDate);
+            values.put("pool_distance", currentPoolDistance);
             String now = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Calendar.getInstance().getTime());
             values.put("last_login", now);
 
@@ -271,11 +301,11 @@ public class ProfileActivity extends ComponentActivity {
             if (updated == 0) {
                 long inserted = dbHelper.getWritableDatabase().insert("profile", null, values);
                 if (inserted <= 0) {
-                    Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Save failed ❌", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
-            Toast.makeText(this, "Profile saved", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Profile saved", Toast.LENGTH_SHORT).show();
             ProfileManager.setActiveProfileId(this, targetProfileId);
             proceedToMain();
         });
@@ -287,6 +317,12 @@ public class ProfileActivity extends ComponentActivity {
             values.put("last_login", (String) null);
             dbHelper.getWritableDatabase().update("profile", values,
                     "id=" + targetProfileId, null);
+
+            com.google.firebase.auth.FirebaseUser user = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                com.google.firebase.database.FirebaseDatabase.getInstance().getReference("device_mapping")
+                        .child(user.getUid()).removeValue();
+            }
 
             // Sign out of Firebase (handles Email/Password perfectly)
             com.google.firebase.auth.FirebaseAuth.getInstance().signOut();
@@ -313,25 +349,6 @@ public class ProfileActivity extends ComponentActivity {
         finish();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (dbHelper != null) {
-            Cursor c = dbHelper.getReadableDatabase().rawQuery("SELECT pool_distance FROM profile WHERE id=?", new String[]{String.valueOf(targetProfileId)});
-            if (c.moveToFirst()) {
-                int dist = c.getInt(0);
-                TextView tvPoolDistance = findViewById(R.id.tvPoolDistance);
-                if (tvPoolDistance != null) {
-                    if (dist == 0) {
-                        tvPoolDistance.setText("Open Water");
-                    } else {
-                        tvPoolDistance.setText(dist + " metres");
-                    }
-                }
-            }
-            c.close();
-        }
-    }
     private void proceedToMain() {
         View currentFocus = getCurrentFocus();
         if (currentFocus != null) {

@@ -52,7 +52,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingVertical="6dp"
-                android:background="@drawable/item_bg_rounded"
                 android:paddingHorizontal="8dp"
                 android:layout_marginBottom="4dp">
                 <TextView
@@ -60,18 +59,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1. Butterfly (Fly)"
-                    android:textColor="@color/midnight_blue"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/steel_blue"
+                    android:textSize="13sp" />
                 <TextView
                     android:id="@+id/tvImFlyVal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:text="00:00.00"
-                    android:textColor="@color/midnight_blue"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/steel_blue"
+                    android:textSize="13sp" />
             </RelativeLayout>
 
             <!-- Back Split -->

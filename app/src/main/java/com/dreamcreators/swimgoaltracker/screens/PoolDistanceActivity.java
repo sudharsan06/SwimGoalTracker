@@ -71,15 +71,7 @@ public class PoolDistanceActivity extends AppCompatActivity {
     }
 
     private void loadCurrentDistance() {
-        Cursor c = dbHelper.getReadableDatabase().rawQuery(
-                "SELECT pool_distance FROM profile WHERE id = ?",
-                new String[]{String.valueOf(activeProfileId)}
-        );
-        if (c.moveToFirst()) {
-            currentDistance = c.getInt(0);
-        }
-        c.close();
-        
+        currentDistance = getIntent().getIntExtra("current_distance", 25);
         selectDistance(currentDistance);
     }
 
@@ -98,10 +90,10 @@ public class PoolDistanceActivity extends AppCompatActivity {
                         if (dist > 0) {
                             selectDistance(dist);
                         } else {
-                            Toast.makeText(this, "Invalid distance", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Invalid distance ❌", Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
-                        Toast.makeText(this, "Invalid distance", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Invalid distance ❌", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("Cancel", null)
@@ -161,10 +153,9 @@ public class PoolDistanceActivity extends AppCompatActivity {
     }
 
     private void saveAndExit() {
-        ContentValues values = new ContentValues();
-        values.put("pool_distance", currentDistance);
-        dbHelper.getWritableDatabase().update("profile", values, "id = ?", new String[]{String.valueOf(activeProfileId)});
-        Toast.makeText(this, "Pool distance stored", Toast.LENGTH_SHORT).show();
+        android.content.Intent resultIntent = new android.content.Intent();
+        resultIntent.putExtra("pool_distance", currentDistance);
+        setResult(RESULT_OK, resultIntent);
         finish();
     }
 }

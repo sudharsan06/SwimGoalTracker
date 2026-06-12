@@ -1,5 +1,6 @@
 package com.dreamcreators.swimgoaltracker.screens;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -135,8 +137,26 @@ public class LoginActivity extends ComponentActivity {
             etPassword.setSelection(etPassword.getText().length());
         });
 
-        btnLogin.setOnClickListener(v -> loginUser());
-        btnRegister.setOnClickListener(v -> registerUser());
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+                loginUser();
+            }
+        });
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+                registerUser();
+            }
+        });
         btnGoogleSignIn.setOnClickListener(v -> {
             progressBar.setVisibility(View.VISIBLE);
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -178,7 +198,7 @@ public class LoginActivity extends ComponentActivity {
 
         tvSupport.setOnClickListener(v -> {
             Intent callIntent = new Intent(Intent.ACTION_DIAL);
-            callIntent.setData(Uri.parse("tel:9787108096"));
+            callIntent.setData(Uri.parse("tel:+919787108096"));
             startActivity(callIntent);
         });
     }
@@ -282,15 +302,14 @@ public class LoginActivity extends ComponentActivity {
                 if (dataSnapshot.exists()) {
                     String registeredDeviceId = dataSnapshot.getValue(String.class);
                     if (deviceId.equals(registeredDeviceId)) {
-                        // Match
+                        // Same device — proceed directly
                         navigateToNext();
                     } else {
-                        // Mismatch
-                        mAuth.signOut();
-                        showMessageDialog(false, "Device Conflict", "This account is registered on another device.");
+                        // Different device — show transfer confirmation
+                        showDeviceTransferDialog(user);
                     }
                 } else {
-                    // No mapping exists (perhaps user registered before this feature), so set it
+                    // No mapping exists yet — register this device
                     mDatabase.child(user.getUid()).setValue(deviceId).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             navigateToNext();
@@ -307,6 +326,53 @@ public class LoginActivity extends ComponentActivity {
                 showMessageDialog(false, "Database Error", "An error occurred while connecting to the database.");
             }
         });
+    }
+
+    private void showDeviceTransferDialog(FirebaseUser user) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_device_transfer, null);
+        builder.setView(dialogView);
+        builder.setCancelable(false);
+
+        android.app.AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        TextView tvTitle = dialogView.findViewById(R.id.tvTransferTitle);
+        TextView tvMessage = dialogView.findViewById(R.id.tvTransferMessage);
+        
+        tvTitle.setText("Device Conflict");
+        tvMessage.setText("This account is currently active on another device. Do you want to deregister the old device and register this one?");
+        
+        Button btnCancel = dialogView.findViewById(R.id.btnTransferCancel);
+        Button btnTransfer = dialogView.findViewById(R.id.btnTransferConfirm);
+
+        btnTransfer.setVisibility(View.VISIBLE);
+        btnTransfer.setText("Deregister Old");
+        btnCancel.setText("Cancel");
+        
+        btnCancel.setOnClickListener(v -> {
+            mAuth.signOut();
+            dialog.dismiss();
+        });
+
+        btnTransfer.setOnClickListener(v -> {
+            dialog.dismiss();
+            progressBar.setVisibility(View.VISIBLE);
+            mDatabase.child(user.getUid()).setValue(deviceId).addOnCompleteListener(task -> {
+                progressBar.setVisibility(View.GONE);
+                if (task.isSuccessful()) {
+                    showMessageDialog(true, "Device Registered", "Old device deregistered. This device is now active.");
+                    navigateToNext();
+                } else {
+                    showMessageDialog(false, "Error", "Could not register this device. Please try again.");
+                    mAuth.signOut();
+                }
+            });
+        });
+
+        dialog.show();
     }
 
     private void navigateToNext() {

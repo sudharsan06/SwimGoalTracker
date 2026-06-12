@@ -64,7 +64,7 @@ public class InstructionActivity extends AppCompatActivity {
                 tvEmoji.setText("🏊");
                 tvStep.setText("STEP 1 OF 3");
                 tvTitle.setText("Track every lap, every day");
-                tvDesc.setText("SwimminGo records your swim sessions automatically. Set personal goals and see how you improve over time.");
+                tvDesc.setText("SwimminGO records your swim sessions automatically. Set personal goals and see how you improve over time.");
                 
                 indicator1.setBackgroundColor(0xFF1565C0);
                 indicator2.setBackgroundColor(0xFFD1D9E6);

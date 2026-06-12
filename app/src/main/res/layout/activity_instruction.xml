@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="24dp"
-            android:text="SwimminGo records your swim sessions automatically. Set personal goals and see how you improve over time."
+            android:text="SwimminGO records your swim sessions automatically. Set personal goals and see how you improve over time."
             android:textColor="#52647A"
             android:textSize="14sp"
             android:lineSpacingMultiplier="1.2"
