@@ -110,7 +110,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationId, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.sgt_logo) // Using existing app icon
+                .setSmallIcon(R.drawable.ic_notification) // Using the alpha-only icon
+                .setColor(androidx.core.content.ContextCompat.getColor(context, R.color.midnight_blue))
                 .setContentTitle(title)
                 .setContentText(text)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
