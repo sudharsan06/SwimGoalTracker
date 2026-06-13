@@ -30,6 +30,7 @@ firebase-database = { group = "com.google.firebase", name = "firebase-database" 
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 play-services-auth-lib = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpandroidchart" }
+konfetti = { group = "nl.dionsegijn", name = "konfetti-xml", version = "2.0.4" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

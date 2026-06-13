@@ -51,4 +51,5 @@ dependencies {
     implementation libs.play.services.auth.lib
     implementation libs.mpandroidchart
     implementation 'androidx.viewpager2:viewpager2:1.1.0'
+    implementation libs.konfetti
 }

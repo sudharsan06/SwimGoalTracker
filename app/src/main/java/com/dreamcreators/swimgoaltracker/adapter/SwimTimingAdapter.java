@@ -21,6 +21,7 @@ public class SwimTimingAdapter extends RecyclerView.Adapter<SwimTimingAdapter.Vi
     private Context context;
     private long bestTime; // Best (lowest) time to highlight
     private long nowMs;    // Reference time to compute "X mins ago"
+    private long goalTime; // Goal time to determine if goal is met
     private OnDeleteClickListener deleteClickListener;
 
     public interface OnDeleteClickListener {
@@ -37,11 +38,12 @@ public class SwimTimingAdapter extends RecyclerView.Adapter<SwimTimingAdapter.Vi
         this.itemClickListener = listener;
     }
 
-    public SwimTimingAdapter(Context context, List<SwimTimingEntry> entries, long bestTime, long nowMs, OnDeleteClickListener deleteClickListener) {
+    public SwimTimingAdapter(Context context, List<SwimTimingEntry> entries, long bestTime, long nowMs, long goalTime, OnDeleteClickListener deleteClickListener) {
         this.context = context;
         this.entries = entries;
         this.bestTime = bestTime;
         this.nowMs = nowMs;
+        this.goalTime = goalTime;
         this.deleteClickListener = deleteClickListener;
     }
 
@@ -49,6 +51,7 @@ public class SwimTimingAdapter extends RecyclerView.Adapter<SwimTimingAdapter.Vi
         TextView tvEntryNumber;
         TextView tvTiming;
         TextView tvBestLabel;
+        TextView tvGoalLabel;
         View btnDelete;
         View itemContainer;
 
@@ -57,6 +60,7 @@ public class SwimTimingAdapter extends RecyclerView.Adapter<SwimTimingAdapter.Vi
             tvEntryNumber = itemView.findViewById(R.id.tvEntryNumber);
             tvTiming = itemView.findViewById(R.id.tvTiming);
             tvBestLabel = itemView.findViewById(R.id.tvBestLabel);
+            tvGoalLabel = itemView.findViewById(R.id.tvGoalLabel);
             btnDelete = itemView.findViewById(R.id.btnDelete);
             itemContainer = itemView.findViewById(R.id.itemContainer);
         }
@@ -105,6 +109,13 @@ public class SwimTimingAdapter extends RecyclerView.Adapter<SwimTimingAdapter.Vi
             holder.tvEntryNumber.setTextColor(ContextCompat.getColor(context, R.color.steel_blue));
             holder.tvBestLabel.setBackgroundTintList(null);
             ((android.widget.ImageView)holder.btnDelete).setColorFilter(ContextCompat.getColor(context, R.color.midnight_blue));
+        }
+
+        // Show Goal Met badge
+        if (goalTime > 0 && entry.getTimeMs() <= goalTime) {
+            holder.tvGoalLabel.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvGoalLabel.setVisibility(View.GONE);
         }
 
         holder.btnDelete.setOnClickListener(v -> {

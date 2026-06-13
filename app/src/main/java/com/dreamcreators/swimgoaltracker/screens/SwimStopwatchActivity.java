@@ -695,7 +695,12 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         if (goalStr == null || goalStr.trim().isEmpty()) return -1;
         try {
             String[] parts = goalStr.split(":");
-            if (parts.length == 2) {
+            if (parts.length == 3) {
+                long mins = Long.parseLong(parts[0].trim());
+                long secs = Long.parseLong(parts[1].trim());
+                long hundredths = Long.parseLong(parts[2].trim());
+                return (mins * 60 + secs) * 1000 + hundredths * 10;
+            } else if (parts.length == 2) {
                 long mins = Long.parseLong(parts[0].trim());
                 double secs = Double.parseDouble(parts[1].trim());
                 return (long) ((mins * 60 + secs) * 1000);
@@ -713,6 +718,34 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         String msg = "Congratulations! You just beat your " + styleName + " target time.\n\n" +
                      "Your Time: " + formatMs(timeMs) + "\n" +
                      "Target Goal: " + formatMs(goalMs);
+
+        // Play clap sound
+        try {
+            android.media.MediaPlayer mediaPlayer = android.media.MediaPlayer.create(this, R.raw.clap);
+            if (mediaPlayer != null) {
+                mediaPlayer.start();
+                mediaPlayer.setOnCompletionListener(mp -> mp.release());
+            }
+        } catch (Exception e) {
+            // ignore if sound fails
+        }
+
+        // Show Konfetti
+        nl.dionsegijn.konfetti.xml.KonfettiView konfettiView = findViewById(R.id.konfettiView);
+        if (konfettiView != null) {
+            nl.dionsegijn.konfetti.core.emitter.EmitterConfig emitterConfig = new nl.dionsegijn.konfetti.core.emitter.Emitter(5L, java.util.concurrent.TimeUnit.SECONDS).perSecond(100);
+            konfettiView.start(
+                    new nl.dionsegijn.konfetti.core.PartyFactory(emitterConfig)
+                            .angle(nl.dionsegijn.konfetti.core.Angle.BOTTOM)
+                            .spread(nl.dionsegijn.konfetti.core.Spread.ROUND)
+                            .setSpeedBetween(0f, 15f)
+                            .timeToLive(2000L)
+                            .colors(java.util.Arrays.asList(0xfce18a, 0xff726d, 0xf4306d, 0xb48def))
+                            .sizes(new nl.dionsegijn.konfetti.core.models.Size(12, 5f, 0.2f))
+                            .position(new nl.dionsegijn.konfetti.core.Position.Relative(0.5, -0.1))
+                            .build()
+            );
+        }
         
         new MaterialAlertDialogBuilder(this)
                 .setTitle("🎉 Goal Achieved! 🎉")
@@ -850,7 +883,21 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         } else {
             long nowMs = System.currentTimeMillis();
             final long finalBestTime = (bestTime == Long.MAX_VALUE) ? 0 : bestTime;
-            SwimTimingAdapter adapter = new SwimTimingAdapter(this, entries, finalBestTime, nowMs, entry -> {
+
+            int activeId = ProfileManager.getActiveProfileId(this);
+            android.content.SharedPreferences goalPrefs = getSharedPreferences("swim_goals", MODE_PRIVATE);
+            String styleKey = style;
+            if (styleKey.equals("fly")) styleKey = "fly";
+            else if (styleKey.equals("breast")) styleKey = "breast";
+            else if (styleKey.equals("back")) styleKey = "back";
+            else if (styleKey.equals("free")) styleKey = "free";
+            else if (styleKey.equals("im")) styleKey = "im";
+            
+            String goalKey = "goal_" + styleKey + "_" + activeId; 
+            String goalStr = goalPrefs.getString(goalKey, "");
+            long goalMs = parseGoalToMs(goalStr);
+
+            SwimTimingAdapter adapter = new SwimTimingAdapter(this, entries, finalBestTime, nowMs, goalMs, entry -> {
                 deleteEntry(entry.getId(), style, date);
             });
             adapter.setOnItemClickListener(entry -> {
