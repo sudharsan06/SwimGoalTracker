@@ -44,14 +44,7 @@ public class GoalsActivity extends AppCompatActivity {
         MaterialButton btnSave = findViewById(R.id.btnSaveGoals);
 
         // Load saved goals
-        int activeId = ProfileManager.getActiveProfileId(this);
-        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-        etWeeklySessions.setText(prefs.getString("weekly_sessions_" + activeId, ""));
-        etGoalFree.setText(prefs.getString("goal_free_" + activeId, ""));
-        etGoalFly.setText(prefs.getString("goal_fly_" + activeId, ""));
-        etGoalBreast.setText(prefs.getString("goal_breast_" + activeId, ""));
-        etGoalBack.setText(prefs.getString("goal_back_" + activeId, ""));
-        etGoalIM.setText(prefs.getString("goal_im_" + activeId, ""));
+        loadSavedGoals();
 
         etGoalIM.setInputType(android.text.InputType.TYPE_NULL);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -84,6 +77,8 @@ public class GoalsActivity extends AppCompatActivity {
                 return;
             }
 
+            int activeId = ProfileManager.getActiveProfileId(this);
+            SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
             prefs.edit()
                     .putString("weekly_sessions_" + activeId, weekly)
                     .putString("goal_free_" + activeId, free)
@@ -275,5 +270,22 @@ public class GoalsActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadSavedGoals();
+    }
+
+    private void loadSavedGoals() {
+        int activeId = ProfileManager.getActiveProfileId(this);
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        etWeeklySessions.setText(prefs.getString("weekly_sessions_" + activeId, ""));
+        etGoalFree.setText(prefs.getString("goal_free_" + activeId, ""));
+        etGoalFly.setText(prefs.getString("goal_fly_" + activeId, ""));
+        etGoalBreast.setText(prefs.getString("goal_breast_" + activeId, ""));
+        etGoalBack.setText(prefs.getString("goal_back_" + activeId, ""));
+        etGoalIM.setText(prefs.getString("goal_im_" + activeId, ""));
     }
 }

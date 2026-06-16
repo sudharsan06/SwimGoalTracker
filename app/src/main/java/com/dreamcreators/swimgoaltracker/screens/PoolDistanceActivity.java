@@ -43,7 +43,7 @@ public class PoolDistanceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pool_distance);
 
         dbHelper = new NutritionDbHelper(this);
-        activeProfileId = ProfileManager.getActiveProfileId(this);
+        activeProfileId = getIntent().getIntExtra("profile_id", ProfileManager.getActiveProfileId(this));
 
         findViewById(R.id.btnBack).setOnClickListener(v -> onBackPressed());
 

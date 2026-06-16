@@ -151,7 +151,9 @@ public class SwimTimingAdapter extends RecyclerView.Adapter<SwimTimingAdapter.Vi
 
         long totalSeconds = diffMs / 1000;
         long totalMinutes = totalSeconds / 60;
-        long hours = totalMinutes / 60;
+        long totalHours = totalMinutes / 60;
+        long days = totalHours / 24;
+        long hours = totalHours % 24;
         long minutes = totalMinutes % 60;
         long seconds = totalSeconds % 60;
 
@@ -160,9 +162,20 @@ public class SwimTimingAdapter extends RecyclerView.Adapter<SwimTimingAdapter.Vi
             return "Just now";
         }
 
+        // Show days and hours for >= 1 day
+        if (days > 0) {
+            String dayText = days == 1 ? "1 day" : days + " days";
+            if (hours == 0) {
+                return dayText + " ago";
+            } else {
+                String hourText = hours == 1 ? "1 hour" : hours + " hours";
+                return dayText + " and " + hourText + " ago";
+            }
+        }
+
         // Show hours and minutes for >= 1 hour
-        if (hours > 0) {
-            String hourText = hours == 1 ? "1 hour" : hours + " hours";
+        if (totalHours > 0) {
+            String hourText = totalHours == 1 ? "1 hour" : totalHours + " hours";
             if (minutes == 0) {
                 return hourText + " ago";
             } else {

@@ -89,9 +89,6 @@ public class TrackerActivity extends AppCompatActivity {
             }
         });
 
-        // Load data - post so fragments have time to attach on first frame
-        viewPager.post(() -> updateList(30));
-
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
         bottomNav.setSelectedItemId(R.id.nav_tracker);
         bottomNav.setOnItemSelectedListener(item -> {
@@ -128,6 +125,12 @@ public class TrackerActivity extends AppCompatActivity {
                 adView.loadAd(new AdRequest.Builder().build());
             });
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateList(30);
     }
 
     @Override

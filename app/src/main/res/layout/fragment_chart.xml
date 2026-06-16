@@ -74,12 +74,16 @@
 
                     <!-- Freestyle Best -->
                     <LinearLayout
+                        android:id="@+id/legendFree"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="8dp">
+                        android:padding="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
 
                         <View
                             android:layout_width="12dp"
@@ -107,12 +111,16 @@
 
                     <!-- Butterfly Best -->
                     <LinearLayout
+                        android:id="@+id/legendFly"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="8dp">
+                        android:padding="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
 
                         <View
                             android:layout_width="12dp"
@@ -140,12 +148,16 @@
 
                     <!-- Breaststroke Best -->
                     <LinearLayout
+                        android:id="@+id/legendBreast"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="8dp">
+                        android:padding="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
 
                         <View
                             android:layout_width="12dp"
@@ -173,12 +185,16 @@
 
                     <!-- Backstroke Best -->
                     <LinearLayout
+                        android:id="@+id/legendBack"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="8dp">
+                        android:padding="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
 
                         <View
                             android:layout_width="12dp"

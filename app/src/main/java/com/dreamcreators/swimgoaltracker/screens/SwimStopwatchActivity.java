@@ -65,7 +65,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
     private TextView tvFree, tvBack, tvBreast, tvFly;
     private TextView tvEntriesHeader;
     private android.widget.Spinner spinnerImFilter;
-    private int currentImFilter = 1; // Default: 1 = Last 30 Days
+    private int currentFilter = 1; // Default: 1 = 1 Week
     private NutritionDbHelper dbHelper;
     private RecyclerView recyclerViewEntries;
     private String selectedStroke = null;
@@ -160,60 +160,45 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 sectionFree.setVisibility(VISIBLE);
                 setTitle("Freestyle Timer");
                 selectedStroke = "Freestyle";
-                tvEntriesHeader.setText("TODAY'S SESSIONS");
-                spinnerImFilter.setVisibility(View.GONE);
-                loadTodayEntries("free", today);
             } else if ("Backstroke".equalsIgnoreCase(stroke)) {
                 sectionBack.setVisibility(VISIBLE);
                 setTitle("Backstroke Timer");
                 selectedStroke = "Backstroke";
-                loadTodayEntries("back", today);
-                tvEntriesHeader.setText("TODAY'S SESSIONS");
-                spinnerImFilter.setVisibility(View.GONE);
             } else if ("Breaststroke".equalsIgnoreCase(stroke)) {
                 sectionBreast.setVisibility(VISIBLE);
                 setTitle("Breaststroke Timer");
-                loadTodayEntries("breast", today);
                 selectedStroke = "Breaststroke";
-                tvEntriesHeader.setText("TODAY'S SESSIONS");
-                spinnerImFilter.setVisibility(View.GONE);
             } else if ("Butterfly".equalsIgnoreCase(stroke)) {
                 sectionFly.setVisibility(VISIBLE);
                 setTitle("Butterfly Timer");
-                loadTodayEntries("fly", today);
-                tvEntriesHeader.setText("TODAY'S SESSIONS");
-                spinnerImFilter.setVisibility(View.GONE);
                 selectedStroke = "Butterfly";
-                tvDate.setText(today);
-                loadTodayEntries("fly", today);
             } else if ("IM".equalsIgnoreCase(stroke)) {
                 getSupportActionBar().setTitle("IM Timer");
                 sectionIM.setVisibility(VISIBLE);
-                tvEntriesHeader.setText("IM SESSIONS");
-                spinnerImFilter.setVisibility(VISIBLE);
                 selectedStroke = "IM";
-                tvDate.setText(today);
-                
-                // Initialize Spinner
-                String[] filters = {"Today", "Last 30 Days", "Last 60 Days", "Last 1 Year", "All Records"};
-                android.widget.ArrayAdapter<String> spinnerAdapter = new android.widget.ArrayAdapter<>(this, android.R.layout.simple_spinner_item, filters);
-                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerImFilter.setAdapter(spinnerAdapter);
-                spinnerImFilter.setSelection(currentImFilter);
-                
-                spinnerImFilter.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
-                        currentImFilter = position;
-                        loadTodayEntries("im", today);
-                    }
-
-                    @Override
-                    public void onNothingSelected(android.widget.AdapterView<?> parent) {}
-                });
-                
-                loadTodayEntries("im", today);
             }
+
+            // Initialize filter spinner for all strokes
+            String[] filters = {"Today", "1 Week", "1 Month", "1 Year", "All Records"};
+            android.widget.ArrayAdapter<String> spinnerAdapter = new android.widget.ArrayAdapter<>(this, android.R.layout.simple_spinner_item, filters);
+            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerImFilter.setAdapter(spinnerAdapter);
+            spinnerImFilter.setSelection(currentFilter);
+            spinnerImFilter.setVisibility(VISIBLE);
+            tvEntriesHeader.setText("SESSIONS");
+
+            spinnerImFilter.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                    currentFilter = position;
+                    loadFilteredEntries();
+                }
+
+                @Override
+                public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+            });
+
+            loadFilteredEntries();
         } else {
             setTitle("Swim Timer");
             loadTodayEntries("free", today);
@@ -803,6 +788,21 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Helper to reload entries using the current selectedStroke and filter.
+     */
+    private void loadFilteredEntries() {
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        String styleKey;
+        if ("Freestyle".equalsIgnoreCase(selectedStroke)) styleKey = "free";
+        else if ("Backstroke".equalsIgnoreCase(selectedStroke)) styleKey = "back";
+        else if ("Breaststroke".equalsIgnoreCase(selectedStroke)) styleKey = "breast";
+        else if ("Butterfly".equalsIgnoreCase(selectedStroke)) styleKey = "fly";
+        else if ("IM".equalsIgnoreCase(selectedStroke)) styleKey = "im";
+        else styleKey = "free";
+        loadTodayEntries(styleKey, today);
+    }
+
     private void loadTodayEntries(String style, String date) {
         String columnName;
 
@@ -830,24 +830,20 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         String[] queryArgs;
         int activeProfileId = ProfileManager.getActiveProfileId(this);
 
-        if ("im".equals(style)) {
-            if (currentImFilter == 0) { // Today
-                whereClause = "date = ? AND " + columnName + " > 0 AND profile_id = ?";
-                queryArgs = new String[]{date, String.valueOf(activeProfileId)};
-            } else if (currentImFilter == 4) { // All Records
-                whereClause = columnName + " > 0 AND profile_id = ?";
-                queryArgs = new String[]{String.valueOf(activeProfileId)};
-            } else {
-                int days = currentImFilter == 1 ? 30 : (currentImFilter == 2 ? 60 : 365);
-                java.util.Calendar cal = java.util.Calendar.getInstance();
-                cal.add(java.util.Calendar.DAY_OF_YEAR, -days);
-                String pastDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(cal.getTime());
-                whereClause = "date >= ? AND " + columnName + " > 0 AND profile_id = ?";
-                queryArgs = new String[]{pastDate, String.valueOf(activeProfileId)};
-            }
-        } else {
+        if (currentFilter == 0) { // Today
             whereClause = "date = ? AND " + columnName + " > 0 AND profile_id = ?";
             queryArgs = new String[]{date, String.valueOf(activeProfileId)};
+        } else if (currentFilter == 4) { // All Records
+            whereClause = columnName + " > 0 AND profile_id = ?";
+            queryArgs = new String[]{String.valueOf(activeProfileId)};
+        } else {
+            // 1 = 1 Week (7 days), 2 = 1 Month (30 days), 3 = 1 Year (365 days)
+            int days = currentFilter == 1 ? 7 : (currentFilter == 2 ? 30 : 365);
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            cal.add(java.util.Calendar.DAY_OF_YEAR, -days);
+            String pastDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(cal.getTime());
+            whereClause = "date >= ? AND " + columnName + " > 0 AND profile_id = ?";
+            queryArgs = new String[]{pastDate, String.valueOf(activeProfileId)};
         }
 
         Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
@@ -880,7 +876,29 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         if (entries.isEmpty()) {
             // No entries: clear list
             recyclerViewEntries.setAdapter(null);
+            
+            // Check if there are ANY records for this stroke in total
+            Cursor countCursor = dbHelper.getReadableDatabase().rawQuery(
+                    "SELECT COUNT(*) FROM swim_sessions WHERE " + columnName + " > 0 AND profile_id = ?",
+                    new String[]{String.valueOf(activeProfileId)}
+            );
+            int totalCount = 0;
+            if (countCursor.moveToFirst()) {
+                totalCount = countCursor.getInt(0);
+            }
+            countCursor.close();
+
+            if (totalCount == 0) {
+                tvEntriesHeader.setVisibility(View.GONE);
+                spinnerImFilter.setVisibility(View.GONE);
+            } else {
+                tvEntriesHeader.setVisibility(View.VISIBLE);
+                spinnerImFilter.setVisibility(View.VISIBLE);
+            }
         } else {
+            tvEntriesHeader.setVisibility(View.VISIBLE);
+            spinnerImFilter.setVisibility(View.VISIBLE);
+            
             long nowMs = System.currentTimeMillis();
             final long finalBestTime = (bestTime == Long.MAX_VALUE) ? 0 : bestTime;
 
@@ -912,8 +930,6 @@ public class SwimStopwatchActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         updatePoolDistanceInfo();
-        // Refresh entries when activity resumes (e.g., when returning from manual entry)
-        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         
         // Check if stroke was passed in intent (might be updated when returning from SwimEntryActivity)
         String strokeFromIntent = getIntent().getStringExtra("stroke");
@@ -921,22 +937,8 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             selectedStroke = strokeFromIntent;
         }
         
-        if (selectedStroke != null) {
-            if ("Freestyle".equalsIgnoreCase(selectedStroke)) {
-                loadTodayEntries("free", today);
-            } else if ("Backstroke".equalsIgnoreCase(selectedStroke)) {
-                loadTodayEntries("back", today);
-            } else if ("Breaststroke".equalsIgnoreCase(selectedStroke)) {
-                loadTodayEntries("breast", today);
-            } else if ("Butterfly".equalsIgnoreCase(selectedStroke)) {
-                loadTodayEntries("fly", today);
-            } else if ("IM".equalsIgnoreCase(selectedStroke)) {
-                loadTodayEntries("im", today);
-            } else {
-                // Default to freestyle list if nothing specific selected
-                loadTodayEntries("free", today);
-            }
-        }
+        // Refresh entries using current filter
+        loadFilteredEntries();
         
         // Check if a new session was added (e.g. manually) and verify if it achieved a goal
         checkNewSessionGoalAchievement();
@@ -1016,7 +1018,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
 
     private void updatePoolDistanceInfo() {
         int activeProfileId = ProfileManager.getActiveProfileId(this);
-        int poolDistance = 18; // default
+        int poolDistance = 25; // default
         try {
             Cursor c = dbHelper.getReadableDatabase().rawQuery(
                     "SELECT pool_distance FROM profile WHERE id = ?",

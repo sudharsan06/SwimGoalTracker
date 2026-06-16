@@ -32,6 +32,7 @@ public class AlertsActivity extends AppCompatActivity {
     private TextView tvReminderTime;
     private View cardReminderTime;
     private int reminderHour = 7, reminderMinute = 0;
+    private int activeProfileId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,20 +52,58 @@ public class AlertsActivity extends AppCompatActivity {
         cardReminderTime = findViewById(R.id.cardReminderTime);
 
         // Load saved preferences
-        int activeId = ProfileManager.getActiveProfileId(this);
+        loadAlertPreferences();
+
+        findViewById(R.id.btnPickReminderTime).setOnClickListener(v -> {
+            new TimePickerDialog(this, (view, hourOfDay, minute) -> {
+                reminderHour = hourOfDay;
+                reminderMinute = minute;
+                updateReminderTimeLabel();
+                getSharedPreferences(PREFS, MODE_PRIVATE).edit()
+                        .putInt("reminder_hour_" + activeProfileId, hourOfDay)
+                        .putInt("reminder_minute_" + activeProfileId, minute)
+                        .apply();
+                if (switchTraining.isChecked()) {
+                    AlertManager.scheduleTrainingReminder(this, hourOfDay, minute);
+                }
+            }, reminderHour, reminderMinute, false).show();
+        });
+
+        setupBottomNav();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadAlertPreferences();
+    }
+
+    private void loadAlertPreferences() {
+        activeProfileId = ProfileManager.getActiveProfileId(this);
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-        boolean trainingOn = prefs.getBoolean("training_reminder_" + activeId, false);
+        
+        switchTraining.setOnCheckedChangeListener(null);
+        switchRest.setOnCheckedChangeListener(null);
+        switchGoal.setOnCheckedChangeListener(null);
+
+        boolean trainingOn = prefs.getBoolean("training_reminder_" + activeProfileId, false);
         switchTraining.setChecked(trainingOn);
-        switchRest.setChecked(prefs.getBoolean("rest_alert_" + activeId, false));
-        switchGoal.setChecked(prefs.getBoolean("goal_alert_" + activeId, false));
-        reminderHour = prefs.getInt("reminder_hour_" + activeId, 7);
-        reminderMinute = prefs.getInt("reminder_minute_" + activeId, 0);
+        switchRest.setChecked(prefs.getBoolean("rest_alert_" + activeProfileId, false));
+        switchGoal.setChecked(prefs.getBoolean("goal_alert_" + activeProfileId, false));
+        reminderHour = prefs.getInt("reminder_hour_" + activeProfileId, 7);
+        reminderMinute = prefs.getInt("reminder_minute_" + activeProfileId, 0);
         updateReminderTimeLabel();
         cardReminderTime.setVisibility(trainingOn ? View.VISIBLE : View.GONE);
+        
+        registerListeners();
+    }
 
+    private void registerListeners() {
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        
         switchTraining.setOnCheckedChangeListener((btn, isChecked) -> {
             cardReminderTime.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-            prefs.edit().putBoolean("training_reminder_" + activeId, isChecked).apply();
+            prefs.edit().putBoolean("training_reminder_" + activeProfileId, isChecked).apply();
             if (isChecked) {
                 checkAndRequestNotificationPermission();
                 AlertManager.scheduleTrainingReminder(this, reminderHour, reminderMinute);
@@ -75,7 +114,7 @@ public class AlertsActivity extends AppCompatActivity {
         });
 
         switchRest.setOnCheckedChangeListener((btn, isChecked) -> {
-            prefs.edit().putBoolean("rest_alert_" + activeId, isChecked).apply();
+            prefs.edit().putBoolean("rest_alert_" + activeProfileId, isChecked).apply();
             if (isChecked) {
                 checkAndRequestNotificationPermission();
                 AlertManager.scheduleRestAlert(this);
@@ -86,29 +125,12 @@ public class AlertsActivity extends AppCompatActivity {
         });
 
         switchGoal.setOnCheckedChangeListener((btn, isChecked) -> {
-            prefs.edit().putBoolean("goal_alert_" + activeId, isChecked).apply();
+            prefs.edit().putBoolean("goal_alert_" + activeProfileId, isChecked).apply();
             if (isChecked) {
                 checkAndRequestNotificationPermission();
             }
             Toast.makeText(this, isChecked ? "Goal alert enabled" : "Goal alert disabled", Toast.LENGTH_SHORT).show();
         });
-
-        findViewById(R.id.btnPickReminderTime).setOnClickListener(v -> {
-            new TimePickerDialog(this, (view, hourOfDay, minute) -> {
-                reminderHour = hourOfDay;
-                reminderMinute = minute;
-                updateReminderTimeLabel();
-                prefs.edit()
-                        .putInt("reminder_hour_" + activeId, hourOfDay)
-                        .putInt("reminder_minute_" + activeId, minute)
-                        .apply();
-                if (switchTraining.isChecked()) {
-                    AlertManager.scheduleTrainingReminder(this, hourOfDay, minute);
-                }
-            }, reminderHour, reminderMinute, false).show();
-        });
-
-        setupBottomNav();
     }
 
     private void updateReminderTimeLabel() {

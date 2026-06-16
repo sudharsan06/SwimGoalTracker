@@ -93,7 +93,7 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Full Name"
+                        android:hint="Full Name *"
                         app:tint="@color/lightPrimary"
                         app:startIconDrawable="@drawable/ic_emoji_emotions_24">
 
@@ -117,7 +117,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="8dp"
                             android:layout_weight="1"
-                            android:hint="Age">
+                            android:hint="Age (Optional)">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etAge"
@@ -134,7 +134,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
-                            android:hint="Height (cm)">
+                            android:hint="Height (Optional)">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etHeight"
@@ -151,7 +151,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:hint="Weight (kg)">
+                        android:hint="Weight (Optional)">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etWeight"
@@ -217,7 +217,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Swimming Start Date"
+                                android:text="Swimming Start Date (Optional)"
                                 android:textColor="@color/textSecondary"
                                 android:textSize="12sp" />
 

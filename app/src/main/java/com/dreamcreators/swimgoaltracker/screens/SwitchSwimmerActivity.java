@@ -53,6 +53,8 @@ public class SwitchSwimmerActivity extends AppCompatActivity {
             });
             adView.loadAd(new AdRequest.Builder().build());
         }
+
+        loadInterstitialAd();
     }
 
     @Override
@@ -184,12 +186,54 @@ public class SwitchSwimmerActivity extends AppCompatActivity {
     private void confirmDelete(ProfileManager.SwimmerProfile p) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Profile")
-                .setMessage("Are you sure you want to delete profile: " + p.name + "? All associated swims will be removed.")
+                .setMessage("Are you sure you want to delete profile: " + p.name + "? All associated Swim data, Goal and Settings will be removed.")
                 .setPositiveButton("Delete", (dialog, which) -> {
                     NutritionDbHelper db = new NutritionDbHelper(this);
-                    db.getWritableDatabase().execSQL("UPDATE profile SET name = NULL, image_uri = NULL WHERE id = " + p.id);
-                    db.getWritableDatabase().execSQL("DELETE FROM swim_sessions WHERE profile_id = " + p.id);
                     
+                    // 1. Delete on-disk profile photo if it exists
+                    if (p.imageUri != null && !p.imageUri.isEmpty()) {
+                        try {
+                            Uri uri = Uri.parse(p.imageUri);
+                            if ("file".equalsIgnoreCase(uri.getScheme())) {
+                                String path = uri.getPath();
+                                if (path != null) {
+                                    java.io.File file = new java.io.File(path);
+                                    if (file.exists()) {
+                                        file.delete();
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    // 2. Delete database rows
+                    db.getWritableDatabase().delete("profile", "id = ?", new String[]{String.valueOf(p.id)});
+                    db.getWritableDatabase().delete("swim_sessions", "profile_id = ?", new String[]{String.valueOf(p.id)});
+                    
+                    // 3. Clear profile-specific SharedPreferences keys
+                    getSharedPreferences("swim_goals", MODE_PRIVATE).edit()
+                            .remove("weekly_sessions_" + p.id)
+                            .remove("goal_free_" + p.id)
+                            .remove("goal_fly_" + p.id)
+                            .remove("goal_breast_" + p.id)
+                            .remove("goal_back_" + p.id)
+                            .remove("goal_im_" + p.id)
+                            .apply();
+
+                    getSharedPreferences("swim_alerts", MODE_PRIVATE).edit()
+                            .remove("training_reminder_" + p.id)
+                            .remove("rest_alert_" + p.id)
+                            .remove("goal_alert_" + p.id)
+                            .remove("reminder_hour_" + p.id)
+                            .remove("reminder_minute_" + p.id)
+                            .apply();
+
+                    getSharedPreferences("swim_goals_check", MODE_PRIVATE).edit()
+                            .remove("last_checked_session_id_" + p.id)
+                            .apply();
+
                     // If we deleted the active profile, reset the active profile to the remaining one (if any)
                     if (ProfileManager.getActiveProfileId(this) == p.id) {
                         List<ProfileManager.SwimmerProfile> remaining = ProfileManager.getProfiles(this);
@@ -207,9 +251,67 @@ public class SwitchSwimmerActivity extends AppCompatActivity {
                 .show();
     }
 
+    private com.google.android.gms.ads.interstitial.InterstitialAd mInterstitialAd;
+    private static final String PREF_LAST_AD_TIME = "last_interstitial_ad_time";
+    private static final long AD_COOLDOWN_MS = 5 * 60 * 1000; // 5 minutes
+
+    private void loadInterstitialAd() {
+        android.content.SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
+        long lastAdTime = prefs.getLong(PREF_LAST_AD_TIME, 0);
+        long now = System.currentTimeMillis();
+
+        if (now - lastAdTime >= AD_COOLDOWN_MS) {
+            com.google.android.gms.ads.interstitial.InterstitialAd.load(this, "ca-app-pub-6508060827158792/7650036098",
+                    new AdRequest.Builder().build(),
+                    new com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@androidx.annotation.NonNull com.google.android.gms.ads.interstitial.InterstitialAd interstitialAd) {
+                            mInterstitialAd = interstitialAd;
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@androidx.annotation.NonNull com.google.android.gms.ads.LoadAdError loadAdError) {
+                            mInterstitialAd = null;
+                        }
+                    });
+        }
+    }
+
     private void switchTo(int profileId) {
         ProfileManager.setActiveProfileId(this, profileId);
-        goToHome();
+
+        // Update last login in database
+        try {
+            NutritionDbHelper db = new NutritionDbHelper(this);
+            android.content.ContentValues values = new android.content.ContentValues();
+            String now = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", java.util.Locale.getDefault()).format(java.util.Calendar.getInstance().getTime());
+            values.put("last_login", now);
+            db.getWritableDatabase().update("profile", values, "id = ?", new String[]{String.valueOf(profileId)});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (mInterstitialAd != null) {
+            mInterstitialAd.setFullScreenContentCallback(new com.google.android.gms.ads.FullScreenContentCallback() {
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    getSharedPreferences("app_prefs", MODE_PRIVATE).edit()
+                            .putLong(PREF_LAST_AD_TIME, System.currentTimeMillis())
+                            .apply();
+                    mInterstitialAd = null;
+                    goToHome();
+                }
+
+                @Override
+                public void onAdFailedToShowFullScreenContent(com.google.android.gms.ads.AdError adError) {
+                    mInterstitialAd = null;
+                    goToHome();
+                }
+            });
+            mInterstitialAd.show(this);
+        } else {
+            goToHome();
+        }
     }
 
     private void openAddProfile() {

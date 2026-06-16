@@ -162,10 +162,10 @@ public class ProfileActivity extends ComponentActivity {
         View dividerLogout = findViewById(R.id.btnLogoutDivider);
         
         View btnPoolDistance = findViewById(R.id.btnPoolDistance);
-        
         btnPoolDistance.setOnClickListener(v -> {
             Intent intent = new Intent(this, PoolDistanceActivity.class);
             intent.putExtra("current_distance", currentPoolDistance);
+            intent.putExtra("profile_id", targetProfileId);
             poolDistanceLauncher.launch(intent);
         });
 
@@ -198,7 +198,11 @@ public class ProfileActivity extends ComponentActivity {
                 }
             }
             etName.setText(c.getString(1));
-            etAge.setText(String.valueOf(c.getInt(2)));
+            if (c.isNull(2) || c.getInt(2) <= 0) {
+                etAge.setText("");
+            } else {
+                etAge.setText(String.valueOf(c.getInt(2)));
+            }
 
             // Pre-select height in spinner
             int savedHeight = Math.round(c.getFloat(3));
@@ -259,31 +263,22 @@ public class ProfileActivity extends ComponentActivity {
             }
 
             String ageStr = etAge.getText().toString().trim();
-            int age = parseIntSafe(ageStr);
-            if (ageStr.isEmpty() || age <= 0 || age > 120) {
-                Toast.makeText(this, "Please enter a valid age (1-120)", Toast.LENGTH_SHORT).show();
-                return;
+            Integer age = null;
+            if (!ageStr.isEmpty()) {
+                int parsedAge = parseIntSafe(ageStr);
+                if (parsedAge <= 0 || parsedAge > 120) {
+                    Toast.makeText(this, "Please enter a valid age (1-120)", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                age = parsedAge;
             }
 
             String heightStr = etHeight.getText().toString();
-            if (heightStr.isEmpty()) {
-                Toast.makeText(this, "Please select a valid height", Toast.LENGTH_SHORT).show();
-                return;
-            }
             int height = parseIntSafe(heightStr.replace(" cm", ""));
 
             String weightStr = etWeight.getText().toString();
-            if (weightStr.isEmpty()) {
-                Toast.makeText(this, "Please select a valid weight", Toast.LENGTH_SHORT).show();
-                return;
-            }
             int weight = parseIntSafe(weightStr.replace(" kg", ""));
 
-            if (startDate == null || startDate.trim().isEmpty()) {
-                Toast.makeText(this, "Please select a start date", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            
             ContentValues values = new ContentValues();
             values.put("id", targetProfileId);
             values.put("image_uri", imageUri == null ? null : imageUri.toString());
@@ -291,7 +286,7 @@ public class ProfileActivity extends ComponentActivity {
             values.put("age", age);
             values.put("height", (float) height);
             values.put("weight", (float) weight);
-            values.put("start_date", startDate);
+            values.put("start_date", (startDate == null || startDate.trim().isEmpty()) ? "" : startDate);
             values.put("pool_distance", currentPoolDistance);
             String now = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Calendar.getInstance().getTime());
             values.put("last_login", now);

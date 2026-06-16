@@ -94,9 +94,10 @@ public class DailyAttemptsDialog extends DialogFragment {
         long minFree = Long.MAX_VALUE, minFly = Long.MAX_VALUE, minBreast = Long.MAX_VALUE,
              minBack = Long.MAX_VALUE;
 
+        int activeProfileId = com.dreamcreators.swimgoaltracker.db.ProfileManager.getActiveProfileId(getContext());
         Cursor c = dbHelper.getReadableDatabase().rawQuery(
-                "SELECT freestyle_ms, backstroke_ms, breaststroke_ms, butterfly_ms, created_at FROM swim_sessions WHERE date = ? ORDER BY id ASC",
-                new String[]{date}
+                "SELECT freestyle_ms, backstroke_ms, breaststroke_ms, butterfly_ms, created_at FROM swim_sessions WHERE date = ? AND profile_id = ? ORDER BY id ASC",
+                new String[]{date, String.valueOf(activeProfileId)}
         );
 
         if (c.moveToFirst()) {
