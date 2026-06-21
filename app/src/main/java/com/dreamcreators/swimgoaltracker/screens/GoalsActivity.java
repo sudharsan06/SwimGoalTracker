@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -15,6 +16,7 @@ import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.dreamcreators.swimgoaltracker.db.ProfileManager;
 import com.dreamcreators.swimgoaltracker.R;
+import com.dreamcreators.swimgoaltracker.utility.ThemeManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -22,20 +24,23 @@ import com.google.android.material.textfield.TextInputEditText;
 public class GoalsActivity extends AppCompatActivity {
 
     private static final String PREFS = "swim_goals";
-    private TextInputEditText etWeeklySessions, etGoalFree, etGoalFly, etGoalBreast, etGoalBack, etGoalIM;
+    private TextInputEditText etWeeklySessions, etWeeklyKm, etGoalFree, etGoalFly, etGoalBreast, etGoalBack, etGoalIM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ThemeManager.applyTheme(this);
         super.onCreate(savedInstanceState);
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
+        getWindow().setStatusBarColor(getColor(R.color.dark_surface_low));
         WindowInsetsControllerCompat controller =
                 WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-        controller.setAppearanceLightStatusBars(true);
+        controller.setAppearanceLightStatusBars(!ThemeManager.isDarkMode(this));
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_goals);
 
         etWeeklySessions = findViewById(R.id.etWeeklySessions);
+        etWeeklyKm = findViewById(R.id.etWeeklyKm);
         etGoalFree = findViewById(R.id.etGoalFree);
         etGoalFly = findViewById(R.id.etGoalFly);
         etGoalBreast = findViewById(R.id.etGoalBreast);
@@ -66,13 +71,14 @@ public class GoalsActivity extends AppCompatActivity {
                 imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
             }
             String weekly = etWeeklySessions.getText().toString().trim();
+            String weeklyKm = etWeeklyKm.getText().toString().trim();
             String free = etGoalFree.getText().toString().trim();
             String fly = etGoalFly.getText().toString().trim();
             String breast = etGoalBreast.getText().toString().trim();
             String back = etGoalBack.getText().toString().trim();
             String im = etGoalIM.getText().toString().trim();
 
-            if (weekly.isEmpty() && free.isEmpty() && fly.isEmpty() && breast.isEmpty() && back.isEmpty() && im.isEmpty()) {
+            if (weekly.isEmpty() && weeklyKm.isEmpty() && free.isEmpty() && fly.isEmpty() && breast.isEmpty() && back.isEmpty() && im.isEmpty()) {
                 Toast.makeText(this, "Please fill in at least one goal", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -81,6 +87,7 @@ public class GoalsActivity extends AppCompatActivity {
             SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
             prefs.edit()
                     .putString("weekly_sessions_" + activeId, weekly)
+                    .putString("weekly_km_" + activeId, weeklyKm)
                     .putString("goal_free_" + activeId, free)
                     .putString("goal_fly_" + activeId, fly)
                     .putString("goal_breast_" + activeId, breast)
@@ -133,8 +140,8 @@ public class GoalsActivity extends AppCompatActivity {
                 return true;
             } else if (id == R.id.nav_goals) {
                 return true;
-            } else if (id == R.id.nav_alerts) {
-                startActivity(new Intent(this, AlertsActivity.class));
+            } else if (id == R.id.nav_settings) {
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             } else if (id == R.id.nav_profile) {
                 startActivity(new Intent(this, ProfileActivity.class));
@@ -276,12 +283,15 @@ public class GoalsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadSavedGoals();
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+        bottomNav.setSelectedItemId(R.id.nav_goals);
     }
 
     private void loadSavedGoals() {
         int activeId = ProfileManager.getActiveProfileId(this);
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         etWeeklySessions.setText(prefs.getString("weekly_sessions_" + activeId, ""));
+        etWeeklyKm.setText(prefs.getString("weekly_km_" + activeId, ""));
         etGoalFree.setText(prefs.getString("goal_free_" + activeId, ""));
         etGoalFly.setText(prefs.getString("goal_fly_" + activeId, ""));
         etGoalBreast.setText(prefs.getString("goal_breast_" + activeId, ""));

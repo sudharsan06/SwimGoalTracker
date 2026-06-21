@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Base.Theme.SwimGoalTracker" parent="Theme.AppCompat">
+        <item name="android:statusBarColor">@color/dark_background</item>
+        <item name="colorPrimary">@color/dark_primary_fixed_dim</item>
+        <item name="colorPrimaryVariant">@color/dark_primary_container</item>
+        <item name="colorOnPrimary">@color/dark_background</item>
+    </style>
+
+    <style name="AppTheme" parent="Theme.MaterialComponents">
+        <item name="colorPrimary">@color/dark_primary_fixed_dim</item>
+        <item name="colorPrimaryVariant">@color/dark_primary_container</item>
+        <item name="colorOnPrimary">@color/dark_background</item>
+        <item name="colorSecondary">@color/dark_secondary</item>
+        <item name="colorAccent">@color/dark_primary_fixed_dim</item>
+        <item name="android:textColorSecondary">@color/dark_on_surface_variant</item>
+        <item name="android:statusBarColor">@color/dark_background</item>
+    </style>
+
+    <style name="AppTheme_NoActionBar" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="colorPrimary">@color/dark_primary_fixed_dim</item>
+        <item name="colorPrimaryVariant">@color/dark_primary_container</item>
+        <item name="colorOnPrimary">@color/dark_background</item>
+        <item name="colorSecondary">@color/dark_secondary</item>
+        <item name="colorAccent">@color/dark_primary_fixed_dim</item>
+        <item name="android:textColorSecondary">@color/dark_on_surface_variant</item>
+        <item name="android:windowBackground">@color/dark_background</item>
+        <item name="android:statusBarColor">@color/dark_background</item>
+        <item name="android:navigationBarColor">@color/dark_surface_lowest</item>
+    </style>
+
+    <style name="AlertDialogTheme" parent="Theme.MaterialComponents.Dialog.Alert">
+        <item name="colorAccent">?attr/colorPrimary</item>
+        <item name="android:textColorPrimary">?android:attr/textColorPrimary</item>
+        <item name="android:windowBackground">?attr/colorSurface</item>
+    </style>
+</resources>

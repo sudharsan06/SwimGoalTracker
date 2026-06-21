@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class NutritionDbHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "goaltracker.db";
-    public static final int DB_VERSION = 7;
+    public static final int DB_VERSION = 9;
 
     public NutritionDbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -33,7 +33,9 @@ public class NutritionDbHelper extends SQLiteOpenHelper {
                 "weight REAL, " +
                 "start_date TEXT, " +
                 "last_login TEXT, " +
-                "pool_distance INTEGER NOT NULL DEFAULT 25" +
+                "pool_distance INTEGER NOT NULL DEFAULT 25, " +
+                "school_club TEXT, " +
+                "city_state TEXT" +
                 ")");
 
         // profile_id column links sessions to their owner profile
@@ -51,7 +53,8 @@ public class NutritionDbHelper extends SQLiteOpenHelper {
                 "im_breaststroke_ms INTEGER NOT NULL DEFAULT 0, " +
                 "im_freestyle_ms INTEGER NOT NULL DEFAULT 0, " +
                 "created_at INTEGER NOT NULL DEFAULT 0, " +
-                "pool_distance INTEGER NOT NULL DEFAULT 25" +
+                "pool_distance INTEGER NOT NULL DEFAULT 25, " +
+                "total_distance INTEGER NOT NULL DEFAULT 0" +
                 ")");
     }
 
@@ -102,6 +105,19 @@ public class NutritionDbHelper extends SQLiteOpenHelper {
                 db.execSQL("ALTER TABLE swim_sessions ADD COLUMN im_backstroke_ms INTEGER NOT NULL DEFAULT 0");
                 db.execSQL("ALTER TABLE swim_sessions ADD COLUMN im_breaststroke_ms INTEGER NOT NULL DEFAULT 0");
                 db.execSQL("ALTER TABLE swim_sessions ADD COLUMN im_freestyle_ms INTEGER NOT NULL DEFAULT 0");
+            } catch (Exception ignored) {}
+        }
+        if (oldVersion < 8) {
+            try {
+                db.execSQL("ALTER TABLE profile ADD COLUMN school_club TEXT");
+            } catch (Exception ignored) {}
+            try {
+                db.execSQL("ALTER TABLE profile ADD COLUMN city_state TEXT");
+            } catch (Exception ignored) {}
+        }
+        if (oldVersion < 9) {
+            try {
+                db.execSQL("ALTER TABLE swim_sessions ADD COLUMN total_distance INTEGER NOT NULL DEFAULT 0");
             } catch (Exception ignored) {}
         }
     }

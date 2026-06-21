@@ -4,8 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#F0ECEC</color>
 
-
-    <color name="colorPrimaryDark">@color/midnight_blue</color> <!-- This will be for the status bar -->
+    <color name="colorPrimaryDark">@color/midnight_blue</color>
 
     <color name="my_custom_status_bar_color">#FF5722</color>
     <color name="my_custom_app_bar_color">#FF9800</color>
@@ -15,29 +14,6 @@
     <color name="colorAccent">#FFD60A</color>
     <color name="colorBackground">#CAF0F8</color>
     <color name="colorText">#023E8A</color>
-
-
-    <color name="watercolorBackground">#F0F8FF</color> <!-- Alice Blue -->
-    <color name="softLavender">#E6E6FA</color>
-    <color name="mistyRose">#FFE4E1</color>
-    <color name="aquaTint">#E0FFFF</color>
-    <color name="textPrimary">#4A4A4A</color>
-    <color name="textSecondary">#7A8C99</color>
-    <color name="cardBackground">#E0F7FA</color> <!-- Soft aqua -->
-
-    <color name="teal_primary">#4A90A4</color>
-    <color name="teal_dark">#2c5aa0</color>
-    <color name="teal_light">#7DB8C4</color>
-    <color name="orange">#FF9800</color>
-    <color name="bg_color">#f5f9fb</color>
-
-
-    <color name="orange_accent">#FF9800</color>
-    <color name="bg_light">#F5F9FB</color>
-    <color name="text_dark">#2C3E50</color>
-    <color name="text_light">#7F8C8D</color>
-    <color name="gray_light">#ECF0F1</color>
-    <color name="card_shadow">#1A000000</color>
 
     <!-- Light Theme -->
     <color name="lightPrimary">#0077B6</color>
@@ -58,7 +34,49 @@
     <color name="lightPrimaryDark">#005F91</color>
     <color name="dark_night">#0A1220</color>
 
+    <color name="teal_primary">#4A90A4</color>
+    <color name="teal_dark">#2c5aa0</color>
+    <color name="teal_light">#7DB8C4</color>
+    <color name="orange">#FF9800</color>
+    <color name="bg_color">#f5f9fb</color>
+    <color name="orange_accent">#FF9800</color>
+    <color name="bg_light">#F5F9FB</color>
+    <color name="text_dark">#2C3E50</color>
+    <color name="text_light">#7F8C8D</color>
+    <color name="textPrimary">#4A4A4A</color>
+    <color name="textSecondary">#7A8C99</color>
+    <color name="gray_light">#ECF0F1</color>
+    <color name="card_shadow">#1A000000</color>
+    <color name="watercolorBackground">#F0F8FF</color>
+    <color name="softLavender">#E6E6FA</color>
+    <color name="mistyRose">#FFE4E1</color>
+    <color name="aquaTint">#E0FFFF</color>
+    <color name="cardBackground">#E0F7FA</color>
 
+    <!-- Light Theme Palette (used in light mode; overridden in values-night/) -->
+    <color name="dark_background">#F0F4F8</color>
+    <color name="dark_surface_dim">#E2E8F0</color>
+    <color name="dark_surface">#FFFFFF</color>
+    <color name="dark_surface_low">#F8FAFC</color>
+    <color name="dark_surface_lowest">#FFFFFF</color>
+    <color name="dark_surface_high">#E2E8F0</color>
+    <color name="dark_surface_highest">#CBD5E1</color>
+    <color name="dark_surface_bright">#94A3B8</color>
+    <color name="dark_on_surface">#0F172A</color>
+    <color name="dark_on_surface_variant">#475569</color>
+    <color name="dark_primary">#006994</color>
+    <color name="dark_primary_fixed_dim">#0077B6</color>
+    <color name="dark_primary_container">#BAE6FD</color>
+    <color name="dark_on_primary_container">#FFFFFF</color>
+    <color name="dark_secondary">#0F766E</color>
+    <color name="dark_secondary_container">#CCFBF1</color>
+    <color name="dark_outline">#94A3B8</color>
+    <color name="dark_outline_variant">#CBD5E1</color>
 
-
+    <!-- Glass card drawable colors for light mode -->
+    <color name="glass_card_bg">#0A000000</color>
+    <color name="glass_card_border">#1A000000</color>
+    <color name="glass_card_featured_border">#330089A3</color>
+    <color name="progress_track_bg">#1A000000</color>
+    <color name="bottom_border_color">#1A000000</color>
 </resources>

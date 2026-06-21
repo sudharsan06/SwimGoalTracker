@@ -17,6 +17,7 @@ import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.dreamcreators.swimgoaltracker.db.NutritionDbHelper;
 import com.dreamcreators.swimgoaltracker.R;
+import com.dreamcreators.swimgoaltracker.utility.ThemeManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.SimpleDateFormat;
@@ -30,15 +31,16 @@ public class NutritionEntryActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ThemeManager.applyTheme(this);
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
+        getWindow().setStatusBarColor(getColor(R.color.dark_surface_low));
         setContentView(R.layout.activity_nutrition_entry);
         WindowInsetsControllerCompat controller =
                 WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-        controller.setAppearanceLightStatusBars(true);
+        controller.setAppearanceLightStatusBars(!ThemeManager.isDarkMode(this));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         setTitle("Daily Nutrition entry");
@@ -111,8 +113,8 @@ public class NutritionEntryActivity extends AppCompatActivity {
                 } else if (itemId == R.id.nav_goals) {
                     startActivity(new Intent(this, GoalsActivity.class));
                     return true;
-                } else if (itemId == R.id.nav_alerts) {
-                    startActivity(new Intent(this, AlertsActivity.class));
+                } else if (itemId == R.id.nav_settings) {
+                    startActivity(new Intent(this, SettingsActivity.class));
                     return true;
                 } else if (itemId == R.id.nav_profile) {
                     startActivity(new Intent(this, ProfileActivity.class));

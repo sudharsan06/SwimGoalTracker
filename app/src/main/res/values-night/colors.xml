@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Material 3 Dark Theme Palette (same as original dark) -->
+    <color name="dark_background">#101415</color>
+    <color name="dark_surface_dim">#101415</color>
+    <color name="dark_surface">#1d2022</color>
+    <color name="dark_surface_low">#191c1e</color>
+    <color name="dark_surface_lowest">#0b0f10</color>
+    <color name="dark_surface_high">#272a2c</color>
+    <color name="dark_surface_highest">#323537</color>
+    <color name="dark_surface_bright">#363a3b</color>
+    <color name="dark_on_surface">#e0e3e5</color>
+    <color name="dark_on_surface_variant">#bac9cc</color>
+    <color name="dark_primary">#c3f5ff</color>
+    <color name="dark_primary_fixed_dim">#00daf3</color>
+    <color name="dark_primary_container">#00e5ff</color>
+    <color name="dark_on_primary_container">#004f58</color>
+    <color name="dark_secondary">#a8c9f3</color>
+    <color name="dark_secondary_container">#294b6f</color>
+    <color name="dark_outline">#849396</color>
+    <color name="dark_outline_variant">#3b494c</color>
+
+    <!-- Drawable glass card colors for dark mode -->
+    <color name="glass_card_bg">#1A1D2022</color>
+    <color name="glass_card_border">#1AFFFFFF</color>
+    <color name="glass_card_featured_border">#3300DAF3</color>
+    <color name="progress_track_bg">#1AFFFFFF</color>
+    <color name="bottom_border_color">#1AFFFFFF</color>
+</resources>

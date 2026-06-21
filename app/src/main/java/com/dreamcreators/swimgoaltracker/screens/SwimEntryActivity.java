@@ -22,6 +22,7 @@ import android.util.Log;
 import com.dreamcreators.swimgoaltracker.db.NutritionDbHelper;
 import com.dreamcreators.swimgoaltracker.db.ProfileManager;
 import com.dreamcreators.swimgoaltracker.R;
+import com.dreamcreators.swimgoaltracker.utility.ThemeManager;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
@@ -53,14 +54,15 @@ public class SwimEntryActivity extends AppCompatActivity {
     private TextInputLayout edtSwimTimeLay;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ThemeManager.applyTheme(this);
         super.onCreate(savedInstanceState);
         androidx.core.view.WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
+        getWindow().setStatusBarColor(getColor(R.color.dark_surface_low));
         WindowInsetsControllerCompat controller =
                 WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-        controller.setAppearanceLightStatusBars(true);
+        controller.setAppearanceLightStatusBars(!ThemeManager.isDarkMode(this));
         setContentView(R.layout.activity_swim_entry);
 
         View main = findViewById(R.id.main);
@@ -293,6 +295,7 @@ public class SwimEntryActivity extends AppCompatActivity {
             values.put("date", date);
             values.put("profile_id", ProfileManager.getActiveProfileId(this));
             values.put("created_at", System.currentTimeMillis());
+            values.put("total_distance", getPoolDistance());
             
             // Only set the selected style, others will default to 0
             // This allows tracking multiple attempts and finding the best time using MIN()
@@ -331,6 +334,24 @@ public class SwimEntryActivity extends AppCompatActivity {
             return;
         }
 
+    }
+
+    private int getPoolDistance() {
+        int activeProfileId = ProfileManager.getActiveProfileId(this);
+        int poolDistance = 25;
+        try {
+            android.database.Cursor c = dbHelper.getReadableDatabase().rawQuery(
+                    "SELECT pool_distance FROM profile WHERE id = ?",
+                    new String[]{String.valueOf(activeProfileId)}
+            );
+            if (c.moveToFirst()) {
+                poolDistance = c.getInt(0);
+            }
+            c.close();
+        } catch (Exception e) {
+            Log.e("SwimEntryActivity", "Error loading pool distance", e);
+        }
+        return poolDistance;
     }
 
     private void throwAlertMessage(String message) {

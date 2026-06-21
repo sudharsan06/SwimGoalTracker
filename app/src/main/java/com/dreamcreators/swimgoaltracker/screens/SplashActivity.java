@@ -10,17 +10,23 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.dreamcreators.swimgoaltracker.R;
+import com.dreamcreators.swimgoaltracker.utility.ThemeManager;
 
 public class SplashActivity extends ComponentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (ThemeManager.isDarkMode(this)) {
+            setTheme(R.style.AppTheme_NoActionBar_Dark);
+        } else {
+            setTheme(R.style.AppTheme_NoActionBar_Light);
+        }
         super.onCreate(savedInstanceState);
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
+        getWindow().setStatusBarColor(getColor(R.color.dark_surface_low));
         WindowInsetsControllerCompat controller =
                 WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-        controller.setAppearanceLightStatusBars(true);
+        controller.setAppearanceLightStatusBars(!ThemeManager.isDarkMode(this));
         setContentView(R.layout.activity_splash);
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             try {

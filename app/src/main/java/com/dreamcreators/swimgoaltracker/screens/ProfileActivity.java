@@ -13,16 +13,20 @@ import android.widget.NumberPicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import com.dreamcreators.swimgoaltracker.db.NutritionDbHelper;
 import com.dreamcreators.swimgoaltracker.db.ProfileManager;
 import com.dreamcreators.swimgoaltracker.R;
+import com.dreamcreators.swimgoaltracker.utility.ThemeManager;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
 
-import androidx.activity.ComponentActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
@@ -33,7 +37,7 @@ import java.util.Locale;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
-public class ProfileActivity extends ComponentActivity {
+public class ProfileActivity extends AppCompatActivity {
 
     public static final String EXTRA_PROFILE_ID = "profile_id";
     public static final String EXTRA_SETUP_MODE = "setup_mode";
@@ -129,14 +133,15 @@ public class ProfileActivity extends ComponentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ThemeManager.applyTheme(this);
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
+        getWindow().setStatusBarColor(getColor(R.color.dark_surface_low));
         WindowInsetsControllerCompat controller =
                 WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-        controller.setAppearanceLightStatusBars(true);
+        controller.setAppearanceLightStatusBars(!ThemeManager.isDarkMode(this));
         setContentView(R.layout.activity_profile);
 
         dbHelper = new NutritionDbHelper(this);
@@ -153,6 +158,8 @@ public class ProfileActivity extends ComponentActivity {
         EditText etAge = findViewById(R.id.etAge);
         EditText etHeight = findViewById(R.id.etHeight);
         EditText etWeight = findViewById(R.id.etWeight);
+        TextInputEditText etSchoolClub = findViewById(R.id.etSchoolClub);
+        TextInputEditText etCityState = findViewById(R.id.etCityState);
         View btnPickStartDate = findViewById(R.id.btnPickStartDate);
         TextView tvStartDate = findViewById(R.id.tvStartDate);
         TextView tvLastLogin = findViewById(R.id.tvLastLogin);
@@ -185,7 +192,7 @@ public class ProfileActivity extends ComponentActivity {
         });
 
         Cursor c = dbHelper.getReadableDatabase().rawQuery(
-                "SELECT image_uri, name, age, height, weight, start_date, last_login, pool_distance FROM profile WHERE id=?",
+                "SELECT image_uri, name, age, height, weight, start_date, last_login, pool_distance, school_club, city_state FROM profile WHERE id=?",
                 new String[]{String.valueOf(targetProfileId)});
         if (c.moveToFirst()) {
             String uriStr = c.getString(0);
@@ -232,6 +239,12 @@ public class ProfileActivity extends ComponentActivity {
                     tvPoolDistance.setText(currentPoolDistance + " metres");
                 }
             }
+            // School / Club at index 8
+            String schoolClub = c.getString(8);
+            if (schoolClub != null) etSchoolClub.setText(schoolClub);
+            // City / State at index 9
+            String cityState = c.getString(9);
+            if (cityState != null) etCityState.setText(cityState);
         }
         c.close();
 
@@ -279,6 +292,9 @@ public class ProfileActivity extends ComponentActivity {
             String weightStr = etWeight.getText().toString();
             int weight = parseIntSafe(weightStr.replace(" kg", ""));
 
+            String schoolClub = etSchoolClub.getText().toString().trim();
+            String cityState = etCityState.getText().toString().trim();
+
             ContentValues values = new ContentValues();
             values.put("id", targetProfileId);
             values.put("image_uri", imageUri == null ? null : imageUri.toString());
@@ -288,6 +304,8 @@ public class ProfileActivity extends ComponentActivity {
             values.put("weight", (float) weight);
             values.put("start_date", (startDate == null || startDate.trim().isEmpty()) ? "" : startDate);
             values.put("pool_distance", currentPoolDistance);
+            values.put("school_club", schoolClub.isEmpty() ? null : schoolClub);
+            values.put("city_state", cityState.isEmpty() ? null : cityState);
             String now = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Calendar.getInstance().getTime());
             values.put("last_login", now);
 
@@ -304,6 +322,8 @@ public class ProfileActivity extends ComponentActivity {
             ProfileManager.setActiveProfileId(this, targetProfileId);
             proceedToMain();
         });
+
+        setupBottomNav();
 
         btnSkip.setOnClickListener(v -> proceedToMain());
 
@@ -359,6 +379,45 @@ public class ProfileActivity extends ComponentActivity {
             startActivity(new Intent(this, MainActivity.class));
         }
         finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!isSetupMode) {
+            BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+            bottomNav.setSelectedItemId(R.id.nav_profile);
+        }
+    }
+
+    private void setupBottomNav() {
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+        if (isSetupMode) {
+            bottomNav.setVisibility(View.GONE);
+            return;
+        }
+        bottomNav.setSelectedItemId(R.id.nav_profile);
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                Intent i = new Intent(this, MainActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(i);
+                return true;
+            } else if (id == R.id.nav_tracker) {
+                startActivity(new Intent(this, TrackerActivity.class));
+                return true;
+            } else if (id == R.id.nav_goals) {
+                startActivity(new Intent(this, GoalsActivity.class));
+                return true;
+            } else if (id == R.id.nav_settings) {
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            } else if (id == R.id.nav_profile) {
+                return true;
+            }
+            return false;
+        });
     }
 
     private void persistProfileImageUri(Uri uri) {

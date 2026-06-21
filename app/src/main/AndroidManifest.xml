@@ -109,6 +109,13 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".screens.SettingsActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme_NoActionBar" />
+
+        <activity
             android:name=".screens.InstructionActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false"

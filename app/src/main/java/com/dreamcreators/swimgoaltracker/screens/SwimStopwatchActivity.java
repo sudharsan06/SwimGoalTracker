@@ -10,9 +10,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.view.View;
 import android.graphics.Typeface;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import com.dreamcreators.swimgoaltracker.db.ProfileManager;
 import com.dreamcreators.swimgoaltracker.R;
 import com.dreamcreators.swimgoaltracker.adapter.SwimTimingAdapter;
 import com.dreamcreators.swimgoaltracker.pojo.SwimTimingEntry;
+import com.dreamcreators.swimgoaltracker.utility.ThemeManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.util.Log;
 
@@ -47,6 +49,17 @@ import androidx.core.view.WindowCompat;
 public class SwimStopwatchActivity extends AppCompatActivity {
     private final Handler handler = new Handler(Looper.getMainLooper());
 
+    // State machine
+    private static final int STATE_IDLE = 0;
+    private static final int STATE_RUNNING = 1;
+    private static final int STATE_PAUSED = 2;
+
+    private int freeState = STATE_IDLE;
+    private int backState = STATE_IDLE;
+    private int breastState = STATE_IDLE;
+    private int flyState = STATE_IDLE;
+    private int imState = STATE_IDLE;
+
     private long startFree = -1, elapsedFree = 0;
     private long startBack = -1, elapsedBack = 0;
     private long startBreast = -1, elapsedBreast = 0;
@@ -60,10 +73,17 @@ public class SwimStopwatchActivity extends AppCompatActivity {
     private TextView tvLabelImFly, tvLabelImBack, tvLabelImBreast, tvLabelImFree;
     private View layImFly, layImBack, layImBreast, layImFree;
 
-    private TextView tvDate;
     private TextView tvPoolDistanceInfo;
     private TextView tvFree, tvBack, tvBreast, tvFly;
+    private TextView tvFreeTarget, tvBackTarget, tvBreastTarget, tvFlyTarget, tvIMTarget;
+    private TextView tvFreePrevious, tvBackPrevious, tvBreastPrevious, tvFlyPrevious, tvIMPrevious;
+    private TextView tvFreeReadyBadge, tvBackReadyBadge, tvBreastReadyBadge, tvFlyReadyBadge, tvIMReadyBadge;
+    private TextView tvFreePlayLabel, tvBackPlayLabel, tvBreastPlayLabel, tvFlyPlayLabel, tvIMPlayLabel;
+    private ImageButton btnFreePlayPause, btnBackPlayPause, btnBreastPlayPause, btnFlyPlayPause, btnIMPlayPause;
+    private ImageButton btnFreeReset, btnBackReset, btnBreastReset, btnFlyReset, btnIMReset;
+    private ImageButton btnSaveFree, btnSaveBack, btnSaveBreast, btnSaveFly, btnSaveIm;
     private TextView tvEntriesHeader;
+    private TextView tvFreePoolDist, tvBackPoolDist, tvBreastPoolDist, tvFlyPoolDist, tvIMPoolDist;
     private android.widget.Spinner spinnerImFilter;
     private int currentFilter = 1; // Default: 1 = 1 Week
     private NutritionDbHelper dbHelper;
@@ -72,21 +92,19 @@ public class SwimStopwatchActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ThemeManager.applyTheme(this);
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
+        getWindow().setStatusBarColor(getColor(R.color.dark_surface_low));
         WindowInsetsControllerCompat controller =
                 WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-        controller.setAppearanceLightStatusBars(true);
+        controller.setAppearanceLightStatusBars(!ThemeManager.isDarkMode(this));
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_swim_stopwatch);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
-        tvDate = findViewById(R.id.tvSwimDate);
-        tvPoolDistanceInfo = findViewById(R.id.tvPoolDistanceInfo);
+       // tvPoolDistanceInfo = findViewById(R.id.tvPoolDistanceInfo);
         tvFree = findViewById(R.id.tvFree);
         tvBack = findViewById(R.id.tvBack);
         tvBreast = findViewById(R.id.tvBreast);
@@ -113,27 +131,50 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         layImBack = findViewById(R.id.layImBack);
         layImBreast = findViewById(R.id.layImBreast);
         layImFree = findViewById(R.id.layImFree);
-        Button btnIMStart = findViewById(R.id.btnIMStart);
-        Button btnIMNext = findViewById(R.id.btnIMNext);
-        Button btnIMReset = findViewById(R.id.btnIMReset);
-        Button btn_save_im = findViewById(R.id.btn_save_im);
 
-        Button btnFreeStart = findViewById(R.id.btnFreeStart);
-        Button btnFreeStop = findViewById(R.id.btnFreeStop);
-        Button btnFreeReset = findViewById(R.id.btnFreeReset);
-        Button btnBackStart = findViewById(R.id.btnBackStart);
-        Button btnBackStop = findViewById(R.id.btnBackStop);
-        Button btnBackReset = findViewById(R.id.btnBackReset);
-        Button btnBreastStart = findViewById(R.id.btnBreastStart);
-        Button btnBreastStop = findViewById(R.id.btnBreastStop);
-        Button btnBreastReset = findViewById(R.id.btnBreastReset);
-        Button btnFlyStart = findViewById(R.id.btnFlyStart);
-        Button btnFlyStop = findViewById(R.id.btnFlyStop);
-        Button btnFlyReset = findViewById(R.id.btnFlyReset);
-        Button btn_save_free = findViewById(R.id.btn_save_free);
-        Button btn_save_back = findViewById(R.id.btn_save_back);
-        Button btn_save_breast = findViewById(R.id.btn_save_breast);
-        Button btn_save_fly = findViewById(R.id.btn_save_fly);
+        // Target & Previous, Ready Badge, Play Label views
+        tvFreeTarget = findViewById(R.id.tvFreeTarget);
+        tvBackTarget = findViewById(R.id.tvBackTarget);
+        tvBreastTarget = findViewById(R.id.tvBreastTarget);
+        tvFlyTarget = findViewById(R.id.tvFlyTarget);
+        tvIMTarget = findViewById(R.id.tvIMTarget);
+        tvFreePrevious = findViewById(R.id.tvFreePrevious);
+        tvBackPrevious = findViewById(R.id.tvBackPrevious);
+        tvBreastPrevious = findViewById(R.id.tvBreastPrevious);
+        tvFlyPrevious = findViewById(R.id.tvFlyPrevious);
+        tvIMPrevious = findViewById(R.id.tvIMPrevious);
+        tvFreeReadyBadge = findViewById(R.id.tvFreeReadyBadge);
+        tvBackReadyBadge = findViewById(R.id.tvBackReadyBadge);
+        tvBreastReadyBadge = findViewById(R.id.tvBreastReadyBadge);
+        tvFlyReadyBadge = findViewById(R.id.tvFlyReadyBadge);
+        tvIMReadyBadge = findViewById(R.id.tvIMReadyBadge);
+        tvFreePlayLabel = findViewById(R.id.tvFreePlayLabel);
+        tvBackPlayLabel = findViewById(R.id.tvBackPlayLabel);
+        tvBreastPlayLabel = findViewById(R.id.tvBreastPlayLabel);
+        tvFlyPlayLabel = findViewById(R.id.tvFlyPlayLabel);
+        tvIMPlayLabel = findViewById(R.id.tvIMPlayLabel);
+
+        btnFreePlayPause = findViewById(R.id.btnFreePlayPause);
+        btnBackPlayPause = findViewById(R.id.btnBackPlayPause);
+        btnBreastPlayPause = findViewById(R.id.btnBreastPlayPause);
+        btnFlyPlayPause = findViewById(R.id.btnFlyPlayPause);
+        btnIMPlayPause = findViewById(R.id.btnIMPlayPause);
+        btnFreeReset = findViewById(R.id.btnFreeReset);
+        btnBackReset = findViewById(R.id.btnBackReset);
+        btnBreastReset = findViewById(R.id.btnBreastReset);
+        btnFlyReset = findViewById(R.id.btnFlyReset);
+        btnIMReset = findViewById(R.id.btnIMReset);
+        btnSaveFree = findViewById(R.id.btn_save_free);
+        btnSaveBack = findViewById(R.id.btn_save_back);
+        btnSaveBreast = findViewById(R.id.btn_save_breast);
+        btnSaveFly = findViewById(R.id.btn_save_fly);
+        btnSaveIm = findViewById(R.id.btn_save_im);
+
+        tvFreePoolDist = findViewById(R.id.tvFreePoolDist);
+        tvBackPoolDist = findViewById(R.id.tvBackPoolDist);
+        tvBreastPoolDist = findViewById(R.id.tvBreastPoolDist);
+        tvFlyPoolDist = findViewById(R.id.tvFlyPoolDist);
+        tvIMPoolDist = findViewById(R.id.tvIMPoolDist);
 
         // RecyclerView for entries list
         tvEntriesHeader = findViewById(R.id.tvEntriesHeader);
@@ -144,7 +185,6 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         dbHelper = new NutritionDbHelper(this);
 
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        tvDate.setText("DATE: " + today);
 
         // Adjust UI based on stroke intent
         String stroke = getIntent().getStringExtra("stroke");
@@ -158,22 +198,17 @@ public class SwimStopwatchActivity extends AppCompatActivity {
 
             if ("Freestyle".equalsIgnoreCase(stroke)) {
                 sectionFree.setVisibility(VISIBLE);
-                setTitle("Freestyle Timer");
                 selectedStroke = "Freestyle";
             } else if ("Backstroke".equalsIgnoreCase(stroke)) {
                 sectionBack.setVisibility(VISIBLE);
-                setTitle("Backstroke Timer");
                 selectedStroke = "Backstroke";
             } else if ("Breaststroke".equalsIgnoreCase(stroke)) {
                 sectionBreast.setVisibility(VISIBLE);
-                setTitle("Breaststroke Timer");
                 selectedStroke = "Breaststroke";
             } else if ("Butterfly".equalsIgnoreCase(stroke)) {
                 sectionFly.setVisibility(VISIBLE);
-                setTitle("Butterfly Timer");
                 selectedStroke = "Butterfly";
             } else if ("IM".equalsIgnoreCase(stroke)) {
-                getSupportActionBar().setTitle("IM Timer");
                 sectionIM.setVisibility(VISIBLE);
                 selectedStroke = "IM";
             }
@@ -191,7 +226,8 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 @Override
                 public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
                     currentFilter = position;
-                    loadFilteredEntries();
+            loadFilteredEntries();
+            loadTargetAndPreviousTimes();
                 }
 
                 @Override
@@ -218,30 +254,26 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             });
         }
 
-        btnFreeStart.setOnClickListener(v -> { vibrate(); startTimer("free"); });
-        btnFreeStop.setOnClickListener(v -> { vibrate(); stopTimer("free"); });
+        // Play/Pause button listeners
+        btnFreePlayPause.setOnClickListener(v -> { vibrate(); handlePlayPause("free"); });
         btnFreeReset.setOnClickListener(v -> { vibrate(); resetTimer("free"); });
-        btn_save_free.setOnClickListener(v -> { vibrate(); saveSession("free"); });
+        btnSaveFree.setOnClickListener(v -> { vibrate(); saveSession("free"); });
 
-        btnBackStart.setOnClickListener(v -> { vibrate(); startTimer("back"); });
-        btnBackStop.setOnClickListener(v -> { vibrate(); stopTimer("back"); });
+        btnBackPlayPause.setOnClickListener(v -> { vibrate(); handlePlayPause("back"); });
         btnBackReset.setOnClickListener(v -> { vibrate(); resetTimer("back"); });
-        btn_save_back.setOnClickListener(v -> { vibrate(); saveSession("back"); });
+        btnSaveBack.setOnClickListener(v -> { vibrate(); saveSession("back"); });
 
-        btnBreastStart.setOnClickListener(v -> { vibrate(); startTimer("breast"); });
-        btnBreastStop.setOnClickListener(v -> { vibrate(); stopTimer("breast"); });
+        btnBreastPlayPause.setOnClickListener(v -> { vibrate(); handlePlayPause("breast"); });
         btnBreastReset.setOnClickListener(v -> { vibrate(); resetTimer("breast"); });
-        btn_save_breast.setOnClickListener(v -> { vibrate(); saveSession("breast"); });
+        btnSaveBreast.setOnClickListener(v -> { vibrate(); saveSession("breast"); });
 
-        btnFlyStart.setOnClickListener(v -> { vibrate(); startTimer("fly"); });
-        btnFlyStop.setOnClickListener(v -> { vibrate(); stopTimer("fly"); });
+        btnFlyPlayPause.setOnClickListener(v -> { vibrate(); handlePlayPause("fly"); });
         btnFlyReset.setOnClickListener(v -> { vibrate(); resetTimer("fly"); });
-        btn_save_fly.setOnClickListener(v -> { vibrate(); saveSession("fly"); });
+        btnSaveFly.setOnClickListener(v -> { vibrate(); saveSession("fly"); });
 
-        btnIMStart.setOnClickListener(v -> { vibrate(); startIMTimer(); });
-        btnIMNext.setOnClickListener(v -> { vibrate(); nextIMStroke(); });
-        btnIMReset.setOnClickListener(v -> { vibrate(); resetIMTimer(); });
-        btn_save_im.setOnClickListener(v -> { vibrate(); saveSession("im"); });
+        btnIMPlayPause.setOnClickListener(v -> { vibrate(); handleIMPlayPause(); });
+        btnIMReset.setOnClickListener(v -> { vibrate(); resetIMTimer(); updateIMState(STATE_IDLE); updateIMPlayPauseUI(); });
+        btnSaveIm.setOnClickListener(v -> { vibrate(); saveSession("im"); });
 
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
         
@@ -259,8 +291,8 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             } else if (itemId == R.id.nav_goals) {
                 startActivity(new Intent(this, GoalsActivity.class));
                 return true;
-            } else if (itemId == R.id.nav_alerts) {
-                startActivity(new Intent(this, AlertsActivity.class));
+            } else if (itemId == R.id.nav_settings) {
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             } else if (itemId == R.id.nav_profile) {
                 startActivity(new Intent(this, ProfileActivity.class));
@@ -320,8 +352,8 @@ public class SwimStopwatchActivity extends AppCompatActivity {
     }
 
     private void updateImSplitHighlight() {
-        int activeColor = getColor(R.color.black);
-        int inactiveColor = getColor(R.color.steel_blue);
+        int activeColor = getColor(R.color.dark_on_surface);
+        int inactiveColor = getColor(R.color.dark_on_surface_variant);
 
         tvLabelImFly.setTextColor(imStrokeIndex == 0 ? activeColor : inactiveColor);
         tvImFlyVal.setTextColor(imStrokeIndex == 0 ? activeColor : inactiveColor);
@@ -350,7 +382,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
     }
 
     private void clearImHighlight() {
-        int inactiveColor = getColor(R.color.steel_blue);
+        int inactiveColor = getColor(R.color.dark_on_surface_variant);
 
         tvLabelImFly.setTextColor(inactiveColor);
         tvImFlyVal.setTextColor(inactiveColor);
@@ -471,24 +503,34 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             case "free":
                 startFree = -1;
                 elapsedFree = 0;
+                freeState = STATE_IDLE;
                 break;
             case "back":
                 startBack = -1;
                 elapsedBack = 0;
+                backState = STATE_IDLE;
                 break;
             case "breast":
                 startBreast = -1;
                 elapsedBreast = 0;
+                breastState = STATE_IDLE;
                 break;
             case "fly":
                 startFly = -1;
                 elapsedFly = 0;
+                flyState = STATE_IDLE;
                 break;
             case "im":
                 resetIMTimer();
+                imState = STATE_IDLE;
                 break;
         }
         updateLabels();
+        if ("im".equals(which)) {
+            updateIMPlayPauseUI();
+        } else {
+            updatePlayPauseUI(which, STATE_IDLE);
+        }
     }
 
     private final Runnable tick = new Runnable() {
@@ -557,6 +599,225 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         return String.format(Locale.getDefault(), "%02d:%02d.%02d", minutes, seconds, hundredths);
     }
 
+    private void loadTargetAndPreviousTimes() {
+        int activeId = ProfileManager.getActiveProfileId(this);
+        android.content.SharedPreferences goalPrefs = getSharedPreferences("swim_goals", MODE_PRIVATE);
+
+        String[][] styles = {
+            {"free", "Free"}, {"back", "Back"}, {"breast", "Breast"}, {"fly", "Fly"}, {"im", "IM"}
+        };
+        TextView[] targetViews = {tvFreeTarget, tvBackTarget, tvBreastTarget, tvFlyTarget, tvIMTarget};
+        TextView[] prevViews = {tvFreePrevious, tvBackPrevious, tvBreastPrevious, tvFlyPrevious, tvIMPrevious};
+
+        for (int i = 0; i < styles.length; i++) {
+            String key = styles[i][0];
+            String goalKey = "goal_" + key + "_" + activeId;
+            String goalStr = goalPrefs.getString(goalKey, "");
+            long goalMs = parseGoalToMs(goalStr);
+            targetViews[i].setText(goalMs > 0 ? formatMs(goalMs) : "--:--.--");
+
+            // Load previous best from DB
+            String columnName;
+            switch (key) {
+                case "free": columnName = "freestyle_ms"; break;
+                case "back": columnName = "backstroke_ms"; break;
+                case "breast": columnName = "breaststroke_ms"; break;
+                case "fly": columnName = "butterfly_ms"; break;
+                case "im": columnName = "im_ms"; break;
+                default: columnName = "freestyle_ms"; break;
+            }
+            Cursor c = dbHelper.getReadableDatabase().rawQuery(
+                "SELECT MIN(" + columnName + ") FROM swim_sessions WHERE " + columnName + " > 0 AND profile_id = ?",
+                new String[]{String.valueOf(activeId)}
+            );
+            long prevMs = 0;
+            if (c.moveToFirst()) prevMs = c.getLong(0);
+            c.close();
+            prevViews[i].setText(prevMs > 0 ? formatMs(prevMs) : "--:--.--");
+        }
+    }
+
+    private void handlePlayPause(String which) {
+        int state = getState(which);
+        if (state == STATE_IDLE || state == STATE_PAUSED) {
+            startTimer(which);
+            setState(which, STATE_RUNNING);
+            updatePlayPauseUI(which, STATE_RUNNING);
+        } else if (state == STATE_RUNNING) {
+            stopTimer(which);
+            setState(which, STATE_PAUSED);
+            updatePlayPauseUI(which, STATE_PAUSED);
+        }
+    }
+
+    private void handleIMPlayPause() {
+        if (imState == STATE_IDLE) {
+            // Start IM
+            startIMTimer();
+            imStrokeIndex = 0;
+            updateIMState(STATE_RUNNING);
+            updateIMPlayPauseUI();
+        } else if (imState == STATE_RUNNING) {
+            // Advance to next stroke
+            if (imStrokeIndex < 4 && startIM >= 0) {
+                nextIMStroke();
+                updateIMPlayPauseUI();
+                if (imStrokeIndex >= 4) {
+                    // IM complete - all 4 strokes done
+                    updateIMState(STATE_PAUSED);
+                    updateIMPlayPauseUI();
+                }
+            }
+        } else if (imState == STATE_PAUSED) {
+            if (imStrokeIndex >= 4) {
+                // Complete - restart
+                resetIMTimer();
+                updateIMState(STATE_IDLE);
+                updateIMPlayPauseUI();
+            } else {
+                // Resume
+                startTimer("im");
+                updateIMState(STATE_RUNNING);
+                updateIMPlayPauseUI();
+            }
+        }
+    }
+
+    private int getState(String which) {
+        switch (which) {
+            case "free": return freeState;
+            case "back": return backState;
+            case "breast": return breastState;
+            case "fly": return flyState;
+        }
+        return STATE_IDLE;
+    }
+
+    private void setState(String which, int state) {
+        switch (which) {
+            case "free": freeState = state; break;
+            case "back": backState = state; break;
+            case "breast": breastState = state; break;
+            case "fly": flyState = state; break;
+        }
+    }
+
+    private void updateIMState(int state) {
+        imState = state;
+    }
+
+    private void updatePlayPauseUI(String which, int state) {
+        ImageButton btn = getPlayPauseButton(which);
+        ImageButton resetBtn = getResetButton(which);
+        ImageButton saveBtn = getSaveButton(which);
+        TextView label = getPlayLabel(which);
+        TextView badge = getReadyBadge(which);
+
+        if (btn == null) return;
+
+        if (state == STATE_RUNNING) {
+            btn.setImageResource(android.R.drawable.ic_media_pause);
+            if (label != null) label.setText("TAP TO STOP");
+            if (badge != null) badge.setText("SWIMMING");
+            if (resetBtn != null) resetBtn.setVisibility(View.GONE);
+            if (saveBtn != null) saveBtn.setVisibility(View.GONE);
+        } else if (state == STATE_PAUSED) {
+            btn.setImageResource(android.R.drawable.ic_media_play);
+            if (label != null) label.setText("PAUSED");
+            if (badge != null) badge.setText("PAUSED");
+            if (resetBtn != null) resetBtn.setVisibility(View.VISIBLE);
+            if (saveBtn != null) saveBtn.setVisibility(View.VISIBLE);
+        } else {
+            btn.setImageResource(android.R.drawable.ic_media_play);
+            if (label != null) label.setText("START LAP");
+            if (badge != null) badge.setText("READY TO SWIM");
+            if (resetBtn != null) resetBtn.setVisibility(View.GONE);
+            if (saveBtn != null) saveBtn.setVisibility(View.GONE);
+        }
+    }
+
+    private void updateIMPlayPauseUI() {
+        if (btnIMPlayPause == null) return;
+
+        if (imState == STATE_IDLE) {
+            btnIMPlayPause.setImageResource(android.R.drawable.ic_media_play);
+            tvIMPlayLabel.setText("START IM");
+            tvIMReadyBadge.setText("READY TO SWIM");
+            btnIMReset.setVisibility(View.GONE);
+            btnSaveIm.setVisibility(View.GONE);
+        } else if (imState == STATE_RUNNING) {
+            String[] strokeLabels = {"FLY → BACK", "BACK → BREAST", "BREAST → FREE", "FREE → FINISH"};
+            String[] badgeLabels = {"SWIMMING FLY", "SWIMMING BACK", "SWIMMING BREAST", "SWIMMING FREE"};
+            int idx = Math.min(imStrokeIndex, 3);
+            btnIMPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+            tvIMPlayLabel.setText(strokeLabels[idx]);
+            btnIMReset.setVisibility(View.GONE);
+            btnSaveIm.setVisibility(View.GONE);
+            if (idx < 4) tvIMReadyBadge.setText(badgeLabels[idx]);
+        } else if (imState == STATE_PAUSED) {
+            btnIMPlayPause.setImageResource(android.R.drawable.ic_media_play);
+            if (imStrokeIndex >= 4) {
+                tvIMPlayLabel.setText("START NEW IM");
+                tvIMReadyBadge.setText("COMPLETE");
+            } else {
+                tvIMPlayLabel.setText("RESUME");
+                tvIMReadyBadge.setText("PAUSED");
+            }
+            btnIMReset.setVisibility(View.VISIBLE);
+            btnSaveIm.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private ImageButton getPlayPauseButton(String which) {
+        switch (which) {
+            case "free": return btnFreePlayPause;
+            case "back": return btnBackPlayPause;
+            case "breast": return btnBreastPlayPause;
+            case "fly": return btnFlyPlayPause;
+        }
+        return null;
+    }
+
+    private ImageButton getResetButton(String which) {
+        switch (which) {
+            case "free": return btnFreeReset;
+            case "back": return btnBackReset;
+            case "breast": return btnBreastReset;
+            case "fly": return btnFlyReset;
+        }
+        return null;
+    }
+
+    private ImageButton getSaveButton(String which) {
+        switch (which) {
+            case "free": return btnSaveFree;
+            case "back": return btnSaveBack;
+            case "breast": return btnSaveBreast;
+            case "fly": return btnSaveFly;
+        }
+        return null;
+    }
+
+    private TextView getPlayLabel(String which) {
+        switch (which) {
+            case "free": return tvFreePlayLabel;
+            case "back": return tvBackPlayLabel;
+            case "breast": return tvBreastPlayLabel;
+            case "fly": return tvFlyPlayLabel;
+        }
+        return null;
+    }
+
+    private TextView getReadyBadge(String which) {
+        switch (which) {
+            case "free": return tvFreeReadyBadge;
+            case "back": return tvBackReadyBadge;
+            case "breast": return tvBreastReadyBadge;
+            case "fly": return tvFlyReadyBadge;
+        }
+        return null;
+    }
+
     private void saveSession(String which) {
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         long createdAt = System.currentTimeMillis();
@@ -589,6 +850,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             values.put("im_breaststroke_ms", imSplitBreast);
             values.put("im_freestyle_ms", imSplitFree);
             values.put("created_at", createdAt);
+            values.put("total_distance", getPoolDistance());
             long id = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);
             if (id > 0) {
                 Toast.makeText(this, "Saved ✅", Toast.LENGTH_SHORT).show();
@@ -638,6 +900,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                     values.put("im_ms", elapsedIM);
                 }
                 values.put("created_at", createdAt);
+                values.put("total_distance", getPoolDistance());
                 
                 long id = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);
                 if (id > 0) {
@@ -775,6 +1038,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             values.put("butterfly_ms", showFly);
         }
         values.put("created_at", createdAt);
+        values.put("total_distance", getPoolDistance());
 
         long id = dbHelper.getWritableDatabase().insert("swim_sessions", null, values);
         if (id > 0) {
@@ -1038,13 +1302,31 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         } else {
             distanceText = poolDistance + "m";
         }
-        
-        String htmlText = "Current tracking uses a <b><font color='#102A43'>" + distanceText + "</font></b> pool. Change the pool distance in Profile screen.";
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            tvPoolDistanceInfo.setText(android.text.Html.fromHtml(htmlText, android.text.Html.FROM_HTML_MODE_LEGACY));
-        } else {
-            tvPoolDistanceInfo.setText(android.text.Html.fromHtml(htmlText));
+
+        String poolDist = distanceText;
+        if (tvFreePoolDist != null) tvFreePoolDist.setText(poolDist);
+        if (tvBackPoolDist != null) tvBackPoolDist.setText(poolDist);
+        if (tvBreastPoolDist != null) tvBreastPoolDist.setText(poolDist);
+        if (tvFlyPoolDist != null) tvFlyPoolDist.setText(poolDist);
+        if (tvIMPoolDist != null) tvIMPoolDist.setText(poolDist);
+    }
+
+    private int getPoolDistance() {
+        int activeProfileId = ProfileManager.getActiveProfileId(this);
+        int poolDistance = 25;
+        try {
+            Cursor c = dbHelper.getReadableDatabase().rawQuery(
+                    "SELECT pool_distance FROM profile WHERE id = ?",
+                    new String[]{String.valueOf(activeProfileId)}
+            );
+            if (c.moveToFirst()) {
+                poolDistance = c.getInt(0);
+            }
+            c.close();
+        } catch (Exception e) {
+            Log.e("SwimStopwatchActivity", "Error loading pool distance", e);
         }
+        return poolDistance;
     }
 
     private void deleteEntry(long id, String style, String date) {

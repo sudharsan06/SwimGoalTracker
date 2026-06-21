@@ -22,6 +22,7 @@ import android.widget.Toast;
 import androidx.activity.ComponentActivity;
 
 import com.dreamcreators.swimgoaltracker.R;
+import com.dreamcreators.swimgoaltracker.utility.ThemeManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -60,13 +61,18 @@ public class LoginActivity extends ComponentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (ThemeManager.isDarkMode(this)) {
+            setTheme(R.style.AppTheme_NoActionBar_Dark);
+        } else {
+            setTheme(R.style.AppTheme_NoActionBar_Light);
+        }
         super.onCreate(savedInstanceState);
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         WindowInsetsControllerCompat controller =
                 WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-        controller.setAppearanceLightStatusBars(true);
-        getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
+        controller.setAppearanceLightStatusBars(!ThemeManager.isDarkMode(this));
+        getWindow().setStatusBarColor(getColor(R.color.dark_surface_low));
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +23,7 @@ import java.util.List;
 public class RecordsFragment extends Fragment {
 
     private RecyclerView recyclerView;
+    private HorizontalScrollView headerScroll;
 
     @Nullable
     @Override
@@ -34,6 +36,7 @@ public class RecordsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.listTracker);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        headerScroll = view.findViewById(R.id.headerScroll);
     }
 
     public void updateRecords(List<TrackerPojo> items, long[] bestTimes) {
@@ -42,12 +45,19 @@ public class RecordsFragment extends Fragment {
         TrackerActivity activity = (TrackerActivity) getActivity();
         if (activity == null) return;
 
+        TrackerListAdapter.ScrollSyncCallback scrollCallback = scrollX -> {
+            if (headerScroll != null) {
+                headerScroll.scrollTo(scrollX, 0);
+            }
+        };
+
         TrackerListAdapter adapter = new TrackerListAdapter(
                 requireContext(), items,
                 bestTimes[0], bestTimes[1], bestTimes[2], bestTimes[3],
                 date -> {
                     DailyAttemptsDialog.newInstance(date).show(activity.getSupportFragmentManager(), "daily_attempts");
-                }
+                },
+                scrollCallback
         );
         recyclerView.setAdapter(adapter);
     }

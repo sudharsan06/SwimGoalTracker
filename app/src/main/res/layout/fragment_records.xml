@@ -1,68 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bg_light">
+    android:background="@color/dark_background">
 
-    <!-- Fixed Header Row -->
+    <!-- Title Section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#F5F7F9"
         android:orientation="horizontal"
-        android:paddingVertical="10dp"
-        android:paddingHorizontal="16dp">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.2"
-            android:text="DATE"
-            android:textColor="@color/textSecondary"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
+        android:gravity="center_vertical">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="FREE"
-            android:textColor="@color/textSecondary"
-            android:textSize="10sp"
+            android:text="Last 30 Records"
+            android:textColor="@color/dark_on_surface"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:text="2026 Season"
+            android:textColor="@color/dark_primary"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:background="@color/dark_primary_container"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="3dp"
             android:gravity="center"
-            android:text="FLY"
-            android:textColor="@color/textSecondary"
-            android:textSize="10sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="BREAST"
-            android:textColor="@color/textSecondary"
-            android:textSize="10sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="BACK"
-            android:textColor="@color/textSecondary"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            android:letterSpacing="0.05" />
     </LinearLayout>
+
+    <!-- Column Headers -->
+    <HorizontalScrollView
+        android:id="@+id/headerScroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingVertical="8dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="16dp">
+
+            <TextView
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:text="DATE"
+                android:textColor="@color/dark_on_surface_variant"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.08" />
+
+            <TextView
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                android:text="FREE"
+                android:textColor="@color/dark_on_surface_variant"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.08" />
+
+            <TextView
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                android:text="FLY"
+                android:textColor="@color/dark_on_surface_variant"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.08" />
+
+            <TextView
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                android:text="BREAST"
+                android:textColor="@color/dark_on_surface_variant"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.08" />
+
+            <TextView
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="BACK"
+                android:textColor="@color/dark_on_surface_variant"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.08" />
+        </LinearLayout>
+
+    </HorizontalScrollView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listTracker"
@@ -71,6 +117,66 @@
         android:layout_weight="1"
         android:clipToPadding="false"
         android:paddingTop="4dp"
-        android:paddingBottom="8dp" />
+        android:paddingBottom="8dp"
+        android:paddingHorizontal="0dp" />
+
+    <!-- Atmospheric Feature Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginBottom="12dp"
+        app:cardBackgroundColor="@color/dark_surface_lowest"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        app:strokeColor="@color/dark_primary_container"
+        app:strokeWidth="1dp"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ready to elevate your performance?"
+                android:textColor="@color/dark_on_surface"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Your personal bests are looking great \u2014 keep pushing the limits!"
+                android:textColor="@color/dark_on_surface_variant"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:lineSpacingExtra="2dp" />
+
+            <Button
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="View Full Report"
+                android:textColor="@color/dark_on_primary_container"
+                android:textSize="13sp"
+                android:textAllCaps="false"
+                app:backgroundTint="@color/dark_primary"
+                app:icon="@android:drawable/ic_menu_share"
+                app:iconGravity="textEnd"
+                app:iconSize="16dp"
+                app:iconTint="@color/dark_on_primary_container"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="8dp" />
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>

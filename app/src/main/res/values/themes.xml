@@ -1,38 +1,60 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.SwimGoalTracker" parent="Theme.AppCompat.Light">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="android:statusBarColor">@color/midnight_blue</item>
-        <item name="colorPrimary">@color/my_custom_app_bar_color</item>
-        <item name="colorPrimaryVariant">#0B3C5D</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="android:statusBarColor">@color/dark_background</item>
+        <item name="colorPrimary">@color/dark_primary_fixed_dim</item>
+        <item name="colorPrimaryVariant">@color/dark_primary_container</item>
+        <item name="colorOnPrimary">@color/dark_background</item>
     </style>
 
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
-        <item name="colorPrimary">@color/lightPrimary</item>
-        <item name="colorPrimaryVariant">#0077B6</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorSecondary">@color/lightSecondary</item>
-        <item name="colorAccent">@color/lightAccent</item>
-        <item name="android:textColorSecondary">@color/textSecondary</item>
-        <item name="android:statusBarColor">@color/midnight_blue</item>
+        <item name="colorPrimary">@color/dark_primary_fixed_dim</item>
+        <item name="colorPrimaryVariant">@color/dark_primary_container</item>
+        <item name="colorOnPrimary">@color/dark_background</item>
+        <item name="colorSecondary">@color/dark_secondary</item>
+        <item name="colorAccent">@color/dark_primary_fixed_dim</item>
+        <item name="android:textColorSecondary">@color/dark_on_surface_variant</item>
+        <item name="android:statusBarColor">@color/dark_background</item>
     </style>
 
     <style name="AppTheme_NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimary">@color/lightPrimary</item>
-        <item name="colorPrimaryVariant">#0077B6</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorSecondary">@color/lightSecondary</item>
-        <item name="colorAccent">@color/lightAccent</item>
-        <item name="android:textColorSecondary">@color/textSecondary</item>
-        <item name="android:windowBackground">@color/white</item>
-        <item name="android:statusBarColor">@color/midnight_blue</item>
+        <item name="colorPrimary">@color/dark_primary_fixed_dim</item>
+        <item name="colorPrimaryVariant">@color/dark_primary_container</item>
+        <item name="colorOnPrimary">@color/dark_background</item>
+        <item name="colorSecondary">@color/dark_secondary</item>
+        <item name="colorAccent">@color/dark_primary_fixed_dim</item>
+        <item name="android:textColorSecondary">@color/dark_on_surface_variant</item>
+        <item name="android:windowBackground">@color/dark_background</item>
+        <item name="android:statusBarColor">@color/dark_background</item>
+        <item name="android:navigationBarColor">@color/dark_surface_lowest</item>
     </style>
 
-    <style name="CustomTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/midnight_blue</item>
+    <!-- Dark variant for AppTheme_NoActionBar when in night mode -->
+    <style name="AppTheme_NoActionBar_Dark" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="colorPrimary">@color/dark_primary_fixed_dim</item>
+        <item name="colorPrimaryVariant">@color/dark_primary_container</item>
+        <item name="colorOnPrimary">@color/dark_background</item>
+        <item name="colorSecondary">@color/dark_secondary</item>
+        <item name="colorAccent">@color/dark_primary_fixed_dim</item>
+        <item name="android:textColorSecondary">@color/dark_on_surface_variant</item>
+        <item name="android:windowBackground">@color/dark_background</item>
+        <item name="android:statusBarColor">@color/dark_background</item>
+        <item name="android:navigationBarColor">@color/dark_surface_lowest</item>
     </style>
+
+    <!-- Light variant for AppTheme_NoActionBar -->
+    <style name="AppTheme_NoActionBar_Light" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/dark_primary_fixed_dim</item>
+        <item name="colorPrimaryVariant">@color/dark_primary_container</item>
+        <item name="colorOnPrimary">@color/dark_background</item>
+        <item name="colorSecondary">@color/dark_secondary</item>
+        <item name="colorAccent">@color/dark_primary_fixed_dim</item>
+        <item name="android:textColorSecondary">@color/dark_on_surface_variant</item>
+        <item name="android:windowBackground">@color/dark_background</item>
+        <item name="android:statusBarColor">@color/dark_background</item>
+        <item name="android:navigationBarColor">@color/dark_surface_lowest</item>
+    </style>
+
+    <style name="CustomTheme" parent="AppTheme_NoActionBar" />
 
     <!-- Custom button style -->
     <style name="WatercolorButton" parent="Widget.MaterialComponents.Button">

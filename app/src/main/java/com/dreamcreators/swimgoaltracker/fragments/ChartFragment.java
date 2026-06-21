@@ -1,5 +1,6 @@
 package com.dreamcreators.swimgoaltracker.fragments;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -168,6 +169,7 @@ public class ChartFragment extends Fragment {
         if (cachedItems == null || cachedItems.isEmpty()) {
             barChart.clear();
             barChart.setNoDataText("No swim data yet");
+            barChart.setNoDataTextColor(requireContext().getColor(R.color.dark_on_surface_variant));
             barChart.invalidate();
             return;
         }
@@ -280,7 +282,7 @@ public class ChartFragment extends Fragment {
         dataSet.setColor(Color.parseColor(styleColors[styleIndex]));
         dataSet.setDrawValues(true);
         dataSet.setValueTextSize(10f);
-        dataSet.setValueTextColor(Color.parseColor("#333333"));
+        dataSet.setValueTextColor(requireContext().getColor(R.color.dark_on_surface_variant));
 
         BarData data = new BarData(dataSet);
         data.setBarWidth(0.5f);
@@ -308,12 +310,19 @@ public class ChartFragment extends Fragment {
      * Configures chart settings common to both all-styles and single-style views.
      */
     private void configureCommonChartSettings() {
+        int textColor = requireContext().getColor(R.color.dark_on_surface_variant);
+        int gridColor = requireContext().getColor(R.color.dark_outline_variant);
+
         YAxis leftAxis = barChart.getAxisLeft();
         leftAxis.setAxisMinimum(0f);
         leftAxis.setTextSize(10f);
+        leftAxis.setTextColor(textColor);
         leftAxis.setDrawGridLines(true);
-        leftAxis.setGridColor(Color.parseColor("#E0E0E0"));
+        leftAxis.setGridColor(gridColor);
         barChart.getAxisRight().setEnabled(false);
+
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setTextColor(textColor);
 
         Legend legend = barChart.getLegend();
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
@@ -321,6 +330,7 @@ public class ChartFragment extends Fragment {
         legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         legend.setDrawInside(false);
         legend.setTextSize(10f);
+        legend.setTextColor(textColor);
 
         barChart.setDescription(null);
         barChart.setPinchZoom(false);

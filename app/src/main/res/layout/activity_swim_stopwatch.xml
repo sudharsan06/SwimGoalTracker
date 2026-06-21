@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
+    android:background="@color/dark_background"
     android:fitsSystemWindows="true">
 
     <LinearLayout
@@ -15,84 +15,132 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingBottom="80dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="24dp"
                 android:paddingBottom="24dp">
 
-                <TextView
-                    android:id="@+id/tvSwimDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:text="DATE: 2026-01-29"
-                    android:textColor="@color/midnight_blue"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.05" />
-
-                <TextView
-                    android:id="@+id/tvPoolDistanceInfo"
+                <!-- TopAppBar -->
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:text="Current tracking uses a 25m pool. Change the pool distance in Profile."
-                    android:textColor="@color/steel_blue"
-                    android:textSize="13sp"
-                    android:lineSpacingMultiplier="1.2" />
+                    app:cardBackgroundColor="@color/dark_surface_low"
+                    app:cardCornerRadius="0dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp"
+                    android:foreground="@drawable/bottom_border_white_10">
 
-                <!-- Dynamic Timer Section Block -->
-                <FrameLayout
-                    android:id="@+id/timerWrapper"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="20dp"
+                        android:paddingVertical="16dp">
 
-                    <include layout="@layout/layout_timer_freestyle" android:id="@+id/sectionFree" />
-                    <include layout="@layout/layout_timer_backstroke" android:id="@+id/sectionBack" android:visibility="gone" />
-                    <include layout="@layout/layout_timer_breaststroke" android:id="@+id/sectionBreast" android:visibility="gone" />
-                    <include layout="@layout/layout_timer_butterfly" android:id="@+id/sectionFly" android:visibility="gone" />
-                    <include layout="@layout/layout_timer_im" android:id="@+id/sectionIM" android:visibility="gone" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
 
-                </FrameLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="SwimTimer Pro"
+                                android:textColor="@color/dark_primary"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <ImageButton
+                            android:id="@+id/btnDatePicker"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_edit_24"
+                            app:tint="@color/dark_on_surface_variant"
+                            android:contentDescription="Pick Date" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="8dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingTop="16dp">
 
-                    <TextView
-                        android:id="@+id/tvEntriesHeader"
-                        android:layout_width="0dp"
+                    <!-- Pool Distance Info -->
+                    <!--<TextView
+                        android:id="@+id/tvPoolDistanceInfo"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="TODAY'S SESSIONS"
-                        android:textColor="?attr/colorPrimary"
-                        android:textSize="13sp"
-                        android:textStyle="bold"
-                        android:letterSpacing="0.05" />
+                        android:layout_marginBottom="16dp"
+                        android:text="Current tracking uses a 25m pool. Change the pool distance in Profile."
+                        android:textColor="@color/dark_on_surface_variant"
+                        android:textSize="13sp" />-->
 
-                    <Spinner
-                        android:id="@+id/spinnerImFilter"
-                        android:layout_width="wrap_content"
+                    <!-- Dynamic Timer Section Block -->
+                    <FrameLayout
+                        android:id="@+id/timerWrapper"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <include layout="@layout/layout_timer_freestyle" android:id="@+id/sectionFree" />
+                        <include layout="@layout/layout_timer_backstroke" android:id="@+id/sectionBack" android:visibility="gone" />
+                        <include layout="@layout/layout_timer_breaststroke" android:id="@+id/sectionBreast" android:visibility="gone" />
+                        <include layout="@layout/layout_timer_butterfly" android:id="@+id/sectionFly" android:visibility="gone" />
+                        <include layout="@layout/layout_timer_im" android:id="@+id/sectionIM" android:visibility="gone" />
+
+                    </FrameLayout>
+
+                    <!-- Sessions Header -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="gone" />
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvEntriesHeader"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="SESSIONS"
+                            android:textColor="@color/dark_primary"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.05" />
+
+                        <Spinner
+                            android:id="@+id/spinnerImFilter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:visibility="gone"
+                            android:background="@drawable/bg_pill"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="4dp"
+                            android:spinnerMode="dropdown" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewEntries"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:paddingTop="4dp" />
+
                 </LinearLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViewEntries"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"
-                    android:paddingTop="4dp" />
-
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
@@ -109,8 +157,8 @@
             android:id="@+id/bottomNav"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FFFFFF"
-            app:elevation="8dp"
+            android:background="@color/dark_surface_lowest"
+            app:elevation="0dp"
             app:itemHorizontalTranslationEnabled="false"
             app:itemIconTint="@color/nav_item_color"
             app:itemTextColor="@color/nav_item_color"

@@ -1,113 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/dark_background"
     android:fitsSystemWindows="true">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="80dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="40dp">
+            android:orientation="vertical">
 
-            <!-- Header Section -->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="130dp">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:background="@color/lightPrimary" />
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/profileCard"
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        app:cardCornerRadius="60dp"
-                        app:cardElevation="8dp"
-                        app:strokeColor="@color/white"
-                        app:strokeWidth="4dp">
-
-                        <ImageView
-                            android:id="@+id/imgProfile"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleType="centerCrop"
-                            android:src="@android:drawable/ic_menu_camera" />
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/btnPickImage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignEnd="@id/profileCard"
-                        android:layout_alignBottom="@id/profileCard"
-                        app:fabSize="mini"
-                        app:elevation="10dp"
-                        android:src="@drawable/ic_edit_24"
-                        app:backgroundTint="@color/lightPrimary"
-                        app:tint="@color/white"
-                        android:contentDescription="Change Photo" />
-
-                </RelativeLayout>
-            </RelativeLayout>
-
-            <!-- Core Info Card -->
+            <!-- Header with Profile Photo -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/top_banner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp">
+                app:cardBackgroundColor="@color/dark_surface_low"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp"
+                android:foreground="@drawable/bottom_border_white_10">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="20dp">
+                    android:paddingHorizontal="20dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="24dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Profile"
+                        android:textColor="@color/dark_primary"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Manage your swimmer profile"
+                        android:textColor="@color/dark_on_surface_variant"
+                        android:textSize="13sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Profile Photo Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_marginTop="24dp"
+                android:paddingBottom="16dp">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/profileCard"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    app:cardCornerRadius="55dp"
+                    app:cardElevation="4dp"
+                    app:strokeColor="@color/dark_primary_fixed_dim"
+                    app:strokeWidth="3dp"
+                    app:cardBackgroundColor="@color/dark_surface_high">
+
+                    <ImageView
+                        android:id="@+id/imgProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@android:drawable/ic_menu_camera" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnPickImage"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginTop="-36dp"
+                    android:layout_marginStart="38dp"
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="@color/dark_primary_fixed_dim"
+                    app:strokeWidth="0dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="6dp"
+                        android:src="@drawable/ic_edit_24"
+                        android:contentDescription="Change Photo"
+                        app:tint="@color/dark_background" />
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Personal Information Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_glass_card"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
                         android:text="Personal Information"
-                        android:textColor="@color/lightPrimary"
-                        android:textSize="16sp"
+                        android:textColor="@color/dark_primary"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
+                    <!-- Full Name -->
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Full Name *"
-                        app:tint="@color/lightPrimary"
-                        app:startIconDrawable="@drawable/ic_emoji_emotions_24">
+                        app:boxStrokeColor="@color/dark_primary_fixed_dim"
+                        app:boxStrokeErrorColor="@color/dark_primary_container"
+                        app:hintTextColor="@color/dark_on_surface_variant"
+                        app:startIconDrawable="@drawable/ic_emoji_emotions_24"
+                        app:startIconTint="@color/dark_on_surface_variant">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/dark_on_surface"
+                            android:textColorHint="@color/dark_on_surface_variant"
                             android:inputType="textCapWords" />
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <!-- Age + Height Row -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="12dp"
                         android:orientation="horizontal"
                         android:weightSum="2">
 
@@ -115,14 +162,18 @@
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
+                            android:layout_marginEnd="6dp"
                             android:layout_weight="1"
-                            android:hint="Age (Optional)">
+                            android:hint="Age"
+                            app:boxStrokeColor="@color/dark_primary_fixed_dim"
+                            app:hintTextColor="@color/dark_on_surface_variant">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etAge"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:textColor="@color/dark_on_surface"
+                                android:textColorHint="@color/dark_on_surface_variant"
                                 android:focusable="false"
                                 android:clickable="true"
                                 android:cursorVisible="false" />
@@ -132,63 +183,114 @@
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
+                            android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:hint="Height (Optional)">
+                            android:hint="Height"
+                            app:boxStrokeColor="@color/dark_primary_fixed_dim"
+                            app:hintTextColor="@color/dark_on_surface_variant">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etHeight"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:textColor="@color/dark_on_surface"
+                                android:textColorHint="@color/dark_on_surface_variant"
                                 android:focusable="false"
                                 android:clickable="true"
                                 android:cursorVisible="false" />
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
 
+                    <!-- Weight -->
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:hint="Weight (Optional)">
+                        android:layout_marginTop="12dp"
+                        android:hint="Weight"
+                        app:boxStrokeColor="@color/dark_primary_fixed_dim"
+                        app:hintTextColor="@color/dark_on_surface_variant">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etWeight"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/dark_on_surface"
+                            android:textColorHint="@color/dark_on_surface_variant"
                             android:focusable="false"
                             android:clickable="true"
                             android:cursorVisible="false" />
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <!-- Swimming School / Club -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:hint="Swimming School / Club"
+                        app:boxStrokeColor="@color/dark_primary_fixed_dim"
+                        app:hintTextColor="@color/dark_on_surface_variant"
+                        app:startIconTint="@color/dark_on_surface_variant">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etSchoolClub"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/dark_on_surface"
+                            android:textColorHint="@color/dark_on_surface_variant"
+                            android:inputType="textCapWords" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- City / State -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:hint="City / State"
+                        app:boxStrokeColor="@color/dark_primary_fixed_dim"
+                        app:hintTextColor="@color/dark_on_surface_variant"
+                        app:startIconTint="@color/dark_on_surface_variant">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etCityState"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/dark_on_surface"
+                            android:textColorHint="@color/dark_on_surface_variant"
+                            android:inputType="textCapWords" />
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Goal Info Card -->
+            <!-- Training Progress Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp">
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_glass_card"
                     android:orientation="vertical"
-                    android:padding="20dp">
+                    android:padding="16dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:text="Training Started"
-                        android:textColor="@color/lightPrimary"
-                        android:textSize="16sp"
+                        android:text="Training Progress"
+                        android:textColor="@color/dark_primary"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
+                    <!-- Swimming Start Date -->
                     <LinearLayout
                         android:id="@+id/btnPickStartDate"
                         android:layout_width="match_parent"
@@ -200,12 +302,18 @@
                         android:orientation="horizontal"
                         android:paddingVertical="12dp">
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:padding="8dp"
-                            android:src="@drawable/ic_calendar"
-                            app:tint="@color/lightPrimary" />
+                        <LinearLayout
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="@drawable/circle_bg_teal"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_calendar"
+                                app:tint="@color/dark_on_primary_container" />
+                        </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -217,8 +325,8 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Swimming Start Date (Optional)"
-                                android:textColor="@color/textSecondary"
+                                android:text="Swimming Start Date"
+                                android:textColor="@color/dark_on_surface_variant"
                                 android:textSize="12sp" />
 
                             <TextView
@@ -226,25 +334,27 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Set your start date"
-                                android:textColor="@color/text_dark"
-                                android:textSize="16sp"
+                                android:textColor="@color/dark_on_surface"
+                                android:textSize="14sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
 
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:alpha="0.3"
-                            android:src="@android:drawable/ic_menu_edit" />
-
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=">"
+                            android:textColor="@color/dark_on_surface_variant"
+                            android:textSize="16sp" />
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#E0E0E0"
-                        android:layout_marginVertical="8dp" />
+                        android:layout_height="1px"
+                        android:layout_marginVertical="8dp"
+                        android:background="@color/dark_outline_variant"
+                        android:alpha="0.3" />
 
+                    <!-- Pool Distance -->
                     <LinearLayout
                         android:id="@+id/btnPoolDistance"
                         android:layout_width="match_parent"
@@ -256,12 +366,18 @@
                         android:orientation="horizontal"
                         android:paddingVertical="12dp">
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:padding="8dp"
-                            android:src="@drawable/ic_architecture_24"
-                            app:tint="@color/lightPrimary" />
+                        <LinearLayout
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="@drawable/circle_bg_blue"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_architecture_24"
+                                app:tint="@color/dark_background" />
+                        </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -274,7 +390,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Pool Distance"
-                                android:textColor="@color/textSecondary"
+                                android:textColor="@color/dark_on_surface_variant"
                                 android:textSize="12sp" />
 
                             <TextView
@@ -282,43 +398,65 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="25 metres"
-                                android:textColor="@color/text_dark"
-                                android:textSize="16sp"
+                                android:textColor="@color/dark_on_surface"
+                                android:textSize="14sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
 
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:alpha="0.3"
-                            android:src="@android:drawable/ic_menu_edit" />
-
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=">"
+                            android:textColor="@color/dark_on_surface_variant"
+                            android:textSize="16sp" />
                     </LinearLayout>
-
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Last Login -->
             <TextView
                 android:id="@+id/tvLastLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:gravity="center"
-                android:text="Last login: 2026-01-29"
-                android:textColor="@color/textSecondary"
+                android:text="Last login: "
+                android:textColor="@color/dark_on_surface_variant"
                 android:textSize="12sp" />
 
-            <!-- Action Buttons -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSaveProfile"
+            <!-- Save Button -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginHorizontal="20dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
-                android:text="Save Profile"
-                android:textSize="16sp"
-                app:cornerRadius="12dp" />
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_glass_card_featured"
+                    android:gravity="center"
+                    android:padding="4dp">
+
+                    <TextView
+                        android:id="@+id/btnSaveProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:gravity="center"
+                        android:text="Save Profile"
+                        android:textColor="@color/dark_on_primary_container"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Skip / Logout Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -327,14 +465,19 @@
                 android:orientation="horizontal"
                 android:paddingHorizontal="20dp">
 
-                <com.google.android.material.button.MaterialButton
+                <TextView
                     android:id="@+id/btnSkip"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingVertical="12dp"
                     android:text="Skip"
-                    android:textColor="@color/textSecondary" />
+                    android:textColor="@color/dark_on_surface_variant"
+                    android:textSize="14sp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true" />
 
                 <View
                     android:id="@+id/btnLogoutDivider"
@@ -342,21 +485,43 @@
                     android:layout_height="24dp"
                     android:alpha="0.2"
                     android:visibility="gone"
-                    android:background="@color/textSecondary" />
+                    android:background="@color/dark_outline" />
 
-                <com.google.android.material.button.MaterialButton
+                <TextView
                     android:id="@+id/btnLogout"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingVertical="12dp"
                     android:visibility="gone"
                     android:text="Logout"
-                    android:textColor="@color/orange" />
-
+                    android:textColor="@color/dark_primary_container"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="80dp" />
 
         </LinearLayout>
     </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/dark_surface_lowest"
+        app:elevation="0dp"
+        app:itemHorizontalTranslationEnabled="false"
+        app:itemIconTint="@color/nav_item_color"
+        app:itemTextColor="@color/nav_item_color"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_nav_menu" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -20,6 +20,7 @@ import android.util.Log;
 import com.dreamcreators.swimgoaltracker.db.NutritionDbHelper;
 import com.dreamcreators.swimgoaltracker.db.ProfileManager;
 import com.dreamcreators.swimgoaltracker.R;
+import com.dreamcreators.swimgoaltracker.utility.ThemeManager;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
@@ -41,16 +42,19 @@ public class MainActivity extends AppCompatActivity {
     private NutritionDbHelper dbHelper;
     private TextView tvBestFree, tvBestBack, tvBestBreast, tvBestFly, tvBestIM;
     private android.widget.ImageView ivProfileIcon;
+    private TextView tvWeeklyDistance, tvWeeklyGoal, tvWeeklyPercent;
+    private View viewProgressFill;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ThemeManager.applyTheme(this);
         super.onCreate(savedInstanceState);
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
+        getWindow().setStatusBarColor(getColor(R.color.dark_background));
         WindowInsetsControllerCompat controller =
                 WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-        controller.setAppearanceLightStatusBars(true);
+        controller.setAppearanceLightStatusBars(!ThemeManager.isDarkMode(this));
         setContentView(R.layout.activity_main);
 
         View headerContent = findViewById(R.id.headerContent);
@@ -75,6 +79,10 @@ public class MainActivity extends AppCompatActivity {
         tvBestIM = findViewById(R.id.tvBestIM);
         tvUserName = findViewById(R.id.tvUserName);
         ivProfileIcon = findViewById(R.id.ivProfileIcon);
+        tvWeeklyDistance = findViewById(R.id.tvWeeklyDistance);
+        tvWeeklyGoal = findViewById(R.id.tvWeeklyGoal);
+        tvWeeklyPercent = findViewById(R.id.tvWeeklyPercent);
+        viewProgressFill = findViewById(R.id.viewProgressFill);
 
 
 
@@ -118,9 +126,20 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), systemBars.bottom);
             return insets;
         });
+        // View All → Insights Records tab
+        findViewById(R.id.tvViewAll).setOnClickListener(v -> {
+            Intent intent = new Intent(this, TrackerActivity.class);
+            intent.putExtra("open_tab", 1);
+            startActivity(intent);
+        });
+
         // Profile icon → Switch Swimmer screen
         findViewById(R.id.btnOpenProfile).setOnClickListener(v ->
                 startActivity(new Intent(this, SwitchSwimmerActivity.class)));
+
+        // Weekly goal → Goals screen
+        tvWeeklyGoal.setOnClickListener(v ->
+                startActivity(new Intent(this, GoalsActivity.class)));
 
         AdView adView = findViewById(R.id.adView);
         if (adView != null) {
@@ -137,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
 
         dbHelper = new NutritionDbHelper(this);
         loadUserData();
+        loadWeeklyProgress();
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         tvDate.setText("Today: " + today);
         loadTodayNutrition(today);
@@ -155,8 +175,8 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.nav_goals) {
                 startActivity(new Intent(this, GoalsActivity.class));
                 return true;
-            } else if (id == R.id.nav_alerts) {
-                startActivity(new Intent(this, AlertsActivity.class));
+            } else if (id == R.id.nav_settings) {
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             } else if (id == R.id.nav_profile) {
                 startActivity(new Intent(this, ProfileActivity.class));
@@ -212,6 +232,66 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 ivSwitchBadge.setVisibility(android.view.View.GONE);
             }
+        }
+    }
+
+    private void loadWeeklyProgress() {
+        int activeProfileId = ProfileManager.getActiveProfileId(this);
+
+        // Calculate Monday of current week
+        java.util.Calendar cal = java.util.Calendar.getInstance(java.util.Locale.getDefault());
+        cal.set(java.util.Calendar.DAY_OF_WEEK, java.util.Calendar.MONDAY);
+        String weekStart = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(cal.getTime());
+
+        // Calculate Sunday
+        cal.add(java.util.Calendar.DAY_OF_WEEK, 6);
+        String weekEnd = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(cal.getTime());
+
+        // Query total distance this week
+        int totalMeters = 0;
+        try {
+            android.database.Cursor c = dbHelper.getReadableDatabase().rawQuery(
+                    "SELECT COALESCE(SUM(total_distance), 0) FROM swim_sessions WHERE profile_id = ? AND date >= ? AND date <= ?",
+                    new String[]{String.valueOf(activeProfileId), weekStart, weekEnd}
+            );
+            if (c.moveToFirst()) {
+                totalMeters = c.getInt(0);
+            }
+            c.close();
+        } catch (Exception e) {
+            Log.e("MainActivity", "Error loading weekly distance", e);
+        }
+
+        float totalKm = totalMeters / 1000f;
+
+        // Load weekly km goal
+        String goalStr = getSharedPreferences("swim_goals", MODE_PRIVATE)
+                .getString("weekly_km_" + activeProfileId, "");
+        float goalKm = 0;
+        try {
+            goalKm = Float.parseFloat(goalStr);
+        } catch (NumberFormatException ignored) {}
+
+        // Update UI
+        tvWeeklyDistance.setText(String.format(java.util.Locale.getDefault(), "%.1f", totalKm));
+
+        if (goalKm > 0) {
+            tvWeeklyGoal.setText(String.format(java.util.Locale.getDefault(), "Goal: %.1f km", goalKm));
+            int progress = (int) Math.min(100, (totalKm / goalKm) * 100);
+            tvWeeklyPercent.setText(progress + "% complete");
+
+            // Update progress bar weight
+            android.widget.LinearLayout.LayoutParams params =
+                    (android.widget.LinearLayout.LayoutParams) viewProgressFill.getLayoutParams();
+            params.weight = progress;
+            viewProgressFill.setLayoutParams(params);
+        } else {
+            tvWeeklyGoal.setText("Set a weekly goal");
+            tvWeeklyPercent.setText("");
+            android.widget.LinearLayout.LayoutParams params =
+                    (android.widget.LinearLayout.LayoutParams) viewProgressFill.getLayoutParams();
+            params.weight = 0;
+            viewProgressFill.setLayoutParams(params);
         }
     }
 
@@ -303,10 +383,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadUserData();
+        loadWeeklyProgress();
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         loadTodayNutrition(today);
         loadBestSwimToday(today);
         tvUserName.setText(getGreetingMessage(userName));
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+        bottomNav.setSelectedItemId(R.id.nav_home);
     }
 
     private void loadBestSwimToday(String date) {

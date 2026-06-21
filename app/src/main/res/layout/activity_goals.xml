@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_light"
+    android:background="@color/dark_background"
     android:fitsSystemWindows="true">
 
     <LinearLayout
@@ -12,31 +12,39 @@
         android:orientation="vertical">
 
         <!-- Header -->
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/midnight_blue"
-            android:orientation="vertical"
-            android:paddingTop="16dp"
-            android:paddingBottom="20dp"
-            android:paddingHorizontal="20dp">
+            app:cardBackgroundColor="@color/dark_surface_low"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
+            android:foreground="@drawable/bottom_border_white_10">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="🎯 Goals"
-                android:textColor="@color/white"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="16dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Set and track your swim targets"
-                android:textColor="#AACCE8"
-                android:textSize="13sp" />
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Goals"
+                    android:textColor="@color/dark_primary"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Set and track your swim targets"
+                    android:textColor="@color/dark_on_surface_variant"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -55,6 +63,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
+                    app:cardBackgroundColor="@color/dark_surface_high"
                     app:cardCornerRadius="14dp"
                     app:cardElevation="3dp">
 
@@ -68,7 +77,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Weekly Training Goal"
-                            android:textColor="@color/lightPrimary"
+                            android:textColor="@color/dark_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -77,7 +86,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:text="Sessions per week"
-                            android:textColor="@color/textSecondary"
+                            android:textColor="@color/dark_on_surface_variant"
                             android:textSize="13sp" />
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -91,6 +100,30 @@
                                 android:id="@+id/etWeeklySessions"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:textSize="13sp"
+                                android:inputType="numberDecimal" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:text="Weekly distance (km)"
+                            android:textColor="@color/dark_on_surface_variant"
+                            android:textSize="13sp" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:hint="Target km per week (e.g. 18.0)">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etWeeklyKm"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="13sp"
                                 android:inputType="numberDecimal" />
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
@@ -101,6 +134,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
+                    app:cardBackgroundColor="@color/dark_surface_high"
                     app:cardCornerRadius="14dp"
                     app:cardElevation="3dp">
 
@@ -114,7 +148,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Target Swim Times"
-                            android:textColor="@color/lightPrimary"
+                            android:textColor="@color/dark_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -123,7 +157,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:text="Set personal best targets (MM:SS)"
-                            android:textColor="@color/textSecondary"
+                            android:textColor="@color/dark_on_surface_variant"
                             android:textSize="13sp" />
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -137,6 +171,7 @@
                                 android:id="@+id/etGoalFree"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:textSize="13sp"
                                 android:inputType="numberDecimal" />
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -151,6 +186,7 @@
                                 android:id="@+id/etGoalFly"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:textSize="13sp"
                                 android:inputType="numberDecimal" />
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -165,6 +201,7 @@
                                 android:id="@+id/etGoalBreast"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:textSize="13sp"
                                 android:inputType="numberDecimal" />
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -179,6 +216,7 @@
                                 android:id="@+id/etGoalBack"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:textSize="13sp"
                                 android:inputType="numberDecimal" />
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -193,6 +231,7 @@
                                 android:id="@+id/etGoalIM"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:textSize="13sp"
                                 android:inputType="numberDecimal" />
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
@@ -202,10 +241,13 @@
                     android:id="@+id/btnSaveGoals"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
+                    android:background="@drawable/bg_glass_card"
                     android:layout_marginBottom="80dp"
                     android:text="Save Goals"
                     android:textSize="16sp"
-                    app:cornerRadius="12dp" />
+                    app:cornerRadius="12dp"
+                    android:textColor="@color/dark_primary_container"
+                    app:backgroundTint="@color/dark_primary_fixed_dim" />
 
             </LinearLayout>
         </ScrollView>
@@ -217,8 +259,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:fitsSystemWindows="true"
-        android:background="#EDFFFFFF"
-        app:elevation="8dp"
+        android:background="@color/dark_surface_lowest"
+        app:elevation="0dp"
         app:itemHorizontalTranslationEnabled="false"
         app:itemIconTint="@color/nav_item_color"
         app:itemTextColor="@color/nav_item_color"

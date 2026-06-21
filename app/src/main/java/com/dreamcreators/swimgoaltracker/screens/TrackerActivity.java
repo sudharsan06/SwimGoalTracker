@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +21,7 @@ import com.dreamcreators.swimgoaltracker.R;
 import com.dreamcreators.swimgoaltracker.fragments.RecordsFragment;
 import com.dreamcreators.swimgoaltracker.adapter.TrackerPagerAdapter;
 import com.dreamcreators.swimgoaltracker.pojo.TrackerPojo;
+import com.dreamcreators.swimgoaltracker.utility.ThemeManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -47,19 +50,16 @@ public class TrackerActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ThemeManager.applyTheme(this);
         super.onCreate(savedInstanceState);
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().setStatusBarColor(getColor(R.color.dark_night));
+        getWindow().setStatusBarColor(getColor(R.color.dark_surface_low));
         WindowInsetsControllerCompat controller =
                 WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-        controller.setAppearanceLightStatusBars(true);
+        controller.setAppearanceLightStatusBars(!ThemeManager.isDarkMode(this));
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_tracker);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setTitle("Swim Tracker");
-        }
 
         tvTrackerTitle = findViewById(R.id.tvTrackerTitle);
         viewPager = findViewById(R.id.viewPager);
@@ -89,6 +89,12 @@ public class TrackerActivity extends AppCompatActivity {
             }
         });
 
+        // Navigate to requested tab from external intent
+        int openTab = getIntent().getIntExtra("open_tab", 0);
+        if (openTab == 1) {
+            viewPager.post(() -> viewPager.setCurrentItem(1, false));
+        }
+
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
         bottomNav.setSelectedItemId(R.id.nav_tracker);
         bottomNav.setOnItemSelectedListener(item -> {
@@ -103,14 +109,31 @@ public class TrackerActivity extends AppCompatActivity {
             } else if (itemId == R.id.nav_goals) {
                 startActivity(new Intent(this, GoalsActivity.class));
                 return true;
-            } else if (itemId == R.id.nav_alerts) {
-                startActivity(new Intent(this, AlertsActivity.class));
+            } else if (itemId == R.id.nav_settings) {
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             } else if (itemId == R.id.nav_profile) {
                 startActivity(new Intent(this, ProfileActivity.class));
                 return true;
             }
             return false;
+        });
+
+        findViewById(R.id.btnFilter).setOnClickListener(v -> {
+            PopupMenu popup = new PopupMenu(this, v);
+            popup.getMenu().add(Menu.NONE, R.id.filter_30, 0, "Last 30 Days");
+            popup.getMenu().add(Menu.NONE, R.id.filter_60, 1, "Last 60 Days");
+            popup.getMenu().add(Menu.NONE, R.id.filter_1year, 2, "Last 1 Year");
+            popup.getMenu().add(Menu.NONE, R.id.filter_all, 3, "All Records");
+            popup.setOnMenuItemClickListener(item -> {
+                int id = item.getItemId();
+                if (id == R.id.filter_30) updateList(30);
+                else if (id == R.id.filter_60) updateList(60);
+                else if (id == R.id.filter_1year) updateList(365);
+                else if (id == R.id.filter_all) updateList(-1);
+                return true;
+            });
+            popup.show();
         });
 
         AdView adView = findViewById(R.id.adView);
@@ -131,6 +154,8 @@ public class TrackerActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         updateList(30);
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+        bottomNav.setSelectedItemId(R.id.nav_tracker);
     }
 
     @Override
@@ -175,31 +200,6 @@ public class TrackerActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_tracker, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.filter_30) {
-            updateList(30);
-            return true;
-        } else if (id == R.id.filter_60) {
-            updateList(60);
-            return true;
-        } else if (id == R.id.filter_1year) {
-            updateList(365);
-            return true;
-        } else if (id == R.id.filter_all) {
-            updateList(-1);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private long[] loadRecords(int limit, List<TrackerPojo> result) {

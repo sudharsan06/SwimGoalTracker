@@ -17,6 +17,7 @@ import androidx.core.view.WindowInsetsControllerCompat;
 import com.dreamcreators.swimgoaltracker.db.NutritionDbHelper;
 import com.dreamcreators.swimgoaltracker.db.ProfileManager;
 import com.dreamcreators.swimgoaltracker.R;
+import com.dreamcreators.swimgoaltracker.utility.ThemeManager;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -32,13 +33,14 @@ public class SwitchSwimmerActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ThemeManager.applyTheme(this);
         super.onCreate(savedInstanceState);
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().setStatusBarColor(getColor(R.color.midnight_blue));
+        getWindow().setStatusBarColor(getColor(R.color.dark_surface_low));
         WindowInsetsControllerCompat controller =
                 WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-        controller.setAppearanceLightStatusBars(true);
+        controller.setAppearanceLightStatusBars(!ThemeManager.isDarkMode(this));
         setContentView(R.layout.activity_switch_swimmer);
 
         refreshUI();
@@ -215,6 +217,7 @@ public class SwitchSwimmerActivity extends AppCompatActivity {
                     // 3. Clear profile-specific SharedPreferences keys
                     getSharedPreferences("swim_goals", MODE_PRIVATE).edit()
                             .remove("weekly_sessions_" + p.id)
+                            .remove("weekly_km_" + p.id)
                             .remove("goal_free_" + p.id)
                             .remove("goal_fly_" + p.id)
                             .remove("goal_breast_" + p.id)

@@ -11,41 +11,74 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/bg_light">
+        android:background="@color/dark_background">
 
-        <LinearLayout
+        <!-- Header -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="4dp">
+            app:cardBackgroundColor="@color/dark_surface_low"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
+            android:foreground="@drawable/bottom_border_white_10">
 
-            <TextView
-                android:id="@+id/tvTrackerTitle"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Last 30 Records"
-                android:textColor="@color/lightPrimary"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="16dp"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvTrackerTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Last 30 Records"
+                        android:textColor="@color/dark_primary"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Track your swim performance"
+                        android:textColor="@color/dark_on_surface_variant"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/btnFilter"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_filter_list_white"
+                    app:tint="@color/dark_primary_fixed_dim"
+                    android:contentDescription="Filter records" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- TabLayout for switching views -->
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/bg_light"
+            android:background="@color/dark_background"
             app:tabGravity="fill"
             app:tabMode="fixed"
-            app:tabIndicatorColor="@color/lightPrimary"
-            app:tabSelectedTextColor="@color/lightPrimary"
-            app:tabTextColor="@color/textSecondary"
+            app:tabIndicatorColor="@color/dark_primary_fixed_dim"
+            app:tabSelectedTextColor="@color/dark_primary"
+            app:tabTextColor="@color/dark_on_surface_variant"
             app:tabIndicatorHeight="3dp"
-            app:tabRippleColor="@color/lightPrimary" />
+            app:tabRippleColor="@color/dark_primary_fixed_dim" />
 
         <!-- ViewPager2 for swipeable content -->
         <androidx.viewpager2.widget.ViewPager2
@@ -59,6 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="56dp"
             app:adSize="BANNER"
             app:adUnitId="ca-app-pub-6508060827158792/6205114256"
             tools:ignore="MissingClass" />
@@ -70,8 +104,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="#EDFFFFFF"
-        app:elevation="8dp"
+        android:background="@color/dark_surface_lowest"
+        app:elevation="0dp"
         app:itemHorizontalTranslationEnabled="false"
         app:itemIconTint="@color/nav_item_color"
         app:itemTextColor="@color/nav_item_color"
