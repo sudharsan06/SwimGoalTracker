@@ -106,10 +106,10 @@ public class PoolDistanceActivity extends AppCompatActivity {
         currentDistance = distance;
 
         // Reset all
-        card25m.setCardBackgroundColor(0xFFFFFFFF);
-        card50m.setCardBackgroundColor(0xFFFFFFFF);
-        cardOpen.setCardBackgroundColor(0xFFFFFFFF);
-        cardCustom.setCardBackgroundColor(0xFFFFFFFF);
+        card25m.setCardBackgroundColor(getColor(R.color.dark_surface));
+        card50m.setCardBackgroundColor(getColor(R.color.dark_surface));
+        cardOpen.setCardBackgroundColor(getColor(R.color.dark_surface));
+        cardCustom.setCardBackgroundColor(getColor(R.color.dark_surface));
 
         rb25m.setChecked(false);
         rb50m.setChecked(false);
@@ -117,16 +117,16 @@ public class PoolDistanceActivity extends AppCompatActivity {
         rbCustom.setChecked(false);
 
         if (distance == 25) {
-            card25m.setCardBackgroundColor(0xFFEAF3FD);
+            card25m.setCardBackgroundColor(getColor(R.color.dark_secondary_container));
             rb25m.setChecked(true);
         } else if (distance == 50) {
-            card50m.setCardBackgroundColor(0xFFEAF3FD);
+            card50m.setCardBackgroundColor(getColor(R.color.dark_secondary_container));
             rb50m.setChecked(true);
         } else if (distance == 0) {
-            cardOpen.setCardBackgroundColor(0xFFEAF3FD);
+            cardOpen.setCardBackgroundColor(getColor(R.color.dark_secondary_container));
             rbOpen.setChecked(true);
         } else {
-            cardCustom.setCardBackgroundColor(0xFFEAF3FD);
+            cardCustom.setCardBackgroundColor(getColor(R.color.dark_secondary_container));
             rbCustom.setChecked(true);
             tvCustomMeters.setText(distance + "m");
         }

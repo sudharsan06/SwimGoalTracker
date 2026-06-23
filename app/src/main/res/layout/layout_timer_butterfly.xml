@@ -31,13 +31,14 @@
                 android:background="@drawable/bg_glass_card"
                 android:layout_marginEnd="12dp">
 
-                <TextView
+                <ImageView
+                    android:id="@+id/ivLogo"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
+                    android:scaleType="centerCrop"
                     android:gravity="center"
-                    android:text="~"
-                    android:textColor="@color/dark_primary"
-                    android:textSize="18sp" />
+                    android:background="@color/dark_primary_fixed_dim"
+                    android:src="@drawable/sgt_logo_alone" />
             </LinearLayout>
 
             <LinearLayout
@@ -74,13 +75,12 @@
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="6dp">
 
-                <TextView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="~"
-                    android:textColor="@color/dark_primary"
-                    android:textSize="12sp" />
+                    app:tint="@color/dark_primary_fixed_dim"
+                    android:src="@drawable/ic_open_water" />
 
                 <TextView
                     android:id="@+id/tvFlyPoolDist"
@@ -154,14 +154,12 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="!"
-                        android:textColor="@color/dark_secondary"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                        app:tint="@color/dark_primary_fixed_dim"
+                        android:src="@drawable/ic_nav_goals" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -200,14 +198,12 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="@"
-                        android:textColor="@color/dark_primary_container"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                        app:tint="@color/dark_primary_fixed_dim"
+                        android:src="@drawable/ic_clock_previous_24" />
 
                     <TextView
                         android:layout_width="wrap_content"

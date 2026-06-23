@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#F0F4F8"
+    android:background="@color/dark_background"
     android:orientation="vertical"
     android:paddingTop="48dp"
     android:paddingHorizontal="24dp">
@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:text="Switch Swimmer"
-        android:textColor="#0A2540"
+        android:textColor="@color/dark_on_surface"
         android:textSize="26sp"
         android:textStyle="bold" />
 
@@ -27,7 +27,9 @@
         android:layout_marginBottom="12dp"
         app:cardCornerRadius="14dp"
         app:cardElevation="2dp"
-        app:strokeWidth="0dp">
+        app:cardBackgroundColor="@color/dark_surface"
+        app:strokeColor="@color/dark_outline_variant"
+        app:strokeWidth="1dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -73,7 +75,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Swimmer 1"
-                    android:textColor="#0A2540"
+                    android:textColor="@color/dark_on_surface"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -83,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="Last login: —"
-                    android:textColor="#6B7C93"
+                    android:textColor="@color/dark_on_surface_variant"
                     android:textSize="13sp" />
             </LinearLayout>
 
@@ -122,7 +124,9 @@
         android:visibility="gone"
         app:cardCornerRadius="14dp"
         app:cardElevation="2dp"
-        app:strokeWidth="0dp">
+        app:cardBackgroundColor="@color/dark_surface"
+        app:strokeColor="@color/dark_outline_variant"
+        app:strokeWidth="1dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -166,7 +170,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Swimmer 2"
-                    android:textColor="#0A2540"
+                    android:textColor="@color/dark_on_surface"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -176,7 +180,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="Last login: —"
-                    android:textColor="#6B7C93"
+                    android:textColor="@color/dark_on_surface_variant"
                     android:textSize="13sp" />
             </LinearLayout>
 
@@ -222,7 +226,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="+"
-            android:textColor="@color/lightPrimary"
+            android:textColor="@color/dark_primary_fixed_dim"
             android:textSize="32sp"
             android:textStyle="bold" />
 
@@ -231,7 +235,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add a swimmer"
-            android:textColor="@color/lightPrimary"
+            android:textColor="@color/dark_primary_fixed_dim"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -241,7 +245,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:text=""
-            android:textColor="#6B7C93"
+            android:textColor="@color/dark_on_surface_variant"
             android:textSize="12sp" />
 
     </LinearLayout>
@@ -268,7 +272,7 @@
         android:layout_height="1dp"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
-        android:background="#D1D9E6" />
+        android:background="@color/dark_outline_variant" />
 
     <!-- Info Box -->
     <LinearLayout
@@ -284,13 +288,13 @@
             android:layout_marginTop="2dp"
             android:layout_marginEnd="8dp"
             android:src="@android:drawable/ic_dialog_info"
-            app:tint="#6B7C93" />
+            app:tint="@color/dark_on_surface_variant" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/switch_info"
-            android:textColor="#52647A"
+            android:textColor="@color/dark_on_surface_variant"
             android:textSize="12sp"
             android:lineSpacingMultiplier="1.2" />
     </LinearLayout>
@@ -301,7 +305,7 @@
         android:layout_height="1dp"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
-        android:background="#D1D9E6" />
+        android:background="@color/dark_outline_variant" />
 
     <Button
         android:id="@+id/btnBackToHome"
@@ -310,8 +314,8 @@
         android:layout_marginBottom="16dp"
         android:text="Back to Home"
         android:textAllCaps="false"
-        android:textColor="@color/white"
+        android:textColor="@color/dark_background"
         android:textStyle="bold"
-        android:backgroundTint="@color/lightPrimary" />
+        android:backgroundTint="@color/dark_primary_fixed_dim" />
 
 </LinearLayout>

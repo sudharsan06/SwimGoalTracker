@@ -8,9 +8,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.Window;
 import android.view.View;
 import android.graphics.Typeface;
 import android.widget.ImageButton;
@@ -101,7 +98,6 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         WindowInsetsControllerCompat controller =
                 WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
         controller.setAppearanceLightStatusBars(!ThemeManager.isDarkMode(this));
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_swim_stopwatch);
 
        // tvPoolDistanceInfo = findViewById(R.id.tvPoolDistanceInfo);
@@ -236,7 +232,6 @@ public class SwimStopwatchActivity extends AppCompatActivity {
 
             loadFilteredEntries();
         } else {
-            setTitle("Swim Timer");
             loadTodayEntries("free", today);
         }
 
@@ -299,6 +294,17 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 return true;
             }
             return false;
+        });
+
+        ImageButton btnDatePicker = findViewById(R.id.btnDatePicker);
+        btnDatePicker.setOnClickListener(v -> {
+            vibrate();
+            Intent intent = new Intent(this, SwimEntryActivity.class);
+            intent.putExtra("from_swim_stopwatch", true);
+            if (selectedStroke != null) {
+                intent.putExtra("selected_stroke", selectedStroke);
+            }
+            startActivity(intent);
         });
     }
 
@@ -415,29 +421,6 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_swim_timer, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_edit) {
-            Intent intent = new Intent(this, SwimEntryActivity.class);
-            // Pass information about where we came from and which stroke is selected
-            intent.putExtra("from_swim_stopwatch", true);
-            if (selectedStroke != null) {
-                intent.putExtra("selected_stroke", selectedStroke);
-            }
-            startActivity(intent);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
 
     private void startTimer(String which) {
         long now = System.currentTimeMillis();

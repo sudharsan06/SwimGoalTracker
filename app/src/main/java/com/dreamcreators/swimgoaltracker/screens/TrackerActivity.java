@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -58,7 +57,6 @@ public class TrackerActivity extends AppCompatActivity {
         WindowInsetsControllerCompat controller =
                 WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
         controller.setAppearanceLightStatusBars(!ThemeManager.isDarkMode(this));
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_tracker);
 
         tvTrackerTitle = findViewById(R.id.tvTrackerTitle);

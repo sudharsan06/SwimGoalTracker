@@ -34,4 +34,15 @@
         <item name="android:textColorPrimary">?android:attr/textColorPrimary</item>
         <item name="android:windowBackground">?attr/colorSurface</item>
     </style>
+
+    <style name="CustomDatePickerDialog" parent="Theme.MaterialComponents.Dialog">
+        <item name="colorPrimary">@color/dark_primary_fixed_dim</item>
+        <item name="colorAccent">@color/dark_primary_fixed_dim</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="android:textColorSecondary">#AAAAAA</item>
+        <item name="android:buttonBarButtonStyle">@style/CustomTextButton</item>
+        <item name="buttonBarPositiveButtonStyle">@style/CustomTextButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/CustomTextButton</item>
+    </style>
 </resources>

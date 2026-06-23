@@ -46,6 +46,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
+                        android:background="@color/dark_primary_fixed_dim"
                         android:src="@drawable/sgt_logo_alone" />
                 </com.google.android.material.card.MaterialCardView>
 
@@ -325,7 +326,8 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:drawableTint="@color/dark_primary"
+                            android:drawablePadding="4dp"
+                            android:drawableTint="@color/sun_gold"
                             android:drawableLeft="@drawable/baseline_emoji_events_24"
                             android:text="BEST SWIM TIMINGS TODAY"
                             android:textColor="@color/dark_primary"

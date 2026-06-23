@@ -106,7 +106,7 @@ public class SwitchSwimmerActivity extends AppCompatActivity {
         } else {
             // Show greyed-out hint
             btnAdd.setVisibility(View.VISIBLE);
-            tvAddHint.setTextColor(0xFF9E9E9E);
+            tvAddHint.setTextColor(getColor(R.color.dark_on_surface_variant));
             tvMaxHint.setText("Max 2 swimmers per device\nRemove a profile to add another");
             btnAdd.setOnClickListener(v ->
                     Toast.makeText(this, "Max 2 swimmers per device ⭐", Toast.LENGTH_SHORT).show());
@@ -168,16 +168,16 @@ public class SwitchSwimmerActivity extends AppCompatActivity {
         if (isActive) {
             tvAction.setText("Active");
             tvAction.setBackground(getDrawable(R.drawable.chip_bg_active));
-            tvAction.setTextColor(0xFFFFFFFF);
-            // Highlight card with light blue tint
-            card.setCardBackgroundColor(0xFFE3F2FD);
+            tvAction.setTextColor(getColor(R.color.white));
+            // Highlight active card
+            card.setCardBackgroundColor(getColor(R.color.dark_secondary_container));
             card.setOnClickListener(v -> goToHome());
             tvAction.setOnClickListener(v -> goToHome());
         } else {
             tvAction.setText("Switch →");
             tvAction.setBackground(null);
-            tvAction.setTextColor(getColor(R.color.lightPrimary));
-            card.setCardBackgroundColor(0xFFFFFFFF);
+            tvAction.setTextColor(getColor(R.color.dark_primary_fixed_dim));
+            card.setCardBackgroundColor(getColor(R.color.dark_surface));
             card.setOnClickListener(v -> switchTo(p.id));
             tvAction.setOnClickListener(v -> switchTo(p.id));
         }

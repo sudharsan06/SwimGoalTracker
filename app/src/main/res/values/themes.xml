@@ -66,6 +66,8 @@
         <item name="colorPrimary">@color/lightPrimary</item>
         <item name="colorAccent">@color/lightPrimary</item>
         <item name="colorOnSurface">#000000</item>
+        <item name="android:textColorPrimary">#000000</item>
+        <item name="android:textColorSecondary">#666666</item>
         <item name="android:buttonBarButtonStyle">@style/CustomTextButton</item>
         <item name="buttonBarPositiveButtonStyle">@style/CustomTextButton</item>
         <item name="buttonBarNegativeButtonStyle">@style/CustomTextButton</item>

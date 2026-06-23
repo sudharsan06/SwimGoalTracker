@@ -6,10 +6,13 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
+import android.widget.PopupMenu;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -248,18 +251,55 @@ public class ProfileActivity extends AppCompatActivity {
         }
         c.close();
 
-        btnPick.setOnClickListener(v -> pickImage.launch(new String[]{"image/*"}));
+        btnPick.setOnClickListener(v -> {
+            PopupMenu popup = new PopupMenu(this, v);
+            Menu menu = popup.getMenu();
+
+            if (imageUri != null) {
+                MenuItem editItem = menu.add(Menu.NONE, 1, 0, "Edit Photo");
+                editItem.setIcon(R.drawable.ic_edit_24);
+                MenuItem deleteItem = menu.add(Menu.NONE, 2, 1, "Delete Photo");
+                deleteItem.setIcon(R.drawable.ic_delete_24);
+            } else {
+                MenuItem addItem = menu.add(Menu.NONE, 1, 0, "Add Photo");
+                addItem.setIcon(R.drawable.ic_edit_24);
+            }
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                popup.setForceShowIcon(true);
+            }
+
+            popup.setOnMenuItemClickListener(item -> {
+                int id = item.getItemId();
+                if (id == 1) {
+                    pickImage.launch(new String[]{"image/*"});
+                    return true;
+                } else if (id == 2) {
+                    deleteProfilePicture();
+                    return true;
+                }
+                return false;
+            });
+            popup.show();
+        });
 
         btnPickStartDate.setOnClickListener(v -> {
-            Calendar cal = Calendar.getInstance();
-            int y = cal.get(Calendar.YEAR);
-            int m = cal.get(Calendar.MONTH);
-            int d = cal.get(Calendar.DAY_OF_MONTH);
-            android.app.DatePickerDialog dialog = new android.app.DatePickerDialog(this, R.style.CustomDatePickerDialog,(view, year, month, dayOfMonth) -> {
-                startDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month + 1, dayOfMonth);
+            com.google.android.material.datepicker.MaterialDatePicker.Builder<Long> builder =
+                    com.google.android.material.datepicker.MaterialDatePicker.Builder.datePicker();
+            builder.setTitleText("Select Start Date");
+            builder.setSelection(com.google.android.material.datepicker.MaterialDatePicker.todayInUtcMilliseconds());
+
+            com.google.android.material.datepicker.MaterialDatePicker<Long> picker = builder.build();
+            picker.addOnPositiveButtonClickListener(selection -> {
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(selection);
+                startDate = String.format(Locale.getDefault(), "%04d-%02d-%02d",
+                        cal.get(Calendar.YEAR),
+                        cal.get(Calendar.MONTH) + 1,
+                        cal.get(Calendar.DAY_OF_MONTH));
                 tvStartDate.setText(startDate);
-            }, y, m, d);
-            dialog.show();
+            });
+            picker.show(getSupportFragmentManager(), "START_DATE_PICKER");
         });
 
         btnSave.setOnClickListener(v -> {
@@ -462,6 +502,28 @@ public class ProfileActivity extends AppCompatActivity {
             }
         } catch (Exception ignored) {
         }
+    }
+
+    private void deleteProfilePicture() {
+        if (imageUri != null && "file".equalsIgnoreCase(imageUri.getScheme())) {
+            try {
+                java.io.File ownedDir = new java.io.File(getFilesDir(), "profile_images");
+                String ownedDirPath = ownedDir.getCanonicalPath() + java.io.File.separator;
+                java.io.File file = new java.io.File(imageUri.getPath());
+                if (file.getCanonicalPath().startsWith(ownedDirPath) && file.exists()) {
+                    file.delete();
+                }
+            } catch (Exception ignored) {}
+        }
+
+        imageUri = null;
+        ContentValues values = new ContentValues();
+        values.putNull("image_uri");
+        dbHelper.getWritableDatabase().update("profile", values, "id=" + targetProfileId, null);
+
+        ImageView img = findViewById(R.id.imgProfile);
+        img.setImageURI(null);
+        Toast.makeText(this, "Photo removed", Toast.LENGTH_SHORT).show();
     }
 
     private int parseIntSafe(String s) {

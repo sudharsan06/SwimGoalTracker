@@ -4,23 +4,23 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#F0ECEC</color>
 
-    <color name="colorPrimaryDark">@color/midnight_blue</color>
+    <color name="colorPrimaryDark">#00A07E</color>
 
     <color name="my_custom_status_bar_color">#FF5722</color>
     <color name="my_custom_app_bar_color">#FF9800</color>
 
-    <color name="colorPrimary">#0077B6</color>
-    <color name="colorSecondary">#00B4D8</color>
-    <color name="colorAccent">#FFD60A</color>
-    <color name="colorBackground">#CAF0F8</color>
-    <color name="colorText">#023E8A</color>
+    <color name="colorPrimary">#00B894</color>
+    <color name="colorSecondary">#0F766E</color>
+    <color name="colorAccent">#00B894</color>
+    <color name="colorBackground">#F7FBFB</color>
+    <color name="colorText">#0F172A</color>
 
     <!-- Light Theme -->
-    <color name="lightPrimary">#0077B6</color>
-    <color name="lightSecondary">#00B4D8</color>
-    <color name="lightAccent">#FFD60A</color>
-    <color name="lightBackground">#CAF0F8</color>
-    <color name="lightText">#023E8A</color>
+    <color name="lightPrimary">#00B894</color>
+    <color name="lightSecondary">#0F766E</color>
+    <color name="lightAccent">#00B894</color>
+    <color name="lightBackground">#F7FBFB</color>
+    <color name="lightText">#0F172A</color>
     <color name="lightSurface">#FFFFFF</color>
 
     <color name="midnight_blue">#102A43</color>
@@ -28,55 +28,55 @@
     <color name="status_indigo">#560591</color>
     <color name="steel_blue">#627D98</color>
     <color name="sun_glow">#FFE29A</color>
-    <color name="tropical_cyan">#06BEE1</color>
+    <color name="tropical_cyan">#00B894</color>
     <color name="pale">#DFF6F9</color>
     <color name="sun_gold">#FFD166</color>
-    <color name="lightPrimaryDark">#005F91</color>
+    <color name="lightPrimaryDark">#00A07E</color>
     <color name="dark_night">#0A1220</color>
 
-    <color name="teal_primary">#4A90A4</color>
-    <color name="teal_dark">#2c5aa0</color>
-    <color name="teal_light">#7DB8C4</color>
+    <color name="teal_primary">#00B894</color>
+    <color name="teal_dark">#00A07E</color>
+    <color name="teal_light">#D7F2EC</color>
     <color name="orange">#FF9800</color>
-    <color name="bg_color">#f5f9fb</color>
-    <color name="orange_accent">#FF9800</color>
-    <color name="bg_light">#F5F9FB</color>
-    <color name="text_dark">#2C3E50</color>
-    <color name="text_light">#7F8C8D</color>
-    <color name="textPrimary">#4A4A4A</color>
-    <color name="textSecondary">#7A8C99</color>
-    <color name="gray_light">#ECF0F1</color>
+    <color name="bg_color">#F7FBFB</color>
+    <color name="orange_accent">#00B894</color>
+    <color name="bg_light">#F7FBFB</color>
+    <color name="text_dark">#0F172A</color>
+    <color name="text_light">#64748B</color>
+    <color name="textPrimary">#0F172A</color>
+    <color name="textSecondary">#64748B</color>
+    <color name="gray_light">#E9EEF0</color>
     <color name="card_shadow">#1A000000</color>
     <color name="watercolorBackground">#F0F8FF</color>
     <color name="softLavender">#E6E6FA</color>
     <color name="mistyRose">#FFE4E1</color>
     <color name="aquaTint">#E0FFFF</color>
-    <color name="cardBackground">#E0F7FA</color>
+    <color name="cardBackground">#D7F2EC</color>
 
     <!-- Light Theme Palette (used in light mode; overridden in values-night/) -->
-    <color name="dark_background">#F0F4F8</color>
-    <color name="dark_surface_dim">#E2E8F0</color>
+    <color name="dark_background">#F7FBFB</color>
+    <color name="dark_surface_dim">#E9EEF0</color>
     <color name="dark_surface">#FFFFFF</color>
-    <color name="dark_surface_low">#F8FAFC</color>
+    <color name="dark_surface_low">#FFFFFF</color>
     <color name="dark_surface_lowest">#FFFFFF</color>
-    <color name="dark_surface_high">#E2E8F0</color>
-    <color name="dark_surface_highest">#CBD5E1</color>
-    <color name="dark_surface_bright">#94A3B8</color>
+    <color name="dark_surface_high">#FFFFFF</color>
+    <color name="dark_surface_highest">#D7F2EC</color>
+    <color name="dark_surface_bright">#E2E8F0</color>
     <color name="dark_on_surface">#0F172A</color>
-    <color name="dark_on_surface_variant">#475569</color>
-    <color name="dark_primary">#006994</color>
-    <color name="dark_primary_fixed_dim">#0077B6</color>
-    <color name="dark_primary_container">#BAE6FD</color>
-    <color name="dark_on_primary_container">#FFFFFF</color>
+    <color name="dark_on_surface_variant">#64748B</color>
+    <color name="dark_primary">#0F172A</color>
+    <color name="dark_primary_fixed_dim">#00B894</color>
+    <color name="dark_primary_container">#00B894</color>
+    <color name="dark_on_primary_container">#0F172A</color>
     <color name="dark_secondary">#0F766E</color>
     <color name="dark_secondary_container">#CCFBF1</color>
     <color name="dark_outline">#94A3B8</color>
-    <color name="dark_outline_variant">#CBD5E1</color>
+    <color name="dark_outline_variant">#D7F2EC</color>
 
     <!-- Glass card drawable colors for light mode -->
     <color name="glass_card_bg">#0A000000</color>
-    <color name="glass_card_border">#1A000000</color>
-    <color name="glass_card_featured_border">#330089A3</color>
-    <color name="progress_track_bg">#1A000000</color>
-    <color name="bottom_border_color">#1A000000</color>
+    <color name="glass_card_border">#3300B894</color>
+    <color name="glass_card_featured_border">#3300B894</color>
+    <color name="progress_track_bg">#1A00B894</color>
+    <color name="bottom_border_color">#1A00B894</color>
 </resources>

@@ -1,0 +1,49 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Clock circle -->
+    <path
+        android:pathData="M12,4.5A7.5,7.5 0,1,0 12,19.5A7.5,7.5 0,1,0 12,4.5Z"
+        android:strokeWidth="1.5"
+        android:strokeColor="#000"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Hour hand -->
+    <path
+        android:pathData="M12,12L9,9"
+        android:strokeWidth="2"
+        android:strokeColor="#000"
+        android:strokeLineCap="round" />
+
+    <!-- Minute hand -->
+    <path
+        android:pathData="M12,12L16,8"
+        android:strokeWidth="1.2"
+        android:strokeColor="#000"
+        android:strokeLineCap="round" />
+
+    <!-- Center dot -->
+    <path
+        android:pathData="M11.5,11.5m-1.5,0a1.5,1.5 0,1,1 3,0a1.5,1.5 0,1,1 -3,0"
+        android:fillColor="#000" />
+
+    <!-- Circular counter-clockwise arrow -->
+    <path
+        android:pathData="M12,3A9,9 0,0,0 3,12"
+        android:strokeWidth="1.5"
+        android:strokeColor="#000"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Arrowhead (pointing downward - CCW direction at left side) -->
+    <path
+        android:pathData="M3,12L5,10L1,10Z"
+        android:fillColor="#000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+
+</vector>

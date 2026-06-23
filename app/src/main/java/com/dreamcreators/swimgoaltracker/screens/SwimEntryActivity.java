@@ -9,10 +9,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.DatePickerDialog;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import java.util.Calendar;
@@ -31,7 +31,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
@@ -56,7 +55,6 @@ public class SwimEntryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         ThemeManager.applyTheme(this);
         super.onCreate(savedInstanceState);
-        androidx.core.view.WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         getWindow().setStatusBarColor(getColor(R.color.dark_surface_low));
@@ -65,20 +63,15 @@ public class SwimEntryActivity extends AppCompatActivity {
         controller.setAppearanceLightStatusBars(!ThemeManager.isDarkMode(this));
         setContentView(R.layout.activity_swim_entry);
 
-        View main = findViewById(R.id.main);
-
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setTitle("Manual swim entry");
-        }
-
         swimStyleSpinner = findViewById(R.id.swimStyleSpinner);
         edtSwimTime = findViewById(R.id.edtSwimTime);
         tvSwimDate = findViewById(R.id.tvSwimDate);
         btn_SaveTiming = findViewById(R.id.btn_SaveTiming);
         edtSwimTimeLay = findViewById(R.id.edtSwimTimeLay);
         dbHelper = new NutritionDbHelper(this);
+
+        ImageButton btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> finish());
 
         // Set initial date
         updateDateDisplay();
@@ -87,13 +80,24 @@ public class SwimEntryActivity extends AppCompatActivity {
 
         String[] swimStyles = {"Freestyle", "Backstroke", "Breaststroke", "Butterfly", "IM"};
 
+        int textColor = getColor(R.color.dark_on_surface);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_item_dark, swimStyles) {
             @Override
             public View getView(int position, View convertView, android.view.ViewGroup parent) {
                 View v = super.getView(position, convertView, parent);
                 if (v instanceof TextView) {
-                    ((TextView) v).setTextColor(getResources().getColor(R.color.lightPrimary));
+                    ((TextView) v).setTextColor(getColor(R.color.dark_primary_fixed_dim));
                     ((TextView) v).setTypeface(null, android.graphics.Typeface.BOLD);
+                }
+                return v;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, android.view.ViewGroup parent) {
+                View v = super.getDropDownView(position, convertView, parent);
+                if (v instanceof TextView) {
+                    ((TextView) v).setTextColor(getColor(R.color.dark_on_surface));
+                    ((TextView) v).setTypeface(null, android.graphics.Typeface.NORMAL);
                 }
                 return v;
             }
@@ -109,12 +113,10 @@ public class SwimEntryActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedStyle = swimStyles[position].toLowerCase();
-            // Always use custom picker for manual entry regardless of style
             edtSwimTime.setInputType(android.text.InputType.TYPE_NULL);
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                 edtSwimTime.setShowSoftInputOnFocus(false);
             }
-            // Clear existing text if not in expected format
             if (!edtSwimTime.getText().toString().contains(":")) {
                 edtSwimTime.setText("");
             }
@@ -132,23 +134,16 @@ public class SwimEntryActivity extends AppCompatActivity {
                     break;
                 }
             }
+        } else {
+            selectedStyle = swimStyles[0].toLowerCase();
         }
 
         edtSwimTime.setOnClickListener(v -> {
-            // Open time picker for any swim style
             showTimePickerDialog();
         });
 
-        edtSwimTime.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                // Hide soft keyboard if it appears
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(edtSwimTime.getWindowToken(), 0);
-                }
-                showTimePickerDialog();
-            }
-        });
+        edtSwimTime.setFocusable(false);
+        edtSwimTime.setClickable(true);
 
         btn_SaveTiming.setOnClickListener(v -> saveSession(selectedStyle, edtSwimTime.getText().toString()));
 
@@ -164,12 +159,6 @@ public class SwimEntryActivity extends AppCompatActivity {
                 adView.loadAd(new AdRequest.Builder().build());
             });
         }
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
     }
 
     private void saveSession(String selectedStyle, String inputTime) {
@@ -260,7 +249,7 @@ public class SwimEntryActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("No", (dialog, whichButton) -> {
                     // User cancelled, do nothing
-                    edtSwimTimeLay.setHint("Storke (MM:SS)");
+                    edtSwimTimeLay.setHint("Stroke (MM:SS)");
                     dialog.dismiss();
                 })
                 .show();
@@ -458,17 +447,22 @@ public class SwimEntryActivity extends AppCompatActivity {
     }
 
     private void showDatePickerDialog() {
-        int year = selectedCalendar.get(Calendar.YEAR);
-        int month = selectedCalendar.get(Calendar.MONTH);
-        int day = selectedCalendar.get(Calendar.DAY_OF_MONTH);
+        long today = com.google.android.material.datepicker.MaterialDatePicker.todayInUtcMilliseconds();
+        com.google.android.material.datepicker.MaterialDatePicker.Builder<Long> builder =
+                com.google.android.material.datepicker.MaterialDatePicker.Builder.datePicker();
+        builder.setTitleText("Select Date");
+        builder.setSelection(today);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, R.style.CustomDatePickerDialog, (view, year1, month1, dayOfMonth) -> {
-            selectedCalendar.set(Calendar.YEAR, year1);
-            selectedCalendar.set(Calendar.MONTH, month1);
-            selectedCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        com.google.android.material.datepicker.MaterialDatePicker<Long> picker = builder.build();
+        picker.addOnPositiveButtonClickListener(selection -> {
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            cal.setTimeInMillis(selection);
+            selectedCalendar.set(Calendar.YEAR, cal.get(Calendar.YEAR));
+            selectedCalendar.set(Calendar.MONTH, cal.get(Calendar.MONTH));
+            selectedCalendar.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH));
             updateDateDisplay();
-        }, year, month, day);
-        datePickerDialog.show();
+        });
+        picker.show(getSupportFragmentManager(), "DATE_PICKER");
     }
 
     private void updateDateDisplay() {
@@ -501,7 +495,7 @@ public class SwimEntryActivity extends AppCompatActivity {
         TextView instruction = new TextView(this);
         instruction.setText("Pick your time took for this stroke");
         instruction.setTextSize(13);
-        instruction.setTextColor(getColor(R.color.steel_blue));
+        instruction.setTextColor(getColor(R.color.dark_on_surface_variant));
         instruction.setGravity(android.view.Gravity.CENTER);
         instruction.setPadding(0, 0, 0, dp16);
         container.addView(instruction);
@@ -513,11 +507,13 @@ public class SwimEntryActivity extends AppCompatActivity {
         int dp8 = (int) (6 * getResources().getDisplayMetrics().density);
         labelRow.setPadding(0, dp8, 0, 8);
 
+        int labelBgColor = getColor(R.color.dark_surface_dim);
+
         TextView lblMin = new TextView(this);
         lblMin.setText("MM");
         lblMin.setTextSize(14);
-        lblMin.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.item_bg_best));
-        lblMin.setTextColor(getColor(R.color.black));
+        lblMin.setBackgroundColor(labelBgColor);
+        lblMin.setTextColor(getColor(R.color.dark_on_surface));
         lblMin.setTypeface(null, android.graphics.Typeface.BOLD);
         lblMin.setGravity(android.view.Gravity.CENTER);
         lblMin.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
@@ -525,17 +521,17 @@ public class SwimEntryActivity extends AppCompatActivity {
         TextView lblSec = new TextView(this);
         lblSec.setText("SS");
         lblSec.setTextSize(14);
-        lblSec.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.item_bg_best));
-        lblSec.setTextColor(getColor(R.color.black));
+        lblSec.setBackgroundColor(labelBgColor);
+        lblSec.setTextColor(getColor(R.color.dark_on_surface));
         lblSec.setTypeface(null, android.graphics.Typeface.BOLD);
         lblSec.setGravity(android.view.Gravity.CENTER);
         lblSec.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
         TextView lblMs = new TextView(this);
         lblMs.setText("ss");
-        lblMs.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.item_bg_best));
+        lblMs.setBackgroundColor(labelBgColor);
         lblMs.setTextSize(14);
-        lblMs.setTextColor(getColor(R.color.black));
+        lblMs.setTextColor(getColor(R.color.dark_on_surface));
         lblMs.setTypeface(null, android.graphics.Typeface.BOLD);
         lblMs.setGravity(android.view.Gravity.CENTER);
         lblMs.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
@@ -551,6 +547,10 @@ public class SwimEntryActivity extends AppCompatActivity {
         pickerRow.setOrientation(LinearLayout.HORIZONTAL);
         pickerRow.setGravity(android.view.Gravity.CENTER);
 
+        int accentColor = getColor(R.color.dark_primary_fixed_dim);
+
+        int pickerTextColor = getColor(R.color.dark_on_surface);
+
         // Minutes picker
         NumberPicker npMin = new NumberPicker(this);
         npMin.setMinValue(0);
@@ -559,12 +559,13 @@ public class SwimEntryActivity extends AppCompatActivity {
         npMin.setWrapSelectorWheel(true);
         npMin.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         npMin.setFormatter(value -> String.format(java.util.Locale.getDefault(), "%02d", value));
+        setNumberPickerTextColor(npMin, pickerTextColor);
 
         // Colon label 1
         TextView colon1 = new TextView(this);
         colon1.setText(" : ");
         colon1.setTextSize(22);
-        colon1.setTextColor(getColor(R.color.lightPrimary));
+        colon1.setTextColor(accentColor);
         colon1.setTypeface(null, android.graphics.Typeface.BOLD);
         colon1.setGravity(android.view.Gravity.CENTER);
 
@@ -576,12 +577,13 @@ public class SwimEntryActivity extends AppCompatActivity {
         npSec.setWrapSelectorWheel(true);
         npSec.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         npSec.setFormatter(value -> String.format(java.util.Locale.getDefault(), "%02d", value));
+        setNumberPickerTextColor(npSec, pickerTextColor);
 
         // Colon label 2
         TextView colon2 = new TextView(this);
         colon2.setText(" : ");
         colon2.setTextSize(22);
-        colon2.setTextColor(getColor(R.color.lightPrimary));
+        colon2.setTextColor(accentColor);
         colon2.setTypeface(null, android.graphics.Typeface.BOLD);
         colon2.setGravity(android.view.Gravity.CENTER);
 
@@ -593,6 +595,7 @@ public class SwimEntryActivity extends AppCompatActivity {
         npHundredths.setWrapSelectorWheel(true);
         npHundredths.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         npHundredths.setFormatter(value -> String.format(java.util.Locale.getDefault(), "%02d", value));
+        setNumberPickerTextColor(npHundredths, pickerTextColor);
 
         pickerRow.addView(npMin);
         pickerRow.addView(colon1);
@@ -615,7 +618,7 @@ public class SwimEntryActivity extends AppCompatActivity {
             TextView note = new TextView(this);
             note.setText("Note: Manual entry will not store the individual swim stroke time.");
             note.setTextSize(12);
-            note.setTextColor(getColor(R.color.steel_blue));
+            note.setTextColor(getColor(R.color.dark_on_surface_variant));
             note.setGravity(android.view.Gravity.CENTER);
             note.setPadding(0, dp16, 0, dp16);
             container.addView(note);
@@ -632,5 +635,23 @@ public class SwimEntryActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
+    }
+
+    private void setNumberPickerTextColor(NumberPicker picker, int color) {
+        try {
+            java.lang.reflect.Field selectorField = NumberPicker.class.getDeclaredField("mSelectorWheelPaint");
+            selectorField.setAccessible(true);
+            ((android.graphics.Paint) selectorField.get(picker)).setColor(color);
+        } catch (Exception ignored) {}
+
+        for (int i = 0; i < picker.getChildCount(); i++) {
+            View child = picker.getChildAt(i);
+            if (child instanceof android.widget.EditText) {
+                ((android.widget.EditText) child).setTextColor(color);
+                break;
+            }
+        }
+
+        picker.invalidate();
     }
 }

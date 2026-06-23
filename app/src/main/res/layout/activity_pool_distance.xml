@@ -1,27 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:orientation="vertical"
-    android:paddingTop="24dp">
+    android:background="@color/dark_background"
+    android:fitsSystemWindows="true">
 
-    <!-- AppBar Area -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingHorizontal="16dp">
-        <ImageView
-            android:id="@+id/btnBack"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_arrow_back_24"
-            app:tint="#0A2540" />
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <!-- Header -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/dark_surface_low"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="0dp"
+        android:foreground="@drawable/bottom_border_white_10">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_arrow_back_24"
+                app:tint="@color/dark_on_surface_variant" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Log Session"
+                    android:textColor="@color/dark_on_surface"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Select your pool distance"
+                    android:textColor="@color/dark_on_surface_variant"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -35,32 +75,17 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Log Session"
-                android:textColor="#0A2540"
-                android:textSize="26sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="24dp"
-                android:text="Select your pool distance"
-                android:textColor="#0A2540"
-                android:textSize="16sp" />
-
             <!-- Option 1: Short course pool (25m) -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardOption25m"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="#EAF3FD"
+                app:cardBackgroundColor="@color/dark_surface"
                 app:cardCornerRadius="14dp"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                app:strokeColor="@color/dark_outline_variant"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -73,7 +98,7 @@
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:src="@drawable/ic_pool_short_course"
-                        app:tint="#1565C0" />
+                        app:tint="@color/dark_primary_fixed_dim" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -86,7 +111,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Short course pool"
-                            android:textColor="#0A2540"
+                            android:textColor="@color/dark_on_surface"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -94,7 +119,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="25 metres"
-                            android:textColor="#0A2540"
+                            android:textColor="@color/dark_on_surface_variant"
                             android:textSize="14sp" />
                     </LinearLayout>
 
@@ -104,7 +129,7 @@
                         android:layout_height="wrap_content"
                         android:clickable="false"
                         android:focusable="false"
-                        app:buttonTint="#1565C0" />
+                        app:buttonTint="@color/dark_primary_fixed_dim" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -114,9 +139,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/dark_surface"
                 app:cardCornerRadius="14dp"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                app:strokeColor="@color/dark_outline_variant"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -129,7 +156,7 @@
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:src="@drawable/ic_pool_long_course"
-                        app:tint="#1565C0" />
+                        app:tint="@color/dark_primary_fixed_dim" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -142,7 +169,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Long course pool"
-                            android:textColor="#0A2540"
+                            android:textColor="@color/dark_on_surface"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -150,7 +177,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="50 metres"
-                            android:textColor="#0A2540"
+                            android:textColor="@color/dark_on_surface_variant"
                             android:textSize="14sp" />
                     </LinearLayout>
 
@@ -160,7 +187,7 @@
                         android:layout_height="wrap_content"
                         android:clickable="false"
                         android:focusable="false"
-                        app:buttonTint="#1565C0" />
+                        app:buttonTint="@color/dark_primary_fixed_dim" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -170,9 +197,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/dark_surface"
                 app:cardCornerRadius="14dp"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                app:strokeColor="@color/dark_outline_variant"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -185,7 +214,7 @@
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:src="@drawable/ic_open_water"
-                        app:tint="#1565C0" />
+                        app:tint="@color/dark_primary_fixed_dim" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -198,7 +227,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Open water"
-                            android:textColor="#0A2540"
+                            android:textColor="@color/dark_on_surface"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -206,7 +235,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Custom distance"
-                            android:textColor="#0A2540"
+                            android:textColor="@color/dark_on_surface_variant"
                             android:textSize="14sp" />
                     </LinearLayout>
 
@@ -216,7 +245,7 @@
                         android:layout_height="wrap_content"
                         android:clickable="false"
                         android:focusable="false"
-                        app:buttonTint="#1565C0" />
+                        app:buttonTint="@color/dark_primary_fixed_dim" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -226,9 +255,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/dark_surface"
                 app:cardCornerRadius="14dp"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                app:strokeColor="@color/dark_outline_variant"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -241,7 +272,7 @@
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:src="@drawable/ic_pool_custom"
-                        app:tint="#1565C0" />
+                        app:tint="@color/dark_primary_fixed_dim" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -254,7 +285,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Custom pool"
-                            android:textColor="#0A2540"
+                            android:textColor="@color/dark_on_surface"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -263,7 +294,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Enter metres"
-                            android:textColor="#0A2540"
+                            android:textColor="@color/dark_on_surface_variant"
                             android:textSize="14sp" />
                     </LinearLayout>
 
@@ -273,7 +304,7 @@
                         android:layout_height="wrap_content"
                         android:clickable="false"
                         android:focusable="false"
-                        app:buttonTint="#1565C0" />
+                        app:buttonTint="@color/dark_primary_fixed_dim" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -282,7 +313,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="Laps today"
-                android:textColor="#0A2540"
+                android:textColor="@color/dark_on_surface"
                 android:textSize="16sp" />
 
             <TextView
@@ -291,7 +322,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
                 android:text="0 laps = 0m"
-                android:textColor="#1565C0"
+                android:textColor="@color/dark_primary_fixed_dim"
                 android:textSize="28sp"
                 android:textStyle="bold" />
 
@@ -299,14 +330,15 @@
                 android:id="@+id/btnConfirmSave"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:backgroundTint="#1565C0"
+                android:backgroundTint="@color/dark_primary_fixed_dim"
                 android:text="Confirm &amp; Save"
                 android:textAllCaps="false"
-                android:textColor="@android:color/white"
+                android:textColor="@color/dark_background"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:cornerRadius="28dp" />
 
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

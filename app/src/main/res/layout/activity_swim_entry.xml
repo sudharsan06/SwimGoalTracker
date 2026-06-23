@@ -1,10 +1,10 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
+    android:background="@color/dark_background"
     android:fitsSystemWindows="true"
     tools:context=".screens.SwimEntryActivity">
 
@@ -12,6 +12,59 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/dark_surface_low"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
+            android:foreground="@drawable/bottom_border_white_10">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="16dp"
+                android:gravity="center_vertical">
+
+                <ImageButton
+                    android:id="@+id/btnBack"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_arrow_back_24"
+                    app:tint="@color/dark_on_surface_variant"
+                    android:contentDescription="Back" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Manual Swim Entry"
+                        android:textColor="@color/dark_primary"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Record your swim time manually"
+                        android:textColor="@color/dark_on_surface_variant"
+                        android:textSize="13sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -29,7 +82,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    app:cardBackgroundColor="@color/white"
+                    app:cardBackgroundColor="@color/dark_surface"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="2dp"
                     app:strokeWidth="0dp">
@@ -54,7 +107,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="SWIM DATE"
-                                android:textColor="@color/steel_blue"
+                                android:textColor="@color/dark_on_surface_variant"
                                 android:textSize="11sp"
                                 android:textStyle="bold"
                                 android:letterSpacing="0.05" />
@@ -65,7 +118,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
                                 android:text="2025-10-11"
-                                android:textColor="@color/lightPrimary"
+                                android:textColor="@color/dark_primary_fixed_dim"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -75,7 +128,7 @@
                             android:layout_height="20dp"
                             android:layout_gravity="center_vertical"
                             android:src="@android:drawable/ic_menu_my_calendar"
-                            app:tint="@color/lightPrimary" />
+                            app:tint="@color/dark_primary_fixed_dim" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -83,7 +136,7 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/white"
+                    app:cardBackgroundColor="@color/dark_surface"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="2dp"
                     app:strokeWidth="0dp">
@@ -98,7 +151,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="SWIM DETAILS"
-                            android:textColor="@color/lightPrimary"
+                            android:textColor="@color/dark_primary_fixed_dim"
                             android:textSize="11sp"
                             android:textStyle="bold"
                             android:letterSpacing="0.05"
@@ -109,17 +162,17 @@
                             android:layout_height="wrap_content"
                             android:text ="Pick Swim Style"
                             android:textSize="13sp"
-                            android:textColor="@color/steel_blue"
+                            android:textColor="@color/dark_on_surface_variant"
                             android:textStyle="bold"
                             android:layout_marginBottom="8dp"/>
 
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:cardBackgroundColor="#F5F5F5"
+                            app:cardBackgroundColor="@color/dark_surface_dim"
                             app:cardCornerRadius="8dp"
                             app:cardElevation="0dp"
-                            app:strokeColor="#DDDDDD"
+                            app:strokeColor="@color/dark_outline_variant"
                             app:strokeWidth="1dp">
 
                             <Spinner
@@ -134,7 +187,7 @@
                             android:layout_height="wrap_content"
                             android:text ="Recorded Time"
                             android:textSize="13sp"
-                            android:textColor="@color/steel_blue"
+                            android:textColor="@color/dark_on_surface_variant"
                             android:textStyle="bold"
                             android:layout_marginTop="16dp"
                             android:layout_marginBottom="8dp"/>
@@ -144,8 +197,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Select time..."
-                            app:boxStrokeColor="@color/lightPrimary"
-                            app:hintTextColor="@color/lightPrimary"
+                            app:boxStrokeColor="@color/dark_primary_fixed_dim"
+                            app:hintTextColor="@color/dark_primary_fixed_dim"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -153,7 +206,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="numberDecimal"
-                                android:textColor="@color/lightPrimary"
+                                android:textColor="@color/dark_primary_fixed_dim"
                                 android:textStyle="bold"
                                 android:textSize="16sp" />
                         </com.google.android.material.textfield.TextInputLayout>
@@ -167,7 +220,7 @@
                             android:textSize="14sp"
                             android:textStyle="bold"
                             app:cornerRadius="8dp"
-                            app:backgroundTint="@color/lightPrimary" />
+                            app:backgroundTint="@color/dark_primary_fixed_dim" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -191,4 +244,4 @@
         android:layout_height="match_parent"
         android:elevation="100dp" />
 
-</FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
