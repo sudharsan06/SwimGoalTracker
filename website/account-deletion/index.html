@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Deletion - Swimmingo</title>
+  <meta name="description" content="Request deletion of your Swimmingo account and associated data.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏊</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <nav class="navbar scrolled" id="navbar">
+    <div class="container">
+      <a href="/" class="nav-logo">
+        <span class="logo-icon">🏊</span>
+        Swimmingo
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/">Home</a></li>
+        <li><a href="/events">Events</a></li>
+        <li><a href="/gallery">Gallery</a></li>
+        <li><a href="/privacy-policy">Privacy</a></li>
+        <li><a href="/account-deletion" class="active">Delete Data</a></li>
+        <li>
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+        </li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <section class="page-header">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/">Home</a>
+        <span>/</span>
+        <span>Account Deletion</span>
+      </div>
+      <h1 class="fade-up">Account & Data Deletion</h1>
+      <p class="fade-up">Learn how to delete your account and associated data from Swimmingo.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="policy-content fade-up">
+        <h2>How to Delete Your Account</h2>
+        <p>You can delete your Swimmingo account and all associated data in two ways:</p>
+      </div>
+
+      <div class="deletion-steps">
+        <div class="deletion-step fade-up">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>Delete from the App (Recommended)</h3>
+            <p>Open Swimmingo → Go to <strong>Settings</strong> → Scroll down and tap <strong>"Reset All Progress"</strong>. This will delete all swim sessions, nutrition data, and goals from your account. To fully remove your profile, delete each swimmer profile in the profile switcher.</p>
+          </div>
+        </div>
+
+        <div class="deletion-step fade-up">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>Request via Email</h3>
+            <p>Send an email to <strong>adminswimmingo@gmail.com</strong> from your registered email address with the subject line <strong>"Account Deletion Request"</strong>. Include your account email and the reason for deletion (optional). We will process your request within 7 business days.</p>
+          </div>
+        </div>
+
+        <div class="deletion-step fade-up">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>Use the Form Below</h3>
+            <p>Fill out the account deletion request form below. Make sure to use the email address associated with your Swimmingo account.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="deletion-form fade-up">
+        <h3 style="margin-bottom:20px; font-size:1.3rem;">Request Account Deletion</h3>
+        <form action="mailto:adminswimmingo@gmail.com" method="post" enctype="text/plain">
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" name="email" required placeholder="your@email.com">
+          </div>
+          <div class="form-group">
+            <label for="reason">Reason for Deletion (optional)</label>
+            <textarea id="reason" name="reason" placeholder="Tell us why you're leaving..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">
+            ✉️ Submit Request
+          </button>
+        </form>
+      </div>
+
+      <div class="policy-content fade-up" style="margin-top:60px;">
+        <h2>What Gets Deleted</h2>
+        <p>When you delete your account, the following data is permanently removed:</p>
+        <ul>
+          <li>All swimmer profiles and their associated data</li>
+          <li>Swim session history (laps, times, strokes)</li>
+          <li>Goal settings and target times</li>
+          <li>Nutrition logs (calories, protein, carbs, fats)</li>
+          <li>Cloud backup data from Firebase Realtime Database</li>
+          <li>Device mapping record</li>
+        </ul>
+
+        <h2>What is NOT Deleted Immediately</h2>
+        <ul>
+          <li>Local app data on your device — you must uninstall the app or use "Reset All Progress" to clear it</li>
+          <li>Anonymous analytics data (no personally identifiable information)</li>
+          <li>Ad serving logs (anonymized and not linked to your identity)</li>
+        </ul>
+
+        <h2>Data Retention Period</h2>
+        <p>After you submit a deletion request, your data will be fully removed from our servers within <strong>30 days</strong>. During this period, we may retain your data to prevent accidental deletion. After 30 days, all data is permanently and irreversibly deleted.</p>
+
+        <h2>Need Help?</h2>
+        <p>If you have any questions about the account deletion process, please contact us at <strong>adminswimmingo@gmail.com</strong>.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="nav-logo">
+            <span class="logo-icon">🏊</span>
+            Swimmingo
+          </a>
+          <p>Track every swim, set goals, and monitor progress. Built for swimmers, parents, and coaches.</p>
+        </div>
+        <div>
+          <h4>Pages</h4>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/gallery">Gallery</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <ul class="footer-links">
+            <li><a href="/privacy-policy">Privacy Policy</a></li>
+            <li><a href="/account-deletion">Account Deletion</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul class="footer-links">
+            <li><a href="mailto:adminswimmingo@gmail.com">Email Support</a></li>
+            <li><a href="https://play.google.com/store/apps/details?id=com.dreamcreators.swimgoaltracker" target="_blank" rel="noopener">Google Play</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Swimmingo. All rights reserved.</span>
+        <div class="footer-bottom-links">
+          <a href="/privacy-policy">Privacy</a>
+          <a href="/account-deletion">Delete Data</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/scripts.js"></script>
+</body>
+</html>

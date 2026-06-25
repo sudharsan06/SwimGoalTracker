@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swimmingo - Track Every Swim</title>
+  <meta name="description" content="Swimmingo helps parents and coaches track every swim, set goals, and monitor progress. Built for swimmers who want to improve.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏊</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="/" class="nav-logo">
+        <span class="logo-icon">🏊</span>
+        Swimmingo
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/" class="active">Home</a></li>
+        <li><a href="/events">Events</a></li>
+        <li><a href="/gallery">Gallery</a></li>
+        <li><a href="/privacy-policy">Privacy</a></li>
+        <li><a href="/account-deletion">Delete Data</a></li>
+        <li>
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+        </li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content fade-up">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          Now available on Google Play
+        </div>
+        <h1>
+          Track Every <span class="highlight">Swim.</span>
+        </h1>
+        <p>
+          Built for parents and coaches to monitor every lap, set personal goals, and track progress over time.
+        </p>
+        <div class="hero-buttons">
+          <a href="https://play.google.com/store/apps/details?id=com.dreamcreators.swimgoaltracker" class="btn btn-primary" target="_blank" rel="noopener">
+            📲 Install App
+          </a>
+          <a href="#features" class="btn btn-secondary">
+            Learn More ↓
+          </a>
+        </div>
+      </div>
+      <div class="hero-visual fade-in">
+        <div class="hero-card">
+          <div class="stat-row">
+            <div class="stat-item">
+              <span class="num">28</span>
+              <span class="label">Laps Today</span>
+            </div>
+            <div class="stat-item">
+              <span class="num">1.2k</span>
+              <span class="label">Meters</span>
+            </div>
+            <div class="stat-item">
+              <span class="num">4</span>
+              <span class="label">Best Times</span>
+            </div>
+            <div class="stat-item">
+              <span class="num">92%</span>
+              <span class="label">Goal Progress</span>
+            </div>
+          </div>
+          <div class="progress-preview">
+            <div class="top">
+              <span>Weekly Goal</span>
+              <span>3.4 / 5.0 km</span>
+            </div>
+            <div class="progress-bar">
+              <div class="fill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wave-divider">
+      <svg viewBox="0 0 1440 100" preserveAspectRatio="none" style="width:100%;height:80px;">
+        <path fill="var(--bg-section)" d="M0,50 C360,100 1080,0 1440,50 L1440,100 L0,100 Z"></path>
+      </svg>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <div class="container">
+      <span class="section-label fade-up">Features</span>
+      <h2 class="section-title fade-up">Everything you need to improve</h2>
+      <p class="section-desc fade-up">
+        From lap timing to nutrition tracking — Swimmingo gives you a complete picture of your swimmer's performance.
+      </p>
+      <div class="features-grid">
+        <div class="feature-card fade-up">
+          <div class="feature-icon">⏱️</div>
+          <h3>Smart Stopwatch</h3>
+          <p>Track Freestyle, Backstroke, Breaststroke, Butterfly, and IM with split timing and automatic lap recording.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon">📊</div>
+          <h3>Progress Charts</h3>
+          <p>Visualize improvement over time with interactive bar charts. Compare strokes side by side.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon">🎯</div>
+          <h3>Goal Setting</h3>
+          <p>Set weekly distance targets and per-stroke personal best goals. Celebrate when you beat them.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon">👤</div>
+          <h3>Multi-Profile</h3>
+          <p>Track up to 2 swimmers per account. Each with their own goals, history, and nutrition data.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon">🥗</div>
+          <h3>Nutrition Log</h3>
+          <p>Log daily calories, protein, carbs, and fats to keep your swimmer fueled for peak performance.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon">☁️</div>
+          <h3>Cloud Sync</h3>
+          <p>Data syncs to the cloud weekly. Never lose your progress, even if you switch devices.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card fade-up">
+          <span class="num" data-target="50000">0</span>
+          <span class="label">Laps Tracked</span>
+        </div>
+        <div class="stat-card fade-up">
+          <span class="num" data-target="1200">0</span>
+          <span class="label">Active Users</span>
+        </div>
+        <div class="stat-card fade-up">
+          <span class="num" data-target="98"><span class="plus">+</span>0<span class="plus">%</span></span>
+          <span class="label">Uptime</span>
+        </div>
+        <div class="stat-card fade-up">
+          <span class="num" data-target="4">0</span>
+          <span class="label">Years Running</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features" style="background:var(--bg);">
+    <div class="container">
+      <span class="section-label fade-up">Testimonials</span>
+      <h2 class="section-title fade-up">What parents & coaches say</h2>
+      <p class="section-desc fade-up">
+        Join thousands of swimmers and parents who use Swimmingo every day.
+      </p>
+      <div class="testimonials-grid">
+        <div class="testimonial-card fade-up">
+          <div class="stars">★★★★★</div>
+          <blockquote>"Swimmingo has completely changed how we track my daughter's progress. The goal-setting feature keeps her motivated!"</blockquote>
+          <div class="author">
+            <div class="avatar">S</div>
+            <div>
+              <div class="name">Sarah M.</div>
+              <div class="role">Swimming Parent</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card fade-up">
+          <div class="stars">★★★★★</div>
+          <blockquote>"As a coach, I love the multi-profile feature. I can track all my swimmers in one place and see their progress at a glance."</blockquote>
+          <div class="author">
+            <div class="avatar">M</div>
+            <div>
+              <div class="name">Mike R.</div>
+              <div class="role">Swim Coach</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card fade-up">
+          <div class="stars">★★★★★</div>
+          <blockquote>"The stopwatch with split timing for IM is fantastic. My son improved his personal best by 3 seconds in just one month!"</blockquote>
+          <div class="author">
+            <div class="avatar">J</div>
+            <div>
+              <div class="name">Jennifer L.</div>
+              <div class="role">Swimming Parent</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="container">
+      <span class="section-label fade-up">Get Started</span>
+      <h2 class="section-title fade-up">Ready to track every swim?</h2>
+      <p class="section-desc fade-up">
+        Download Swimmingo for free and start tracking laps, setting goals, and celebrating progress.
+      </p>
+      <div class="cta-buttons fade-up">
+        <a href="https://play.google.com/store/apps/details?id=com.dreamcreators.swimgoaltracker" class="btn btn-primary" target="_blank" rel="noopener">
+          📲 Download Now
+        </a>
+        <a href="/privacy-policy" class="btn btn-outline">
+          🔒 Privacy Policy
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="nav-logo">
+            <span class="logo-icon">🏊</span>
+            Swimmingo
+          </a>
+          <p>Track every swim, set goals, and monitor progress. Built for swimmers, parents, and coaches.</p>
+        </div>
+        <div>
+          <h4>Pages</h4>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/gallery">Gallery</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <ul class="footer-links">
+            <li><a href="/privacy-policy">Privacy Policy</a></li>
+            <li><a href="/account-deletion">Account Deletion</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul class="footer-links">
+            <li><a href="mailto:adminswimmingo@gmail.com">Email Support</a></li>
+            <li><a href="https://play.google.com/store/apps/details?id=com.dreamcreators.swimgoaltracker" target="_blank" rel="noopener">Google Play</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Swimmingo. All rights reserved.</span>
+        <div class="footer-bottom-links">
+          <a href="/privacy-policy">Privacy</a>
+          <a href="/account-deletion">Delete Data</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/scripts.js"></script>
+</body>
+</html>

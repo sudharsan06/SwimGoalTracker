@@ -142,7 +142,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         findViewById(R.id.btnPrivacyPolicy).setOnClickListener(v -> {
             startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://dreamcreators.net/privacy-policy")));
+                    Uri.parse("https://swimmingo.web.app/privacy-policy")));
         });
 
         findViewById(R.id.btnResetProgress).setOnClickListener(v -> {
