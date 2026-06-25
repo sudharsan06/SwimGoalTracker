@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/dark_background">
+    android:background="@color/dark_background"
+    android:paddingBottom="72dp">
 
     <!-- Title Section -->
     <LinearLayout
@@ -44,6 +45,7 @@
         android:id="@+id/headerScroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
         android:scrollbars="none"
         android:overScrollMode="never">
 
@@ -160,19 +162,18 @@
                 android:lineSpacingExtra="2dp" />
 
             <Button
+                android:id="@+id/btnViewFullReport"
                 style="@style/Widget.Material3.Button.TonalButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
+                android:drawableRight="@drawable/ic_lock_24"
+                android:drawableTint="@color/sun_gold"
                 android:text="View Full Report"
-                android:textColor="@color/dark_on_primary_container"
+                android:textColor="@android:color/white"
                 android:textSize="13sp"
                 android:textAllCaps="false"
-                app:backgroundTint="@color/dark_primary"
-                app:icon="@android:drawable/ic_menu_share"
-                app:iconGravity="textEnd"
-                app:iconSize="16dp"
-                app:iconTint="@color/dark_on_primary_container"
+                app:backgroundTint="@color/dark_primary_fixed_dim"
                 android:paddingHorizontal="20dp"
                 android:paddingVertical="8dp" />
         </LinearLayout>

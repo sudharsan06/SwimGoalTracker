@@ -61,6 +61,9 @@ public class InstructionActivity extends AppCompatActivity {
     }
 
     private void updatePageUI() {
+        int activeColor = getColor(R.color.dark_primary_fixed_dim);
+        int inactiveColor = getColor(R.color.dark_outline_variant);
+
         switch (currentPage) {
             case 0:
                 tvEmoji.setText("🏊");
@@ -68,9 +71,9 @@ public class InstructionActivity extends AppCompatActivity {
                 tvTitle.setText("Track every lap, every day");
                 tvDesc.setText("SwimminGO records your swim sessions automatically. Set personal goals and see how you improve over time.");
                 
-                indicator1.setBackgroundColor(0xFF1565C0);
-                indicator2.setBackgroundColor(0xFFD1D9E6);
-                indicator3.setBackgroundColor(0xFFD1D9E6);
+                indicator1.setBackgroundColor(activeColor);
+                indicator2.setBackgroundColor(inactiveColor);
+                indicator3.setBackgroundColor(inactiveColor);
                 
                 btnNext.setText("Next");
                 btnSkip.setVisibility(View.VISIBLE);
@@ -81,9 +84,9 @@ public class InstructionActivity extends AppCompatActivity {
                 tvTitle.setText("Set goals, stay motivated");
                 tvDesc.setText("Create personalised swimming goals. Get notified with smart reminders to keep your training on track.");
                 
-                indicator1.setBackgroundColor(0xFF1565C0);
-                indicator2.setBackgroundColor(0xFF1565C0);
-                indicator3.setBackgroundColor(0xFFD1D9E6);
+                indicator1.setBackgroundColor(activeColor);
+                indicator2.setBackgroundColor(activeColor);
+                indicator3.setBackgroundColor(inactiveColor);
                 
                 btnNext.setText("Next");
                 btnSkip.setVisibility(View.VISIBLE);
@@ -94,9 +97,9 @@ public class InstructionActivity extends AppCompatActivity {
                 tvTitle.setText("Switch between swimmers easily");
                 tvDesc.setText("One device supports up to 2 swimmer profiles. Each swimmer keeps their own records and progress history.");
                 
-                indicator1.setBackgroundColor(0xFF1565C0);
-                indicator2.setBackgroundColor(0xFF1565C0);
-                indicator3.setBackgroundColor(0xFF1565C0);
+                indicator1.setBackgroundColor(activeColor);
+                indicator2.setBackgroundColor(activeColor);
+                indicator3.setBackgroundColor(activeColor);
                 
                 btnNext.setText("Get Started");
                 btnSkip.setVisibility(View.GONE);

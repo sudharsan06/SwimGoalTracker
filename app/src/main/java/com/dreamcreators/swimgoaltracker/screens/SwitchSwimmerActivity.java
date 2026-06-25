@@ -30,9 +30,11 @@ public class SwitchSwimmerActivity extends AppCompatActivity {
     public static final String EXTRA_FROM_LOGIN = "from_login";
 
     private List<ProfileManager.SwimmerProfile> profiles;
+    private boolean themeDark;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        themeDark = ThemeManager.isDarkMode(this);
         ThemeManager.applyTheme(this);
         super.onCreate(savedInstanceState);
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -62,6 +64,10 @@ public class SwitchSwimmerActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (ThemeManager.isDarkMode(this) != themeDark) {
+            recreate();
+            return;
+        }
         // Refresh after returning from ProfileActivity (new swimmer just added)
         refreshUI();
     }
@@ -162,7 +168,9 @@ public class SwitchSwimmerActivity extends AppCompatActivity {
             tvAvatar.setVisibility(View.VISIBLE);
         }
         tvName.setText(p.name);
+        tvSub.setTextSize(10.0F);
         tvSub.setText(p.lastLogin != null ? "Last login: " + p.lastLogin : "Profile " + p.id);
+
 
         boolean isActive = (p.id == activeId);
         if (isActive) {

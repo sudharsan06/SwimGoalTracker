@@ -86,7 +86,7 @@
                     android:layout_marginTop="2dp"
                     android:text="Last login: —"
                     android:textColor="@color/dark_on_surface_variant"
-                    android:textSize="13sp" />
+                    android:textSize="10sp" />
             </LinearLayout>
 
             <!-- Active chip OR Switch button -->
@@ -181,7 +181,7 @@
                     android:layout_marginTop="2dp"
                     android:text="Last login: —"
                     android:textColor="@color/dark_on_surface_variant"
-                    android:textSize="13sp" />
+                    android:textSize="10sp" />
             </LinearLayout>
 
             <TextView
@@ -295,7 +295,7 @@
             android:layout_height="wrap_content"
             android:text="@string/switch_info"
             android:textColor="@color/dark_on_surface_variant"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:lineSpacingMultiplier="1.2" />
     </LinearLayout>
 
@@ -312,7 +312,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="Back to Home"
+        android:text="Go to Home"
         android:textAllCaps="false"
         android:textColor="@color/dark_background"
         android:textStyle="bold"

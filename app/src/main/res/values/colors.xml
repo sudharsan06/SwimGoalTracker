@@ -79,4 +79,24 @@
     <color name="glass_card_featured_border">#3300B894</color>
     <color name="progress_track_bg">#1A00B894</color>
     <color name="bottom_border_color">#1A00B894</color>
+
+    <!-- Login screen colors -->
+    <color name="login_bg_start">#01183E</color>
+    <color name="login_bg_mid">#042E73</color>
+    <color name="login_bg_end">#00112D</color>
+    <color name="login_card_bg">#9007285B</color>
+    <color name="login_card_border">#1FFFFFFF</color>
+    <color name="login_input_bg">#082B63</color>
+    <color name="login_input_border">#174D96</color>
+    <color name="login_cyan">#10D5E5</color>
+    <color name="login_blue">#1598FF</color>
+    <color name="login_text">#DCEBFF</color>
+    <color name="login_muted">#8FAED6</color>
+    <color name="login_signup_bg">#052861</color>
+    <color name="login_footer_bg">#03214E</color>
+    <color name="login_forgot">#2FAFFF</color>
+    <color name="login_or_color">#9AAFD5</color>
+    <color name="login_or_line">#3D5B91</color>
+    <color name="login_logo_border_start">#59C5FF</color>
+    <color name="login_logo_border_end">#0A5BCB</color>
 </resources>

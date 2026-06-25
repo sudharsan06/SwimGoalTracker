@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,6 +38,10 @@ public class RecordsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.listTracker);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         headerScroll = view.findViewById(R.id.headerScroll);
+
+        view.findViewById(R.id.btnViewFullReport).setOnClickListener(v ->
+            Toast.makeText(getContext(), "Coming in a future version", Toast.LENGTH_SHORT).show()
+        );
     }
 
     public void updateRecords(List<TrackerPojo> items, long[] bestTimes) {

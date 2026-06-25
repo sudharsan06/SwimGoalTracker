@@ -203,32 +203,17 @@ public class TrackerActivity extends AppCompatActivity {
     private long[] loadRecords(int limit, List<TrackerPojo> result) {
         long minFree = Long.MAX_VALUE, minFly = Long.MAX_VALUE, minBreast = Long.MAX_VALUE, minBack = Long.MAX_VALUE;
         int activeProfileId = ProfileManager.getActiveProfileId(this);
-        
-        String limitClause = limit == -1 ? "" : " LIMIT " + limit;
-        String dateQuery = "SELECT DISTINCT date FROM swim_sessions WHERE profile_id = ? ORDER BY date DESC" + limitClause;
-        
-        Cursor dateCursor = dbHelper.getReadableDatabase().rawQuery(dateQuery, new String[]{String.valueOf(activeProfileId)});
-        List<String> dates = new ArrayList<>();
-        if (dateCursor.moveToFirst()) {
-            do {
-                dates.add(dateCursor.getString(0));
-            } while (dateCursor.moveToNext());
-        }
-        dateCursor.close();
 
-        for (String date : dates) {
-            long freeMs = 0, backMs = 0, breastMs = 0, flyMs = 0;
-            Cursor c2 = dbHelper.getReadableDatabase().rawQuery(
-                    "SELECT MIN(NULLIF(freestyle_ms, 0)), MIN(NULLIF(backstroke_ms, 0)), MIN(NULLIF(breaststroke_ms, 0)), MIN(NULLIF(butterfly_ms, 0)) FROM swim_sessions WHERE date = ? AND profile_id = ?",
-                    new String[]{date, String.valueOf(activeProfileId)}
-            );
-            if (c2.moveToFirst()) {
-                freeMs = c2.isNull(0) ? 0 : c2.getLong(0);
-                backMs = c2.isNull(1) ? 0 : c2.getLong(1);
-                breastMs = c2.isNull(2) ? 0 : c2.getLong(2);
-                flyMs = c2.isNull(3) ? 0 : c2.getLong(3);
-            }
-            c2.close();
+        String limitClause = limit == -1 ? "" : " LIMIT " + limit;
+        String query = "SELECT date, MIN(NULLIF(freestyle_ms, 0)), MIN(NULLIF(backstroke_ms, 0)), MIN(NULLIF(breaststroke_ms, 0)), MIN(NULLIF(butterfly_ms, 0)) FROM swim_sessions WHERE profile_id = ? GROUP BY date ORDER BY date DESC" + limitClause;
+
+        Cursor cursor = dbHelper.getReadableDatabase().rawQuery(query, new String[]{String.valueOf(activeProfileId)});
+        while (cursor.moveToNext()) {
+            String date = cursor.getString(0);
+            long freeMs = cursor.isNull(1) ? 0 : cursor.getLong(1);
+            long backMs = cursor.isNull(2) ? 0 : cursor.getLong(2);
+            long breastMs = cursor.isNull(3) ? 0 : cursor.getLong(3);
+            long flyMs = cursor.isNull(4) ? 0 : cursor.getLong(4);
 
             if (freeMs > 0 && freeMs < minFree) minFree = freeMs;
             if (flyMs > 0 && flyMs < minFly) minFly = flyMs;
@@ -245,6 +230,7 @@ public class TrackerActivity extends AppCompatActivity {
                     freeMs, flyMs, breastMs, backMs, 0
             ));
         }
+        cursor.close();
 
         return new long[]{
             minFree == Long.MAX_VALUE ? 0 : minFree,

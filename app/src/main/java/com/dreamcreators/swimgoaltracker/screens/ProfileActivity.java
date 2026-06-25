@@ -228,6 +228,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             startDate = c.getString(5) == null ? "" : c.getString(5);
             tvStartDate.setText(startDate);
+            tvLastLogin.setTextSize(10.0F);
             tvLastLogin.setText(c.getString(6) == null ? "" : ("Last login: " + c.getString(6)));
             btnLogout.setVisibility(View.VISIBLE);
             dividerLogout.setVisibility(View.VISIBLE);
@@ -255,14 +256,19 @@ public class ProfileActivity extends AppCompatActivity {
             PopupMenu popup = new PopupMenu(this, v);
             Menu menu = popup.getMenu();
 
+            int iconColor = getColor(R.color.dark_primary_fixed_dim);
+
             if (imageUri != null) {
                 MenuItem editItem = menu.add(Menu.NONE, 1, 0, "Edit Photo");
                 editItem.setIcon(R.drawable.ic_edit_24);
+                editItem.getIcon().setTint(iconColor);
                 MenuItem deleteItem = menu.add(Menu.NONE, 2, 1, "Delete Photo");
                 deleteItem.setIcon(R.drawable.ic_delete_24);
+                deleteItem.getIcon().setTint(iconColor);
             } else {
                 MenuItem addItem = menu.add(Menu.NONE, 1, 0, "Add Photo");
                 addItem.setIcon(R.drawable.ic_edit_24);
+                addItem.getIcon().setTint(iconColor);
             }
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {

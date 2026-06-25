@@ -51,6 +51,28 @@ public class GoalsActivity extends AppCompatActivity {
         // Load saved goals
         loadSavedGoals();
 
+        // Highlight the requested stroke field if coming from target tap
+        String highlightStroke = getIntent().getStringExtra("highlight_stroke");
+        if (highlightStroke != null) {
+            TextInputEditText targetField = null;
+            switch (highlightStroke) {
+                case "free":   targetField = etGoalFree; break;
+                case "back":   targetField = etGoalBack; break;
+                case "breast": targetField = etGoalBreast; break;
+                case "fly":    targetField = etGoalFly; break;
+                case "im":     targetField = etGoalIM; break;
+            }
+            if (targetField != null) {
+                targetField.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) imm.showSoftInput(targetField, InputMethodManager.SHOW_IMPLICIT);
+            }
+        } else if (getIntent().getBooleanExtra("highlight_weekly", false)) {
+            etWeeklyKm.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) imm.showSoftInput(etWeeklyKm, InputMethodManager.SHOW_IMPLICIT);
+        }
+
         etGoalIM.setInputType(android.text.InputType.TYPE_NULL);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             etGoalIM.setShowSoftInputOnFocus(false);

@@ -180,6 +180,14 @@ public class SwimStopwatchActivity extends AppCompatActivity {
 
         dbHelper = new NutritionDbHelper(this);
 
+        // Target click → Goals screen with stroke highlighted
+        android.content.Intent goalsIntent = new android.content.Intent(this, GoalsActivity.class);
+        tvFreeTarget.setOnClickListener(v -> { goalsIntent.putExtra("highlight_stroke", "free"); startActivity(goalsIntent); });
+        tvBackTarget.setOnClickListener(v -> { goalsIntent.putExtra("highlight_stroke", "back"); startActivity(goalsIntent); });
+        tvBreastTarget.setOnClickListener(v -> { goalsIntent.putExtra("highlight_stroke", "breast"); startActivity(goalsIntent); });
+        tvFlyTarget.setOnClickListener(v -> { goalsIntent.putExtra("highlight_stroke", "fly"); startActivity(goalsIntent); });
+        tvIMTarget.setOnClickListener(v -> { goalsIntent.putExtra("highlight_stroke", "im"); startActivity(goalsIntent); });
+
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         // Adjust UI based on stroke intent
@@ -230,7 +238,10 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 public void onNothingSelected(android.widget.AdapterView<?> parent) {}
             });
 
-            loadFilteredEntries();
+            getWindow().getDecorView().post(() -> {
+                loadFilteredEntries();
+                loadTargetAndPreviousTimes();
+            });
         } else {
             loadTodayEntries("free", today);
         }
@@ -842,6 +853,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 stopTimer(which);
                 resetTimer(which);
                 loadTodayEntries(which, date);
+                loadTargetAndPreviousTimes();
             } else {
                 Toast.makeText(this, "Save failed ❌", Toast.LENGTH_SHORT).show();
             }
@@ -898,6 +910,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                     stopTimer(which);
                     resetTimer(which);
                     loadTodayEntries(which, date);
+                    loadTargetAndPreviousTimes();
                 } else {
                     Toast.makeText(this, "Save failed ❌", Toast.LENGTH_SHORT).show();
                 }
@@ -1030,6 +1043,7 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             stopTimer(which);
             resetTimer(which);
             loadTodayEntries(which, date);
+            loadTargetAndPreviousTimes();
         } else {
             Toast.makeText(this, "Save failed ❌", Toast.LENGTH_SHORT).show();
         }
@@ -1185,10 +1199,10 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         }
         
         // Refresh entries using current filter
-        loadFilteredEntries();
-        
-        // Check if a new session was added (e.g. manually) and verify if it achieved a goal
-        checkNewSessionGoalAchievement();
+        getWindow().getDecorView().post(() -> {
+            loadFilteredEntries();
+            checkNewSessionGoalAchievement();
+        });
     }
 
     private void updateLastCheckedSessionId(long id) {

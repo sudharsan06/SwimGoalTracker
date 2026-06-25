@@ -139,7 +139,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Weekly goal → Goals screen
         tvWeeklyGoal.setOnClickListener(v ->
-                startActivity(new Intent(this, GoalsActivity.class)));
+                startActivity(new Intent(this, GoalsActivity.class)
+                        .putExtra("highlight_weekly", true)));
 
         AdView adView = findViewById(R.id.adView);
         if (adView != null) {
@@ -155,13 +156,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         dbHelper = new NutritionDbHelper(this);
-        loadUserData();
-        loadWeeklyProgress();
+
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         tvDate.setText("Today: " + today);
-        loadTodayNutrition(today);
-
         tvUserName.setText(getGreetingMessage(userName));
+
+        findViewById(android.R.id.content).post(() -> {
+            loadUserData();
+            loadWeeklyProgress();
+            loadTodayNutrition(today);
+        });
 
 
         bottomNav.setSelectedItemId(R.id.nav_home);
@@ -173,7 +177,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, TrackerActivity.class));
                 return true;
             } else if (id == R.id.nav_goals) {
-                startActivity(new Intent(this, GoalsActivity.class));
+                startActivity(new Intent(this, GoalsActivity.class)
+                        .putExtra("highlight_weekly", true));
                 return true;
             } else if (id == R.id.nav_settings) {
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -382,14 +387,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadUserData();
-        loadWeeklyProgress();
-        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        loadTodayNutrition(today);
-        loadBestSwimToday(today);
         tvUserName.setText(getGreetingMessage(userName));
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
         bottomNav.setSelectedItemId(R.id.nav_home);
+
+        findViewById(android.R.id.content).post(() -> {
+            loadUserData();
+            loadWeeklyProgress();
+            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            loadTodayNutrition(today);
+            loadBestSwimToday(today);
+        });
     }
 
     private void loadBestSwimToday(String date) {
