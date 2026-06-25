@@ -13,6 +13,7 @@ googleServices = "4.4.4"
 firebaseBom = "33.5.1"
 playServicesAuth = "21.2.0"
 mpandroidchart = "v3.1.0"
+workmanager = "2.10.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -31,6 +32,7 @@ firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging
 play-services-auth-lib = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpandroidchart" }
 konfetti = { group = "nl.dionsegijn", name = "konfetti-xml", version = "2.0.4" }
+workmanager = { group = "androidx.work", name = "work-runtime", version.ref = "workmanager" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

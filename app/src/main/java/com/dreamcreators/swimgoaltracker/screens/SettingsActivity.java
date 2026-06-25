@@ -21,6 +21,7 @@ import androidx.core.view.WindowInsetsControllerCompat;
 import com.dreamcreators.swimgoaltracker.db.NutritionDbHelper;
 import com.dreamcreators.swimgoaltracker.db.ProfileManager;
 import com.dreamcreators.swimgoaltracker.R;
+import com.dreamcreators.swimgoaltracker.sync.SyncWorker;
 import com.dreamcreators.swimgoaltracker.utility.AlertManager;
 import com.dreamcreators.swimgoaltracker.utility.ThemeManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -49,6 +50,11 @@ public class SettingsActivity extends AppCompatActivity {
     private RadioGroup radioGroupTheme;
     private RadioButton radioLight, radioDark, radioAuto;
 
+    private TextView tvSyncStatus;
+    private View cardSyncCloud;
+    private int appVersionTapCount = 0;
+    private static final int TAPS_TO_UNLOCK = 10;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ThemeManager.applyTheme(this);
@@ -69,7 +75,30 @@ public class SettingsActivity extends AppCompatActivity {
         loadAlertPreferences();
         loadVibrationPreference();
         loadAppVersion();
+        setupTapUnlock();
         setupBottomNav();
+    }
+
+    private void setupTapUnlock() {
+        View row = findViewById(R.id.layAppVersion);
+        row.setClickable(true);
+        row.setFocusable(true);
+        row.setOnClickListener(v -> {
+            appVersionTapCount++;
+            int remaining = TAPS_TO_UNLOCK - appVersionTapCount;
+            if (remaining > 0 && remaining <= 5) {
+                Toast.makeText(this, remaining + " more taps to unlock sync", Toast.LENGTH_SHORT).show();
+            }
+            if (appVersionTapCount >= TAPS_TO_UNLOCK) {
+                appVersionTapCount = 0;
+                cardSyncCloud.setVisibility(View.VISIBLE);
+                Toast.makeText(this, "Sync option revealed for 3 minutes", Toast.LENGTH_SHORT).show();
+                row.postDelayed(() -> {
+                    cardSyncCloud.setVisibility(View.GONE);
+                    Toast.makeText(this, "Sync option hidden", Toast.LENGTH_SHORT).show();
+                }, 3 * 60 * 1000L);
+            }
+        });
     }
 
     private void initViews() {
@@ -124,6 +153,26 @@ public class SettingsActivity extends AppCompatActivity {
                     .setNegativeButton("Cancel", null)
                     .show();
         });
+
+        cardSyncCloud = findViewById(R.id.cardSyncCloud);
+        tvSyncStatus = findViewById(R.id.tvSyncStatus);
+        findViewById(R.id.btnSyncNow).setOnClickListener(v -> {
+            tvSyncStatus.setText("Syncing...");
+            SyncWorker.runNow(this);
+            androidx.work.WorkManager.getInstance(this)
+                    .getWorkInfosByTagLiveData("weekly_sync")
+                    .observe(this, infos -> {
+                        if (infos == null || infos.isEmpty()) return;
+                        androidx.work.WorkInfo latest = infos.get(infos.size() - 1);
+                        if (latest.getState().isFinished()) {
+                            if (latest.getState() == androidx.work.WorkInfo.State.SUCCEEDED) {
+                                tvSyncStatus.setText("Last sync: just now");
+                            } else {
+                                tvSyncStatus.setText("Sync failed");
+                            }
+                        }
+                    });
+        });
     }
 
     private void loadThemePreference() {
@@ -160,8 +209,21 @@ public class SettingsActivity extends AppCompatActivity {
         super.onResume();
         loadAlertPreferences();
         loadVibrationPreference();
+        loadSyncStatus();
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
         bottomNav.setSelectedItemId(R.id.nav_settings);
+    }
+
+    private void loadSyncStatus() {
+        SharedPreferences syncPrefs = getSharedPreferences("swim_sync", MODE_PRIVATE);
+        long lastSyncAt = syncPrefs.getLong("last_sync_at", 0);
+        if (lastSyncAt > 0) {
+            String date = new java.text.SimpleDateFormat("MMM dd, yyyy HH:mm", java.util.Locale.getDefault())
+                    .format(new java.util.Date(lastSyncAt));
+            tvSyncStatus.setText("Last sync: " + date);
+        } else {
+            tvSyncStatus.setText("");
+        }
     }
 
     private void loadAlertPreferences() {

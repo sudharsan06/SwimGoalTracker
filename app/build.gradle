@@ -52,4 +52,5 @@ dependencies {
     implementation libs.mpandroidchart
     implementation 'androidx.viewpager2:viewpager2:1.1.0'
     implementation libs.konfetti
+    implementation libs.workmanager
 }

@@ -121,4 +121,62 @@ public class NutritionDbHelper extends SQLiteOpenHelper {
             } catch (Exception ignored) {}
         }
     }
+
+    public java.util.ArrayList<android.content.ContentValues> getSessionsSince(long sinceEpochMillis, int profileId) {
+        java.util.ArrayList<android.content.ContentValues> list = new java.util.ArrayList<>();
+        android.database.Cursor c = getReadableDatabase().rawQuery(
+                "SELECT * FROM swim_sessions WHERE profile_id = ? AND created_at > ? ORDER BY id ASC",
+                new String[]{String.valueOf(profileId), String.valueOf(sinceEpochMillis)});
+        while (c.moveToNext()) {
+            android.content.ContentValues row = new android.content.ContentValues();
+            for (String col : c.getColumnNames()) {
+                int idx = c.getColumnIndex(col);
+                switch (c.getType(idx)) {
+                    case android.database.Cursor.FIELD_TYPE_NULL: break;
+                    case android.database.Cursor.FIELD_TYPE_INTEGER: row.put(col, c.getLong(idx)); break;
+                    case android.database.Cursor.FIELD_TYPE_FLOAT: row.put(col, c.getDouble(idx)); break;
+                    case android.database.Cursor.FIELD_TYPE_STRING: row.put(col, c.getString(idx)); break;
+                }
+            }
+            list.add(row);
+        }
+        c.close();
+        return list;
+    }
+
+    public java.util.ArrayList<android.content.ContentValues> getAllNutrition() {
+        java.util.ArrayList<android.content.ContentValues> list = new java.util.ArrayList<>();
+        android.database.Cursor c = getReadableDatabase().rawQuery("SELECT * FROM daily_nutrition ORDER BY date ASC", null);
+        while (c.moveToNext()) {
+            android.content.ContentValues row = new android.content.ContentValues();
+            row.put("date", c.getString(c.getColumnIndex("date")));
+            row.put("calories", c.getInt(c.getColumnIndex("calories")));
+            row.put("protein", c.getInt(c.getColumnIndex("protein")));
+            row.put("carbs", c.getInt(c.getColumnIndex("carbs")));
+            row.put("fats", c.getInt(c.getColumnIndex("fats")));
+            list.add(row);
+        }
+        c.close();
+        return list;
+    }
+
+    public android.content.ContentValues getProfileRow(int profileId) {
+        android.database.Cursor c = getReadableDatabase().rawQuery(
+                "SELECT * FROM profile WHERE id = ?", new String[]{String.valueOf(profileId)});
+        android.content.ContentValues row = null;
+        if (c.moveToFirst()) {
+            row = new android.content.ContentValues();
+            for (String col : c.getColumnNames()) {
+                int idx = c.getColumnIndex(col);
+                switch (c.getType(idx)) {
+                    case android.database.Cursor.FIELD_TYPE_NULL: break;
+                    case android.database.Cursor.FIELD_TYPE_INTEGER: row.put(col, c.getLong(idx)); break;
+                    case android.database.Cursor.FIELD_TYPE_FLOAT: row.put(col, c.getDouble(idx)); break;
+                    case android.database.Cursor.FIELD_TYPE_STRING: row.put(col, c.getString(idx)); break;
+                }
+            }
+        }
+        c.close();
+        return row;
+    }
 }
