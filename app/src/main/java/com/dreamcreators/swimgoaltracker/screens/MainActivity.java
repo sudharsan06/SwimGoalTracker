@@ -206,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
         if (c.moveToFirst()) {
             String uriStr = c.getString(0);
             userName = c.getString(1);
+            tvUserName.setText(getGreetingMessage(userName));
             
             if (uriStr != null && !uriStr.isEmpty()) {
                 Uri uri = Uri.parse(uriStr);
