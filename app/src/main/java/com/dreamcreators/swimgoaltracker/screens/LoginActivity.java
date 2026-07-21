@@ -171,6 +171,10 @@ public class LoginActivity extends ComponentActivity {
 
         TextView tvForgotPassword = findViewById(R.id.tvForgotPassword);
         tvForgotPassword.setOnClickListener(v -> {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            }
             String email = etEmail.getText().toString().trim();
             if (TextUtils.isEmpty(email)) {
                 showMessageDialog(false, "Input Error", "Please enter your email address first.");

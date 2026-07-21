@@ -30,6 +30,9 @@
     <color name="progress_track_bg">#1AFFFFFF</color>
     <color name="bottom_border_color">#1AFFFFFF</color>
 
+    <!-- Event badge background -->
+    <color name="badge_background">#1A00DAF3</color>
+
     <!-- Login screen colors (same as light mode — login is always dark) -->
     <color name="login_bg_start">#01183E</color>
     <color name="login_bg_mid">#042E73</color>

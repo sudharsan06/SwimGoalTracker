@@ -1057,6 +1057,38 @@ section {
   gap: 4px;
 }
 
+.event-card .event-body .event-register {
+  margin-top: 14px;
+}
+
+.event-card .event-letter-avatar {
+  width: 100%;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+}
+
+.event-card .event-accent-bar {
+  width: 56px;
+  height: 5px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+.event-loading {
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
 /* ========== SCROLL ANIMATIONS ========== */
 .fade-up {
   opacity: 0;

@@ -1,0 +1,7 @@
+{
+  "name": "swimmingo-root",
+  "private": true,
+  "scripts": {
+    "deploy:website": "firebase deploy --only hosting"
+  }
+}

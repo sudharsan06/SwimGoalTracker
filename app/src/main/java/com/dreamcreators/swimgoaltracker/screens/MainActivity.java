@@ -146,8 +146,15 @@ public class MainActivity extends AppCompatActivity {
         if (adView != null) {
             adView.setAdListener(new com.google.android.gms.ads.AdListener() {
                 @Override
+                public void onAdLoaded() {
+                    Log.d("MainActivity", "Ad loaded successfully");
+                    adView.setVisibility(View.VISIBLE);
+                }
+
+                @Override
                 public void onAdFailedToLoad(LoadAdError loadAdError) {
                     Log.e("MainActivity", "Ad failed: " + loadAdError.getCode() + " " + loadAdError.getMessage());
+                    adView.setVisibility(View.GONE);
                 }
             });
             MobileAds.initialize(this, initializationStatus -> {
@@ -179,6 +186,9 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.nav_goals) {
                 startActivity(new Intent(this, GoalsActivity.class)
                         .putExtra("highlight_weekly", true));
+                return true;
+            } else if (id == R.id.nav_events) {
+                startActivity(new Intent(this, EventsActivity.class));
                 return true;
             } else if (id == R.id.nav_settings) {
                 startActivity(new Intent(this, SettingsActivity.class));

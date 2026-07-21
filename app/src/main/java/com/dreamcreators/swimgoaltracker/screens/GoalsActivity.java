@@ -162,6 +162,9 @@ public class GoalsActivity extends AppCompatActivity {
                 return true;
             } else if (id == R.id.nav_goals) {
                 return true;
+            } else if (id == R.id.nav_events) {
+                startActivity(new Intent(this, EventsActivity.class));
+                return true;
             } else if (id == R.id.nav_settings) {
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;

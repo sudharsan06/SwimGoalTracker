@@ -80,6 +80,9 @@
     <color name="progress_track_bg">#1A00B894</color>
     <color name="bottom_border_color">#1A00B894</color>
 
+    <!-- Event badge background -->
+    <color name="badge_background">#1A00B894</color>
+
     <!-- Login screen colors -->
     <color name="login_bg_start">#01183E</color>
     <color name="login_bg_mid">#042E73</color>

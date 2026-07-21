@@ -121,10 +121,23 @@
             android:theme="@style/AppTheme_NoActionBar" />
 
         <activity
-            android:name=".screens.InstructionActivity"
+            android:name=".screens.EventsActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme_NoActionBar" />
+
+        <activity
+            android:name=".screens.EventDetailActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme_NoActionBar" />
+
+        <activity
+            android:name=".screens.InstructionActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="false"
             android:theme="@style/AppTheme_NoActionBar" />
 
         <activity
@@ -162,6 +175,16 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/midnight_blue" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

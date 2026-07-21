@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_bg_gradient"
-    android:fillViewport="true">
+    android:background="@drawable/login_bg_gradient">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -93,12 +97,12 @@
             <EditText
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="56dp"
                 android:background="@drawable/login_input_bg"
                 android:hint="Email"
                 android:inputType="textEmailAddress"
                 android:paddingHorizontal="16dp"
-                android:paddingVertical="16dp"
+                android:paddingVertical="14dp"
                 android:textColor="@color/login_text"
                 android:textColorHint="@color/login_muted"
                 android:textSize="18sp" />
@@ -112,12 +116,12 @@
                 <EditText
                     android:id="@+id/etPassword"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="56dp"
                     android:background="@drawable/login_input_bg"
                     android:hint="Password"
                     android:inputType="textPassword"
                     android:paddingHorizontal="16dp"
-                    android:paddingVertical="16dp"
+                    android:paddingVertical="14dp"
                     android:paddingEnd="52dp"
                     android:textColor="@color/login_text"
                     android:textColorHint="@color/login_muted"
@@ -387,14 +391,18 @@
             android:textColor="@color/login_muted"
             android:textSize="12sp" />
 
-        <!-- Progress -->
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:visibility="gone" />
-
     </LinearLayout>
 
 </ScrollView>
+
+    <!-- Progress overlay -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone" />
+
+</FrameLayout>

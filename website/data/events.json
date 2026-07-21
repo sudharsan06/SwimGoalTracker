@@ -1,0 +1,54 @@
+{
+  "events": [
+    {
+      "id": 1,
+      "title": "Summer Regional Championships",
+      "date": "July 15, 2026",
+      "description": "Annual regional swimming competition featuring all four strokes and IM events. Open to all age groups. Medals awarded for top 3 finishers in each category.",
+      "location": "City Aquatics Center",
+      "time": "8:00 AM - 5:00 PM",
+      "strokes": "All Strokes",
+      "registrationUrl": "https://example.com/register/summer-regional-2026"
+    },
+    {
+      "id": 2,
+      "title": "Junior Swim Meet",
+      "date": "August 8, 2026",
+      "description": "A competitive meet for junior swimmers (ages 8-14). Focus on technique and personal best times. All participants receive a certificate of participation.",
+      "location": "Westside Pool Complex",
+      "time": "9:00 AM - 3:00 PM",
+      "strokes": "Freestyle & Backstroke",
+      "registrationUrl": "https://example.com/register/junior-swim-meet-2026"
+    },
+    {
+      "id": 3,
+      "title": "State Level Competition",
+      "date": "September 5, 2026",
+      "description": "State-level championship qualifier. Top performers advance to the national round. Strict adherence to FINA rules. Electronic timing used for all events.",
+      "location": "State Aquatic Center",
+      "time": "7:30 AM - 6:00 PM",
+      "strokes": "All Events",
+      "registrationUrl": "https://example.com/register/state-level-2026"
+    },
+    {
+      "id": 4,
+      "title": "Open Water Challenge",
+      "date": "October 12, 2026",
+      "description": "Open water swimming event at the lake. 1km, 2km, and 5km categories available. Wetsuits allowed for water temperatures below 20°C. Safety kayaks and medical staff on site.",
+      "location": "Silver Lake",
+      "time": "8:00 AM - 12:00 PM",
+      "strokes": "Open Water",
+      "registrationUrl": "https://example.com/register/open-water-2026"
+    },
+    {
+      "id": 5,
+      "title": "Winter Invitational",
+      "date": "November 20, 2026",
+      "description": "End-of-year invitational meet. A great opportunity to finish the season with strong personal bests. Heats and finals format for all age groups.",
+      "location": "Downtown Aquatics Center",
+      "time": "8:30 AM - 4:30 PM",
+      "strokes": "All Strokes & IM",
+      "registrationUrl": "https://example.com/register/winter-invitational-2026"
+    }
+  ]
+}

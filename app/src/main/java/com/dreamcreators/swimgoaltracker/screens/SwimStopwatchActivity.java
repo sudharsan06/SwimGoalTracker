@@ -3,21 +3,29 @@ package com.dreamcreators.swimgoaltracker.screens;
 import static android.view.View.VISIBLE;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
-import android.graphics.Typeface;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.io.File;
+import java.io.FileOutputStream;
 
 import com.dreamcreators.swimgoaltracker.db.NutritionDbHelper;
 import com.dreamcreators.swimgoaltracker.db.ProfileManager;
@@ -1181,7 +1189,11 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             });
             adapter.setOnItemClickListener(entry -> {
                 boolean isBest = (entry.getTimeMs() == finalBestTime && finalBestTime > 0);
-                showPaceDialog(entry, style, isBest);
+                if (goalMs > 0 && entry.getTimeMs() <= goalMs) {
+                    showGoalAchievedDialog(entry, style, goalMs);
+                } else {
+                    showPaceDialog(entry, style, isBest);
+                }
             });
             recyclerViewEntries.setAdapter(adapter);
         }
@@ -1198,8 +1210,9 @@ public class SwimStopwatchActivity extends AppCompatActivity {
             selectedStroke = strokeFromIntent;
         }
         
-        // Refresh entries using current filter
+        // Refresh entries and previous best times
         getWindow().getDecorView().post(() -> {
+            loadTargetAndPreviousTimes();
             loadFilteredEntries();
             checkNewSessionGoalAchievement();
         });
@@ -1343,6 +1356,191 @@ public class SwimStopwatchActivity extends AppCompatActivity {
                 .show();
     }
 
+    private void showGoalAchievedDialog(SwimTimingEntry entry, String style, long goalMs) {
+        int activeProfileId = ProfileManager.getActiveProfileId(this);
+
+        int poolDistanceTemp = 25;
+        try {
+            Cursor c = dbHelper.getReadableDatabase().rawQuery(
+                    "SELECT pool_distance FROM profile WHERE id = ?",
+                    new String[]{String.valueOf(activeProfileId)}
+            );
+            if (c.moveToFirst()) {
+                poolDistanceTemp = c.getInt(0);
+                if (poolDistanceTemp <= 0) poolDistanceTemp = 25;
+            }
+            c.close();
+        } catch (Exception e) {
+            Log.e("SwimStopwatchActivity", "Error loading pool distance", e);
+        }
+        final int poolDistance = poolDistanceTemp;
+
+        String columnName;
+        switch (style) {
+            case "free": columnName = "freestyle_ms"; break;
+            case "back": columnName = "backstroke_ms"; break;
+            case "breast": columnName = "breaststroke_ms"; break;
+            case "fly": columnName = "butterfly_ms"; break;
+            case "im": columnName = "im_ms"; break;
+            default: columnName = "freestyle_ms"; break;
+        }
+
+        int attemptCountTemp = 0;
+        try {
+            Cursor c = dbHelper.getReadableDatabase().rawQuery(
+                    "SELECT COUNT(*) FROM swim_sessions WHERE date = ? AND profile_id = ? AND " + columnName + " > 0",
+                    new String[]{entry.getDate(), String.valueOf(activeProfileId)}
+            );
+            if (c.moveToFirst()) attemptCountTemp = c.getInt(0);
+            c.close();
+        } catch (Exception e) {
+            Log.e("SwimStopwatchActivity", "Error counting attempts", e);
+        }
+        final int attemptCount = attemptCountTemp;
+
+        String userNameTemp = "Swimmer";
+        try {
+            Cursor c = dbHelper.getReadableDatabase().rawQuery(
+                    "SELECT name FROM profile WHERE id = ?",
+                    new String[]{String.valueOf(activeProfileId)}
+            );
+            if (c.moveToFirst()) userNameTemp = c.getString(0);
+            c.close();
+        } catch (Exception e) {}
+        final String userName = userNameTemp;
+
+        long timeMs = entry.getTimeMs();
+        float totalSeconds = timeMs / 1000f;
+        float pacePerMeter = totalSeconds / poolDistance;
+
+        final String styleName;
+        switch (style) {
+            case "im": styleName = "IM"; break;
+            case "fly": styleName = "Butterfly"; break;
+            case "breast": styleName = "Breaststroke"; break;
+            case "back": styleName = "Backstroke"; break;
+            case "free": styleName = "Freestyle"; break;
+            default: styleName = style.substring(0, 1).toUpperCase() + style.substring(1); break;
+        }
+
+        String distanceText = poolDistance + " m";
+        String timeText = formatMs(timeMs);
+        String formattedTime = formatPace(totalSeconds);
+
+        String paceDetailsTemp;
+        if ("im".equalsIgnoreCase(style)) {
+            int totalM = poolDistance * 4;
+            boolean isManualEntry = (entry.getFlyMs() == 0 && entry.getBackMs() == 0
+                    && entry.getBreastMs() == 0 && entry.getFreeMs() == 0);
+            paceDetailsTemp = "For " + totalM + "m, you swam this IM in " + formattedTime + ".\n\n";
+            if (isManualEntry) {
+                paceDetailsTemp += "Note: Manual entry will not store the individual swim stroke time.";
+            } else {
+                paceDetailsTemp += "  • Butterfly  = " + formatMs(entry.getFlyMs()) + "\n";
+                paceDetailsTemp += "  • Backstroke  = " + formatMs(entry.getBackMs()) + "\n";
+                paceDetailsTemp += "  • Breaststroke = " + formatMs(entry.getBreastMs()) + "\n";
+                paceDetailsTemp += "  • Freestyle  = " + formatMs(entry.getFreeMs());
+            }
+        } else {
+            paceDetailsTemp = "For " + poolDistance + "m, you swam this in " + formattedTime + ".\nWhat if?\n\n";
+            paceDetailsTemp += "  • 25m  = " + formatPace(pacePerMeter * 25) + "\n";
+            paceDetailsTemp += "  • 50m  = " + formatPace(pacePerMeter * 50) + "\n";
+            paceDetailsTemp += "  • 100m = " + formatPace(pacePerMeter * 100);
+        }
+        final String paceDetails = paceDetailsTemp;
+
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_goal_achieved, null);
+
+        ((TextView) dialogView.findViewById(R.id.tvSwimmerName)).setText("👤 " + userName);
+        ((TextView) dialogView.findViewById(R.id.tvStatStyle)).setText(styleName);
+        ((TextView) dialogView.findViewById(R.id.tvStatDistance)).setText(distanceText);
+        ((TextView) dialogView.findViewById(R.id.tvStatTime)).setText(timeText);
+        ((TextView) dialogView.findViewById(R.id.tvAttemptCount)).setText(attemptCount + " Attempt" + (attemptCount != 1 ? "s" : ""));
+        ((TextView) dialogView.findViewById(R.id.tvPaceInfo)).setText(paceDetails);
+
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        View paceToggle = dialogView.findViewById(R.id.layoutPaceToggle);
+        View paceContent = dialogView.findViewById(R.id.layoutPaceContent);
+        TextView tvChevron = dialogView.findViewById(R.id.tvPaceChevron);
+        paceToggle.setOnClickListener(v -> {
+            boolean isVisible = paceContent.getVisibility() == View.VISIBLE;
+            paceContent.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+            tvChevron.setText(isVisible ? "▼" : "▲");
+        });
+
+        dialogView.findViewById(R.id.btnShare).setOnClickListener(v -> {
+            String playStoreUrl = "https://play.google.com/store/apps/details?id=com.dreamcreators.swimgoaltracker&pcampaignid=web_share";
+            String motivationText = "Consistency beats talent. Keep swimming and keep improving! 🌊";
+            String attemptsLabel = attemptCount + " Attempt" + (attemptCount != 1 ? "s" : "");
+
+            View cardView = getLayoutInflater().inflate(R.layout.layout_share_card, null);
+            ((TextView) cardView.findViewById(R.id.tvShareSwimmer)).setText("👤 " + userName);
+            ((TextView) cardView.findViewById(R.id.tvShareStyle)).setText(styleName);
+            ((TextView) cardView.findViewById(R.id.tvShareDistance)).setText(distanceText);
+            ((TextView) cardView.findViewById(R.id.tvShareTime)).setText(timeText);
+            ((TextView) cardView.findViewById(R.id.tvShareAttempts)).setText(attemptsLabel);
+            ((TextView) cardView.findViewById(R.id.tvShareMotivation)).setText(motivationText);
+
+            cardView.measure(
+                    View.MeasureSpec.makeMeasureSpec(dpToPx(500), View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            );
+            cardView.layout(0, 0, cardView.getMeasuredWidth(), cardView.getMeasuredHeight());
+
+            Bitmap bitmap = Bitmap.createBitmap(
+                    cardView.getMeasuredWidth(), cardView.getMeasuredHeight(), Bitmap.Config.ARGB_8888
+            );
+            Canvas canvas = new Canvas(bitmap);
+            cardView.draw(canvas);
+
+            try {
+                File cacheDir = new File(getCacheDir(), "shared_images");
+                cacheDir.mkdirs();
+                File imageFile = new File(cacheDir, "achievement_" + System.currentTimeMillis() + ".png");
+                FileOutputStream fos = new FileOutputStream(imageFile);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                fos.close();
+
+                Uri imageUri = FileProvider.getUriForFile(
+                        this, getPackageName() + ".fileprovider", imageFile
+                );
+
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("image/png");
+                shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, "I just achieved my swimming goal using SwimminGO! 🏊\n\n" + playStoreUrl);
+                startActivity(Intent.createChooser(shareIntent, "Share Achievement"));
+            } catch (Exception e) {
+                Log.e("SwimStopwatchActivity", "Error sharing image", e);
+                Intent fallbackIntent = new Intent(Intent.ACTION_SEND);
+                fallbackIntent.setType("text/plain");
+                fallbackIntent.putExtra(Intent.EXTRA_TEXT,
+                        "🏊 GOAL ACHIEVED!\n\n" +
+                        "I just achieved my swimming goal using SwimminGO!\n\n" +
+                        "👤 Swimmer: " + userName + "\n" +
+                        "🏊 Style: " + styleName + "\n" +
+                        "📏 Distance: " + distanceText + "\n" +
+                        "⏱ Time: " + timeText + "\n\n" +
+                        "🎯 " + attemptsLabel + "\n\n" +
+                        motivationText + "\n\n" +
+                        "Download SwimminGO: " + playStoreUrl);
+                startActivity(Intent.createChooser(fallbackIntent, "Share Achievement"));
+            }
+        });
+
+        dialogView.findViewById(R.id.btnDone).setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
     private void showPaceDialog(SwimTimingEntry entry, String style, boolean isBestTime) {
         long timeMs = entry.getTimeMs();
         int activeProfileId = ProfileManager.getActiveProfileId(this);
@@ -1425,6 +1623,10 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         } else {
             return String.format(Locale.getDefault(), "%.2f seconds", secs);
         }
+    }
+
+    private int dpToPx(int dp) {
+        return (int) (dp * getResources().getDisplayMetrics().density + 0.5f);
     }
 
     private void vibrate() {

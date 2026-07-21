@@ -362,6 +362,9 @@ public class SettingsActivity extends AppCompatActivity {
             } else if (id == R.id.nav_goals) {
                 startActivity(new Intent(this, GoalsActivity.class));
                 return true;
+            } else if (id == R.id.nav_events) {
+                startActivity(new Intent(this, EventsActivity.class));
+                return true;
             } else if (id == R.id.nav_settings) {
                 return true;
             } else if (id == R.id.nav_profile) {

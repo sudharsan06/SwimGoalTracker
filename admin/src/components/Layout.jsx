@@ -5,6 +5,7 @@ const navItems = [
   { path: '/', label: 'Dashboard', icon: '' },
   { path: '/users', label: 'Users', icon: '' },
   { path: '/swimmers', label: 'Swimmers', icon: '' },
+  { path: '/events', label: 'Events', icon: '' },
   { path: '/database', label: 'Data Browser', icon: '' },
   { path: '/settings', label: 'Settings', icon: '' },
 ];
