@@ -22,6 +22,7 @@
     <color name="dark_secondary_container">#294b6f</color>
     <color name="dark_outline">#849396</color>
     <color name="dark_outline_variant">#3b494c</color>
+    <color name="delete_red">#EF5350</color>
 
     <!-- Drawable glass card colors for dark mode -->
     <color name="glass_card_bg">#1A1D2022</color>

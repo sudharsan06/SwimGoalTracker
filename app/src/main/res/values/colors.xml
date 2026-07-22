@@ -72,6 +72,7 @@
     <color name="dark_secondary_container">#CCFBF1</color>
     <color name="dark_outline">#94A3B8</color>
     <color name="dark_outline_variant">#D7F2EC</color>
+    <color name="delete_red">#E53935</color>
 
     <!-- Glass card drawable colors for light mode -->
     <color name="glass_card_bg">#0A000000</color>

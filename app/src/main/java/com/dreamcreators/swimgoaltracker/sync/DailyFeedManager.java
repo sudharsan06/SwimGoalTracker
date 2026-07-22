@@ -206,6 +206,12 @@ public class DailyFeedManager {
                 .addOnFailureListener(e -> callback.onError(e.getMessage()));
     }
 
+    public void deleteComment(String videoId, String commentId, SimpleCallback callback) {
+        feedRef.child(FIREBASE_COMMENTS).child(videoId).child(commentId).removeValue()
+                .addOnSuccessListener(aVoid -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onError(e.getMessage()));
+    }
+
     public void toggleLike(String videoId, int newType) {
         String uid = auth.getUid();
         if (uid == null) return;

@@ -52,7 +52,16 @@ document.addEventListener('DOMContentLoaded', () => {
     container.innerHTML = events
       .map((ev) => {
         const title = ev.title || '';
-        const letter = title.trim().charAt(0).toUpperCase() || '?';
+        const trimmed = title.trim();
+        let letter;
+        if (!trimmed) {
+          letter = '?';
+        } else if (/^\d/.test(trimmed)) {
+          const space = trimmed.indexOf(' ');
+          letter = (space > 0 ? trimmed.substring(0, space) : trimmed).toUpperCase();
+        } else {
+          letter = trimmed.charAt(0).toUpperCase();
+        }
         const bg = avatarColor(title.trim());
         const fg = readableTextColor(bg);
         return `

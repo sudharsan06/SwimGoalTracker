@@ -413,6 +413,7 @@ public class DailyFeedActivity extends AppCompatActivity {
             TextView tvText = commentView.findViewById(R.id.tvCommentText);
             TextView tvTime = commentView.findViewById(R.id.tvCommentTime);
             TextView btnEdit = commentView.findViewById(R.id.btnEditComment);
+            TextView btnDelete = commentView.findViewById(R.id.btnDeleteComment);
 
             tvUser.setText(comment.getUserName() != null ? comment.getUserName() : "Swimmer");
             tvText.setText(comment.getText());
@@ -428,11 +429,14 @@ public class DailyFeedActivity extends AppCompatActivity {
 
             if (currentUserId != null && currentUserId.equals(comment.getUserId())) {
                 btnEdit.setVisibility(View.VISIBLE);
+                btnDelete.setVisibility(View.VISIBLE);
                 String commentId = comment.getCommentId();
                 String videoId = comment.getVideoId();
                 btnEdit.setOnClickListener(v -> showEditCommentDialog(videoId, commentId, comment.getText()));
+                btnDelete.setOnClickListener(v -> showDeleteCommentDialog(videoId, commentId));
             } else {
                 btnEdit.setVisibility(View.GONE);
+                btnDelete.setVisibility(View.GONE);
             }
 
             layCommentsList.addView(commentView);
@@ -467,6 +471,29 @@ public class DailyFeedActivity extends AppCompatActivity {
         });
         builder.setNegativeButton("Cancel", null);
         builder.show();
+    }
+
+    private void showDeleteCommentDialog(String videoId, String commentId) {
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Delete Comment")
+                .setMessage("Are you sure you want to delete this comment?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    feedManager.deleteComment(videoId, commentId, new DailyFeedManager.SimpleCallback() {
+                        @Override
+                        public void onSuccess() {
+                            runOnUiThread(() ->
+                                    Toast.makeText(DailyFeedActivity.this, "Comment deleted", Toast.LENGTH_SHORT).show());
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            runOnUiThread(() ->
+                                    Toast.makeText(DailyFeedActivity.this, "Error: " + error, Toast.LENGTH_SHORT).show());
+                        }
+                    });
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private void postComment() {

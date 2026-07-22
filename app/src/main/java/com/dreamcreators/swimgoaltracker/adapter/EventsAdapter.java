@@ -46,7 +46,15 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         holder.tvStrokes.setText(e.getStrokes());
 
         String title = e.getTitle() != null ? e.getTitle().trim() : "";
-        String letter = title.isEmpty() ? "?" : title.substring(0, 1).toUpperCase();
+        String letter;
+        if (title.isEmpty()) {
+            letter = "?";
+        } else if (Character.isDigit(title.charAt(0))) {
+            int space = title.indexOf(' ');
+            letter = (space > 0 ? title.substring(0, space) : title).toUpperCase();
+        } else {
+            letter = title.substring(0, 1).toUpperCase();
+        }
         holder.ivEventLetter.setText(letter);
 
         int bg = AvatarColor.forTitle(title);

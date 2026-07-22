@@ -71,7 +71,15 @@ public class EventDetailActivity extends AppCompatActivity {
         tvDescription.setText(description);
 
         String safeTitle = title != null ? title.trim() : "";
-        String letter = safeTitle.isEmpty() ? "?" : safeTitle.substring(0, 1).toUpperCase();
+        String letter;
+        if (safeTitle.isEmpty()) {
+            letter = "?";
+        } else if (Character.isDigit(safeTitle.charAt(0))) {
+            int space = safeTitle.indexOf(' ');
+            letter = (space > 0 ? safeTitle.substring(0, space) : safeTitle).toUpperCase();
+        } else {
+            letter = safeTitle.substring(0, 1).toUpperCase();
+        }
         tvLetter.setText(letter);
         int bg = avatarColor(safeTitle);
         tvLetter.setBackgroundColor(bg);
