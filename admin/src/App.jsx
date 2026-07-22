@@ -8,6 +8,7 @@ import Users from './components/Users';
 import UserDetail from './components/UserDetail';
 import Swimmers from './components/Swimmers';
 import Events from './components/Events';
+import DailyFeed from './components/DailyFeed';
 import DatabaseBrowser from './components/DatabaseBrowser';
 import AppSettings from './components/AppSettings';
 import './App.css';
@@ -45,6 +46,7 @@ function App() {
         <Route path="users/:uid" element={<UserDetail />} />
         <Route path="swimmers" element={<Swimmers />} />
         <Route path="events" element={<Events />} />
+        <Route path="dailyfeed" element={<DailyFeed />} />
         <Route path="database" element={<DatabaseBrowser />} />
         <Route path="settings" element={<AppSettings />} />
         <Route path="*" element={<Navigate to="/" replace />} />

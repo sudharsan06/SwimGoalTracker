@@ -15,7 +15,6 @@ import androidx.core.view.WindowInsetsControllerCompat;
 import com.dreamcreators.swimgoaltracker.db.ProfileManager;
 import com.dreamcreators.swimgoaltracker.R;
 import com.dreamcreators.swimgoaltracker.utility.ThemeManager;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.Locale;
@@ -70,8 +69,6 @@ public class AlertsActivity extends AppCompatActivity {
                 }
             }, reminderHour, reminderMinute, false).show();
         });
-
-        setupBottomNav();
     }
 
     @Override
@@ -148,33 +145,6 @@ public class AlertsActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
-    }
-
-    private void setupBottomNav() {
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
-        bottomNav.setSelectedItemId(R.id.nav_settings);
-        bottomNav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_home) {
-                Intent i = new Intent(this, MainActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(i);
-                return true;
-            } else if (id == R.id.nav_tracker) {
-                startActivity(new Intent(this, TrackerActivity.class));
-                return true;
-            } else if (id == R.id.nav_goals) {
-                startActivity(new Intent(this, GoalsActivity.class));
-                return true;
-            } else if (id == R.id.nav_settings) {
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-            } else if (id == R.id.nav_profile) {
-                startActivity(new Intent(this, ProfileActivity.class));
-                return true;
-            }
-            return false;
-        });
     }
 
     private void checkAndRequestNotificationPermission() {

@@ -24,7 +24,6 @@ import com.dreamcreators.swimgoaltracker.db.NutritionDbHelper;
 import com.dreamcreators.swimgoaltracker.db.ProfileManager;
 import com.dreamcreators.swimgoaltracker.R;
 import com.dreamcreators.swimgoaltracker.utility.ThemeManager;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -32,6 +31,7 @@ import java.io.File;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -44,6 +44,14 @@ public class ProfileActivity extends AppCompatActivity {
 
     public static final String EXTRA_PROFILE_ID = "profile_id";
     public static final String EXTRA_SETUP_MODE = "setup_mode";
+
+
+    private void navigateBack() {
+        finish();
+        overridePendingTransition(0, 0);
+    }
+
+
 
     private NutritionDbHelper dbHelper;
     private Uri imageUri;
@@ -146,6 +154,8 @@ public class ProfileActivity extends AppCompatActivity {
                 WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
         controller.setAppearanceLightStatusBars(!ThemeManager.isDarkMode(this));
         setContentView(R.layout.activity_profile);
+
+        findViewById(R.id.btnBack).setOnClickListener(v -> navigateBack());
 
         dbHelper = new NutritionDbHelper(this);
 
@@ -369,8 +379,6 @@ public class ProfileActivity extends AppCompatActivity {
             proceedToMain();
         });
 
-        setupBottomNav();
-
         btnSkip.setOnClickListener(v -> proceedToMain());
 
         btnLogout.setOnClickListener(v -> {
@@ -407,6 +415,7 @@ public class ProfileActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        overridePendingTransition(0, 0);
         finish();
     }
 
@@ -430,43 +439,6 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!isSetupMode) {
-            BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
-            bottomNav.setSelectedItemId(R.id.nav_profile);
-        }
-    }
-
-    private void setupBottomNav() {
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
-        if (isSetupMode) {
-            bottomNav.setVisibility(View.GONE);
-            return;
-        }
-        bottomNav.setSelectedItemId(R.id.nav_profile);
-        bottomNav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_home) {
-                Intent i = new Intent(this, MainActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(i);
-                return true;
-            } else if (id == R.id.nav_tracker) {
-                startActivity(new Intent(this, TrackerActivity.class));
-                return true;
-            } else if (id == R.id.nav_goals) {
-                startActivity(new Intent(this, GoalsActivity.class));
-                return true;
-            } else if (id == R.id.nav_events) {
-                startActivity(new Intent(this, EventsActivity.class));
-                return true;
-            } else if (id == R.id.nav_settings) {
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-            } else if (id == R.id.nav_profile) {
-                return true;
-            }
-            return false;
-        });
     }
 
     private void persistProfileImageUri(Uri uri) {

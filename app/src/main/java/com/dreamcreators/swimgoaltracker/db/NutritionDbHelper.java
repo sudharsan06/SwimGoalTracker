@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class NutritionDbHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "goaltracker.db";
-    public static final int DB_VERSION = 9;
+    public static final int DB_VERSION = 10;
 
     public NutritionDbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -55,6 +55,32 @@ public class NutritionDbHelper extends SQLiteOpenHelper {
                 "created_at INTEGER NOT NULL DEFAULT 0, " +
                 "pool_distance INTEGER NOT NULL DEFAULT 25, " +
                 "total_distance INTEGER NOT NULL DEFAULT 0" +
+                ")");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS daily_feed_video (" +
+                "video_id TEXT PRIMARY KEY, " +
+                "video_url TEXT NOT NULL, " +
+                "thumbnail_url TEXT, " +
+                "title TEXT, " +
+                "description TEXT, " +
+                "publish_date TEXT, " +
+                "created_at INTEGER NOT NULL DEFAULT 0" +
+                ")");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS daily_feed_comments (" +
+                "comment_id TEXT PRIMARY KEY, " +
+                "video_id TEXT NOT NULL, " +
+                "user_id TEXT NOT NULL, " +
+                "user_name TEXT, " +
+                "text TEXT NOT NULL, " +
+                "created_at INTEGER NOT NULL DEFAULT 0" +
+                ")");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS daily_feed_likes (" +
+                "video_id TEXT NOT NULL, " +
+                "user_id TEXT NOT NULL, " +
+                "like_type INTEGER NOT NULL DEFAULT 1, " +
+                "PRIMARY KEY (video_id, user_id)" +
                 ")");
     }
 
@@ -119,6 +145,31 @@ public class NutritionDbHelper extends SQLiteOpenHelper {
             try {
                 db.execSQL("ALTER TABLE swim_sessions ADD COLUMN total_distance INTEGER NOT NULL DEFAULT 0");
             } catch (Exception ignored) {}
+        }
+        if (oldVersion < 10) {
+            db.execSQL("CREATE TABLE IF NOT EXISTS daily_feed_video (" +
+                    "video_id TEXT PRIMARY KEY, " +
+                    "video_url TEXT NOT NULL, " +
+                    "thumbnail_url TEXT, " +
+                    "title TEXT, " +
+                    "description TEXT, " +
+                    "publish_date TEXT, " +
+                    "created_at INTEGER NOT NULL DEFAULT 0" +
+                    ")");
+            db.execSQL("CREATE TABLE IF NOT EXISTS daily_feed_comments (" +
+                    "comment_id TEXT PRIMARY KEY, " +
+                    "video_id TEXT NOT NULL, " +
+                    "user_id TEXT NOT NULL, " +
+                    "user_name TEXT, " +
+                    "text TEXT NOT NULL, " +
+                    "created_at INTEGER NOT NULL DEFAULT 0" +
+                    ")");
+            db.execSQL("CREATE TABLE IF NOT EXISTS daily_feed_likes (" +
+                    "video_id TEXT NOT NULL, " +
+                    "user_id TEXT NOT NULL, " +
+                    "like_type INTEGER NOT NULL DEFAULT 1, " +
+                    "PRIMARY KEY (video_id, user_id)" +
+                    ")");
         }
     }
 

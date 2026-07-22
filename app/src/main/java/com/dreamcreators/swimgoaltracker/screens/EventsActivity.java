@@ -132,17 +132,10 @@ public class EventsActivity extends AppCompatActivity {
             } else if (id == R.id.nav_tracker) {
                 startActivity(new Intent(this, TrackerActivity.class));
                 return true;
-            } else if (id == R.id.nav_goals) {
-                startActivity(new Intent(this, GoalsActivity.class)
-                        .putExtra("highlight_weekly", true));
-                return true;
             } else if (id == R.id.nav_events) {
                 return true;
-            } else if (id == R.id.nav_settings) {
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-            } else if (id == R.id.nav_profile) {
-                startActivity(new Intent(this, ProfileActivity.class));
+            } else if (id == R.id.nav_daily_feed) {
+                startActivity(new Intent(this, DailyFeedActivity.class));
                 return true;
             }
             return false;

@@ -33,7 +33,6 @@ import com.dreamcreators.swimgoaltracker.R;
 import com.dreamcreators.swimgoaltracker.adapter.SwimTimingAdapter;
 import com.dreamcreators.swimgoaltracker.pojo.SwimTimingEntry;
 import com.dreamcreators.swimgoaltracker.utility.ThemeManager;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.util.Log;
 
 import com.google.android.gms.ads.AdRequest;
@@ -288,32 +287,6 @@ public class SwimStopwatchActivity extends AppCompatActivity {
         btnIMPlayPause.setOnClickListener(v -> { vibrate(); handleIMPlayPause(); });
         btnIMReset.setOnClickListener(v -> { vibrate(); resetIMTimer(); updateIMState(STATE_IDLE); updateIMPlayPauseUI(); });
         btnSaveIm.setOnClickListener(v -> { vibrate(); saveSession("im"); });
-
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
-        
-        bottomNav.setSelectedItemId(R.id.nav_home);
-        bottomNav.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.nav_home) {
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-                return true;
-            } else if (itemId == R.id.nav_tracker) {
-                startActivity(new Intent(this, TrackerActivity.class));
-                return true;
-            } else if (itemId == R.id.nav_goals) {
-                startActivity(new Intent(this, GoalsActivity.class));
-                return true;
-            } else if (itemId == R.id.nav_settings) {
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-            } else if (itemId == R.id.nav_profile) {
-                startActivity(new Intent(this, ProfileActivity.class));
-                return true;
-            }
-            return false;
-        });
 
         ImageButton btnDatePicker = findViewById(R.id.btnDatePicker);
         btnDatePicker.setOnClickListener(v -> {

@@ -9,6 +9,8 @@ import androidx.work.WorkManager;
 
 import com.dreamcreators.swimgoaltracker.sync.SyncWorker;
 import com.dreamcreators.swimgoaltracker.utility.ThemeManager;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.RequestConfiguration;
 
 import java.util.concurrent.TimeUnit;
 
@@ -17,7 +19,17 @@ public class SwimGoalTrackerApp extends Application {
     public void onCreate() {
         super.onCreate();
         initNightMode();
+        initAdConfiguration();
         scheduleWeeklySync();
+    }
+
+    private void initAdConfiguration() {
+        RequestConfiguration requestConfiguration = new RequestConfiguration.Builder()
+                .setMaxAdContentRating(RequestConfiguration.MAX_AD_CONTENT_RATING_G)
+                .setTagForChildDirectedTreatment(
+                        RequestConfiguration.TAG_FOR_CHILD_DIRECTED_TREATMENT_TRUE)
+                .build();
+        MobileAds.setRequestConfiguration(requestConfiguration);
     }
 
     private void initNightMode() {

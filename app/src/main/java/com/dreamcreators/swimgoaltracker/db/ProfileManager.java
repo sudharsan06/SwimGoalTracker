@@ -22,6 +22,19 @@ public class ProfileManager {
                 .getInt(KEY_ACTIVE_ID, 1);
     }
 
+    public static String getActiveProfileName(Context ctx) {
+        int id = getActiveProfileId(ctx);
+        NutritionDbHelper db = new NutritionDbHelper(ctx);
+        Cursor c = db.getReadableDatabase().rawQuery(
+                "SELECT name FROM profile WHERE id = ?", new String[]{String.valueOf(id)});
+        String name = "";
+        if (c.moveToFirst()) {
+            name = c.getString(0);
+        }
+        c.close();
+        return name != null ? name : "";
+    }
+
     public static void setActiveProfileId(Context ctx, int id) {
         ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
                 .edit().putInt(KEY_ACTIVE_ID, id).apply();

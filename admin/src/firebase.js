@@ -15,11 +15,15 @@ import {
   query,
   orderByKey,
   limitToFirst,
+  limitToLast,
   startAfter,
   endAt,
   orderByChild,
   equalTo,
 } from 'firebase/database';
+import {
+  getStorage,
+} from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyA4d_EXbjud3KLFZ5n0rxfV6qHvfHr7tLo',
@@ -33,11 +37,16 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getDatabase(app);
+const database = getDatabase(app);
+const storage = getStorage(app);
+
+const db = database;
 
 export {
   auth,
   db,
+  database,
+  storage,
   ref,
   get,
   set,
@@ -46,6 +55,7 @@ export {
   query,
   orderByKey,
   limitToFirst,
+  limitToLast,
   startAfter,
   endAt,
   orderByChild,

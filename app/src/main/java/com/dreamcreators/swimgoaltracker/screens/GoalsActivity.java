@@ -3,7 +3,6 @@ package com.dreamcreators.swimgoaltracker.screens;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -17,11 +16,15 @@ import androidx.core.view.WindowInsetsControllerCompat;
 import com.dreamcreators.swimgoaltracker.db.ProfileManager;
 import com.dreamcreators.swimgoaltracker.R;
 import com.dreamcreators.swimgoaltracker.utility.ThemeManager;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class GoalsActivity extends AppCompatActivity {
+
+    private void navigateBack() {
+        finish();
+        overridePendingTransition(0, 0);
+    }
 
     private static final String PREFS = "swim_goals";
     private TextInputEditText etWeeklySessions, etWeeklyKm, etGoalFree, etGoalFly, etGoalBreast, etGoalBack, etGoalIM;
@@ -38,6 +41,8 @@ public class GoalsActivity extends AppCompatActivity {
         controller.setAppearanceLightStatusBars(!ThemeManager.isDarkMode(this));
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_goals);
+
+        findViewById(R.id.btnBack).setOnClickListener(v -> navigateBack());
 
         etWeeklySessions = findViewById(R.id.etWeeklySessions);
         etWeeklyKm = findViewById(R.id.etWeeklyKm);
@@ -119,61 +124,15 @@ public class GoalsActivity extends AppCompatActivity {
 
             Toast.makeText(this, "Goals saved! 🎯", Toast.LENGTH_SHORT).show();
         });
-
-        setupBottomNav();
-
-        View rootView = findViewById(android.R.id.content);
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-            Rect r = new Rect();
-            rootView.getWindowVisibleDisplayFrame(r);
-
-            int screenHeight = rootView.getRootView().getHeight();
-            int keypadHeight = screenHeight - r.bottom;
-
-            boolean isKeyboardVisible = keypadHeight > screenHeight * 0.15;
-
-            if (isKeyboardVisible) {
-                bottomNav.setVisibility(View.GONE);
-            } else {
-                bottomNav.setVisibility(View.VISIBLE);
-            }
-        });
     }
+
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
-    }
-    private void setupBottomNav() {
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
-        bottomNav.setSelectedItemId(R.id.nav_goals);
-        bottomNav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_home) {
-                Intent i = new Intent(this, MainActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(i);
-                return true;
-            } else if (id == R.id.nav_tracker) {
-                startActivity(new Intent(this, TrackerActivity.class));
-                return true;
-            } else if (id == R.id.nav_goals) {
-                return true;
-            } else if (id == R.id.nav_events) {
-                startActivity(new Intent(this, EventsActivity.class));
-                return true;
-            } else if (id == R.id.nav_settings) {
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-            } else if (id == R.id.nav_profile) {
-                startActivity(new Intent(this, ProfileActivity.class));
-                return true;
-            }
-            return false;
-        });
+        overridePendingTransition(0, 0);
     }
 
     private void showTimePickerDialog(TextInputEditText targetEditText, String title) {
@@ -308,8 +267,6 @@ public class GoalsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadSavedGoals();
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
-        bottomNav.setSelectedItemId(R.id.nav_goals);
     }
 
     private void loadSavedGoals() {

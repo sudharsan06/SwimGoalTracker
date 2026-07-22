@@ -18,7 +18,6 @@ import androidx.core.view.WindowInsetsControllerCompat;
 import com.dreamcreators.swimgoaltracker.db.NutritionDbHelper;
 import com.dreamcreators.swimgoaltracker.R;
 import com.dreamcreators.swimgoaltracker.utility.ThemeManager;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -96,33 +95,6 @@ public class NutritionEntryActivity extends AppCompatActivity {
             Toast.makeText(this, "Saved ✅", Toast.LENGTH_SHORT).show();
             finish();
         });
-
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
-        if (bottomNav != null) {
-           // bottomNav.setSelectedItemId(R.id.nav_nutrition);
-            bottomNav.setOnItemSelectedListener(item -> {
-                int itemId = item.getItemId();
-                if (itemId == R.id.nav_home) {
-                    Intent intent = new Intent(this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    startActivity(intent);
-                    return true;
-                } else if (itemId == R.id.nav_tracker) {
-                    startActivity(new Intent(this, TrackerActivity.class));
-                    return true;
-                } else if (itemId == R.id.nav_goals) {
-                    startActivity(new Intent(this, GoalsActivity.class));
-                    return true;
-                } else if (itemId == R.id.nav_settings) {
-                    startActivity(new Intent(this, SettingsActivity.class));
-                    return true;
-                } else if (itemId == R.id.nav_profile) {
-                    startActivity(new Intent(this, ProfileActivity.class));
-                    return true;
-                }
-                return false;
-            });
-        }
     }
     @Override
     public boolean onSupportNavigateUp() {

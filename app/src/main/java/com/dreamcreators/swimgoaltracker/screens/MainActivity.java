@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.graphics.Color;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,6 +16,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.core.view.GravityCompat;
 
 import android.util.Log;
 
@@ -25,6 +29,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.SimpleDateFormat;
@@ -35,6 +40,8 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     public static String userName = "";
 
+    private DrawerLayout drawerLayout;
+    private View navProfile, navGoals, navSettings, navLogout;
     private TextView tvDate;
     private TextView tvCalories, tvProtein, tvCarbs, tvFats;
     private TextView tvUserName;
@@ -174,6 +181,51 @@ public class MainActivity extends AppCompatActivity {
             loadTodayNutrition(today);
         });
 
+        // Setup Drawer
+        drawerLayout = findViewById(R.id.drawerLayout);
+        drawerLayout.setStatusBarBackgroundColor(Color.TRANSPARENT);
+        navProfile = findViewById(R.id.nav_profile);
+        navGoals = findViewById(R.id.nav_goals);
+        navSettings = findViewById(R.id.nav_settings);
+        navLogout = findViewById(R.id.nav_logout);
+
+        findViewById(R.id.btnMenu).setOnClickListener(v -> {
+            drawerLayout.openDrawer(GravityCompat.START);
+        });
+
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(android.view.View drawerView, float slideOffset) {}
+
+            @Override
+            public void onDrawerOpened(android.view.View drawerView) {
+                updateDrawerHeader();
+            }
+
+            @Override
+            public void onDrawerClosed(android.view.View drawerView) {}
+
+            @Override
+            public void onDrawerStateChanged(int newState) {}
+        });
+
+        View.OnClickListener drawerClickListener = v -> {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            int id = v.getId();
+            if (id == R.id.nav_profile) {
+                startActivity(new Intent(this, ProfileActivity.class));
+            } else if (id == R.id.nav_goals) {
+                startActivity(new Intent(this, GoalsActivity.class));
+            } else if (id == R.id.nav_settings) {
+                startActivity(new Intent(this, SettingsActivity.class));
+            } else if (id == R.id.nav_logout) {
+                performLogout();
+            }
+        };
+        navProfile.setOnClickListener(drawerClickListener);
+        navGoals.setOnClickListener(drawerClickListener);
+        navSettings.setOnClickListener(drawerClickListener);
+        navLogout.setOnClickListener(drawerClickListener);
 
         bottomNav.setSelectedItemId(R.id.nav_home);
         bottomNav.setOnItemSelectedListener(item -> {
@@ -183,18 +235,11 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.nav_tracker) {
                 startActivity(new Intent(this, TrackerActivity.class));
                 return true;
-            } else if (id == R.id.nav_goals) {
-                startActivity(new Intent(this, GoalsActivity.class)
-                        .putExtra("highlight_weekly", true));
-                return true;
             } else if (id == R.id.nav_events) {
                 startActivity(new Intent(this, EventsActivity.class));
                 return true;
-            } else if (id == R.id.nav_settings) {
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-            } else if (id == R.id.nav_profile) {
-                startActivity(new Intent(this, ProfileActivity.class));
+            } else if (id == R.id.nav_daily_feed) {
+                startActivity(new Intent(this, DailyFeedActivity.class));
                 return true;
             }
             return false;
@@ -372,6 +417,44 @@ public class MainActivity extends AppCompatActivity {
             tvFats.setText("0 g");
         }
         cursor.close();
+    }
+
+    private void updateDrawerHeader() {
+        View drawerContent = findViewById(R.id.drawerContent);
+        if (drawerContent == null) return;
+        TextView drawerName = drawerContent.findViewById(R.id.drawerUserName);
+        TextView drawerEmail = drawerContent.findViewById(R.id.drawerUserEmail);
+        TextView drawerInitials = drawerContent.findViewById(R.id.drawerProfileInitials);
+        if (drawerName != null) {
+            drawerName.setText(userName != null && !userName.isEmpty() ? userName : "Swimmer");
+        }
+        if (drawerEmail != null) {
+            drawerEmail.setText("Tap to switch profile");
+        }
+        if (drawerInitials != null) {
+            String name = userName != null && !userName.isEmpty() ? userName : "Swimmer";
+            String initials = name.length() >= 2 ? name.substring(0, 2).toUpperCase() : "SW";
+            drawerInitials.setText(initials);
+        }
+        drawerContent.findViewById(R.id.drawer_header).setOnClickListener(v ->
+            startActivity(new Intent(this, SwitchSwimmerActivity.class)));
+    }
+
+    private void performLogout() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
+            com.google.firebase.database.FirebaseDatabase.getInstance().getReference("device_mapping")
+                    .child(auth.getUid()).removeValue();
+            auth.signOut();
+            com.google.android.gms.auth.api.signin.GoogleSignInOptions gso =
+                    new com.google.android.gms.auth.api.signin.GoogleSignInOptions.Builder(
+                            com.google.android.gms.auth.api.signin.GoogleSignInOptions.DEFAULT_SIGN_IN).build();
+            com.google.android.gms.auth.api.signin.GoogleSignIn.getClient(this, gso).signOut();
+        }
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private String getGreetingMessage(String userName) {

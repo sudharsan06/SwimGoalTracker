@@ -24,7 +24,6 @@ import com.dreamcreators.swimgoaltracker.R;
 import com.dreamcreators.swimgoaltracker.sync.SyncWorker;
 import com.dreamcreators.swimgoaltracker.utility.AlertManager;
 import com.dreamcreators.swimgoaltracker.utility.ThemeManager;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
@@ -36,6 +35,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 public class SettingsActivity extends AppCompatActivity {
+
+
+
+    private void navigateBack() {
+        finish();
+        overridePendingTransition(0, 0);
+    }
 
     private static final String PREFS = "swim_alerts";
     private static final String VIBE_PREFS = "app_settings";
@@ -68,6 +74,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_settings);
 
+        findViewById(R.id.btnBack).setOnClickListener(v -> navigateBack());
+
         activeProfileId = ProfileManager.getActiveProfileId(this);
 
         initViews();
@@ -76,7 +84,6 @@ public class SettingsActivity extends AppCompatActivity {
         loadVibrationPreference();
         loadAppVersion();
         setupTapUnlock();
-        setupBottomNav();
     }
 
     private void setupTapUnlock() {
@@ -210,8 +217,6 @@ public class SettingsActivity extends AppCompatActivity {
         loadAlertPreferences();
         loadVibrationPreference();
         loadSyncStatus();
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
-        bottomNav.setSelectedItemId(R.id.nav_settings);
     }
 
     private void loadSyncStatus() {
@@ -343,35 +348,9 @@ public class SettingsActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        overridePendingTransition(0, 0);
         finish();
     }
 
-    private void setupBottomNav() {
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
-        bottomNav.setSelectedItemId(R.id.nav_settings);
-        bottomNav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_home) {
-                Intent i = new Intent(this, MainActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(i);
-                return true;
-            } else if (id == R.id.nav_tracker) {
-                startActivity(new Intent(this, TrackerActivity.class));
-                return true;
-            } else if (id == R.id.nav_goals) {
-                startActivity(new Intent(this, GoalsActivity.class));
-                return true;
-            } else if (id == R.id.nav_events) {
-                startActivity(new Intent(this, EventsActivity.class));
-                return true;
-            } else if (id == R.id.nav_settings) {
-                return true;
-            } else if (id == R.id.nav_profile) {
-                startActivity(new Intent(this, ProfileActivity.class));
-                return true;
-            }
-            return false;
-        });
-    }
+
 }

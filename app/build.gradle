@@ -54,4 +54,6 @@ dependencies {
     implementation libs.konfetti
     implementation libs.workmanager
     implementation libs.swiperefreshlayout
+    implementation libs.exoplayer
+    implementation libs.exoplayer.ui
 }
