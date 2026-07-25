@@ -106,6 +106,108 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Update Available Banner -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardUpdateBanner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/dark_primary_fixed_dim"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="12dp">
+
+
+                    <ImageView
+                        android:id="@+id/tvUpdateIcon"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:scaleType="fitStart"
+                        android:layout_marginTop="2dp"
+                        android:src="@drawable/new_gift"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/tvUpdateIcon"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="8dp"
+                        android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="2dp">
+                        <TextView
+                            android:id="@+id/tvUpdateTitle"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="New version available"
+                            android:textColor="@color/dark_background"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/btnCloseUpdate"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_alignParentEnd="true"
+                            android:gravity="center"
+                            android:text="✕"
+                            android:textSize="16sp"
+                            android:textColor="@color/dark_background"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:contentDescription="Close" />
+
+
+                    </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="2dp">
+
+                            <TextView
+                                android:id="@+id/tvUpdateDescription"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text=""
+                                android:textColor="@color/dark_background"
+                                android:textSize="11sp"
+                                android:alpha="0.8" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnUpdate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="40dp"
+                                android:layout_marginStart="8dp"
+                                android:text="Update now"
+                                android:textSize="10sp"
+                                android:textColor="@color/dark_primary_fixed_dim"
+                                android:textStyle="bold"
+                                app:cornerRadius="15dp"
+                                app:backgroundTint="@color/dark_background" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

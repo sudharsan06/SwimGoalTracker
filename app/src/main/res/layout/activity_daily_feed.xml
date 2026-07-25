@@ -148,6 +148,94 @@
                     </FrameLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Loading Skeleton (visible by default to avoid blank screen) -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardLoading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="@color/dark_surface_lowest"
+                    app:strokeWidth="0dp"
+                    android:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <!-- Video Placeholder Area -->
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="220dp"
+                            android:background="@color/dark_surface_low">
+
+                            <ProgressBar
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:indeterminateTint="@color/dark_primary_fixed_dim" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="48dp"
+                                android:text="Loading video..."
+                                android:textColor="@color/dark_on_surface_variant"
+                                android:textSize="13sp" />
+
+                        </FrameLayout>
+
+                        <!-- Title placeholder -->
+                        <View
+                            android:layout_width="160dp"
+                            android:layout_height="16dp"
+                            android:layout_margin="16dp"
+                            android:layout_marginBottom="12dp"
+                            android:background="@drawable/skeleton_rect" />
+
+                        <!-- Description placeholder -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="12dp"
+                            android:layout_marginHorizontal="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:background="@drawable/skeleton_rect" />
+
+                        <!-- Action buttons placeholder -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="40dp"
+                            android:paddingBottom="16dp">
+
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="20dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/skeleton_rect" />
+
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="20dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/skeleton_rect" />
+
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="20dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/skeleton_rect" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
                 <!-- No Video State -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardNoVideo"
@@ -157,7 +245,7 @@
                     app:cardBackgroundColor="@android:color/transparent"
                     app:cardElevation="0dp"
                     app:strokeWidth="0dp"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"

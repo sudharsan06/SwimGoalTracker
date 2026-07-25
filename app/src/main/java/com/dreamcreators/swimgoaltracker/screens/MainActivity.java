@@ -30,7 +30,12 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -51,6 +56,12 @@ public class MainActivity extends AppCompatActivity {
     private android.widget.ImageView ivProfileIcon;
     private TextView tvWeeklyDistance, tvWeeklyGoal, tvWeeklyPercent;
     private View viewProgressFill;
+
+    private static boolean updateBannerDismissed = false;
+    private View cardUpdateBanner;
+    private TextView tvUpdateTitle, tvUpdateDescription;
+    private MaterialButton btnUpdate;
+    private TextView btnCloseUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +102,29 @@ public class MainActivity extends AppCompatActivity {
         tvWeeklyPercent = findViewById(R.id.tvWeeklyPercent);
         viewProgressFill = findViewById(R.id.viewProgressFill);
 
+        cardUpdateBanner = findViewById(R.id.cardUpdateBanner);
+        tvUpdateTitle = findViewById(R.id.tvUpdateTitle);
+        tvUpdateDescription = findViewById(R.id.tvUpdateDescription);
+        btnUpdate = findViewById(R.id.btnUpdate);
+        btnCloseUpdate = findViewById(R.id.btnCloseUpdate);
 
+        btnUpdate.setOnClickListener(v -> {
+            String url = (String) v.getTag();
+            if (url != null) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
+            }
+        });
+        btnCloseUpdate.setOnClickListener(v -> {
+            updateBannerDismissed = true;
+            cardUpdateBanner.setVisibility(View.GONE);
+        });
+
+        try {
+            checkForUpdate();
+        } catch (Exception e) {
+            android.util.Log.e("UpdateCheck", "checkForUpdate failed", e);
+        }
 
         View.OnClickListener openSwimStopwatch = new View.OnClickListener() {
             @Override
@@ -457,6 +490,85 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+    private void checkForUpdate() {
+        if (updateBannerDismissed) return;
+
+        final String currentVersion;
+        try {
+            currentVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (Exception e) {
+            return;
+        }
+
+        try {
+            FirebaseDatabase.getInstance().getReference("app_version")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            try {
+                                String latestVersion = asString(snapshot.child("latestVersion").getValue());
+                                if (latestVersion == null) return;
+                                if (!isNewerVersion(latestVersion, currentVersion)) return;
+                                Boolean forceUpdate = snapshot.child("forceUpdate").getValue(Boolean.class);
+                                String playStoreUrl = asString(snapshot.child("playStoreUrl").getValue());
+                                String updateMessage = asString(snapshot.child("updateMessage").getValue());
+                                showUpdateBanner(latestVersion, updateMessage, playStoreUrl, forceUpdate != null && forceUpdate);
+                            } catch (Exception e) {
+                                android.util.Log.e("UpdateCheck", "onDataChange error", e);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError error) {
+                            android.util.Log.e("UpdateCheck", "DB read failed: " + error.getMessage());
+                        }
+                    });
+        } catch (Exception e) {
+            android.util.Log.e("UpdateCheck", "Firebase init failed", e);
+        }
+    }
+
+    private static String asString(Object value) {
+        if (value == null) return null;
+        if (value instanceof String) return (String) value;
+        if (value instanceof Double) {
+            double d = (Double) value;
+            if (d == Math.floor(d) && !Double.isInfinite(d)) {
+                return String.valueOf((long) d);
+            }
+            return String.valueOf(d);
+        }
+        if (value instanceof Long) return String.valueOf((Long) value);
+        if (value instanceof Integer) return String.valueOf((Integer) value);
+        return String.valueOf(value);
+    }
+
+    private boolean isNewerVersion(String latest, String current) {
+        try {
+            String[] latestParts = latest.split("\\.");
+            String[] currentParts = current.split("\\.");
+            int maxLen = Math.max(latestParts.length, currentParts.length);
+            for (int i = 0; i < maxLen; i++) {
+                int l = i < latestParts.length ? Integer.parseInt(latestParts[i]) : 0;
+                int c = i < currentParts.length ? Integer.parseInt(currentParts[i]) : 0;
+                if (l > c) return true;
+                if (l < c) return false;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private void showUpdateBanner(String version, String message, String url, boolean forceUpdate) {
+        if (version == null) return;
+        tvUpdateTitle.setText("New version " + version + " is available!");
+        tvUpdateDescription.setText(message != null && !message.isEmpty() ? message : "Get latest features, events and performance improvements");
+        btnUpdate.setTag(url != null ? url : "https://play.google.com/store/apps/details?id=" + getPackageName());
+        btnCloseUpdate.setVisibility(forceUpdate ? View.GONE : View.VISIBLE);
+        cardUpdateBanner.setVisibility(View.VISIBLE);
+    }
+
     private String getGreetingMessage(String userName) {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -485,10 +597,18 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
         bottomNav.setSelectedItemId(R.id.nav_home);
 
+        String lastVisit = getSharedPreferences("app_prefs", MODE_PRIVATE)
+                .getString("daily_feed_last_visit", "");
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        if (!today.equals(lastVisit)) {
+            bottomNav.getOrCreateBadge(R.id.nav_daily_feed).setVisible(true);
+        } else {
+            bottomNav.removeBadge(R.id.nav_daily_feed);
+        }
+
         findViewById(android.R.id.content).post(() -> {
             loadUserData();
             loadWeeklyProgress();
-            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
             loadTodayNutrition(today);
             loadBestSwimToday(today);
         });

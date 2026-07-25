@@ -3,6 +3,7 @@ package com.dreamcreators.swimgoaltracker.screens;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -60,7 +61,7 @@ public class DailyFeedActivity extends AppCompatActivity {
     private ProgressBar videoProgress;
     private TextView tvVideoError;
 
-    private View cardVideo, cardNoVideo, layVideoInfo, layActions, layDivider;
+    private View cardVideo, cardLoading, cardNoVideo, layVideoInfo, layActions, layDivider;
     private View layCommentsHeader, layAddComment, videoContainer;
     private LinearLayout layCommentsList;
     private TextView tvVideoTitle, tvVideoDescription;
@@ -77,6 +78,9 @@ public class DailyFeedActivity extends AppCompatActivity {
     private int currentUserLike = 0;
     private boolean isFullscreen = false;
     private int originalVideoHeight;
+
+    private final Handler loadingTimeoutHandler = new Handler();
+    private static final long NO_VIDEO_TIMEOUT_MS = 12000L;
 
     private InterstitialAd mInterstitialAd;
     private RewardedInterstitialAd rewardedInterstitialAd;
@@ -106,6 +110,10 @@ public class DailyFeedActivity extends AppCompatActivity {
 
         initViews();
         setupBottomNav();
+
+        getSharedPreferences("app_prefs", MODE_PRIVATE).edit()
+                .putString("daily_feed_last_visit", new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()))
+                .apply();
 
         if (shouldShowRewardedAd()) {
             loadAndShowRewardedAd(this::loadContent);
@@ -208,11 +216,37 @@ public class DailyFeedActivity extends AppCompatActivity {
         }
     }
 
+    private void showLoadingVideo() {
+        showLoading(true);
+        cardLoading.setVisibility(View.VISIBLE);
+        cardVideo.setVisibility(View.GONE);
+        cardNoVideo.setVisibility(View.GONE);
+        layVideoInfo.setVisibility(View.GONE);
+        layActions.setVisibility(View.GONE);
+        layDivider.setVisibility(View.GONE);
+        layCommentsHeader.setVisibility(View.GONE);
+        layAddComment.setVisibility(View.GONE);
+        videoProgress.setVisibility(View.GONE);
+        tvVideoError.setVisibility(View.GONE);
+    }
+
+    private void revealVideo() {
+        cardLoading.setVisibility(View.GONE);
+        showLoading(false);
+        if (cardNoVideo.getVisibility() == View.VISIBLE) {
+            return;
+        }
+        cardVideo.setVisibility(View.VISIBLE);
+        layVideoInfo.setVisibility(View.VISIBLE);
+        layActions.setVisibility(View.VISIBLE);
+    }
+
     private void initViews() {
         playerView = findViewById(R.id.playerView);
         videoProgress = findViewById(R.id.videoProgress);
         tvVideoError = findViewById(R.id.tvVideoError);
         cardVideo = findViewById(R.id.cardVideo);
+        cardLoading = findViewById(R.id.cardLoading);
         cardNoVideo = findViewById(R.id.cardNoVideo);
         videoContainer = findViewById(R.id.videoContainer);
         layVideoInfo = findViewById(R.id.layVideoInfo);
@@ -282,6 +316,17 @@ public class DailyFeedActivity extends AppCompatActivity {
     }
 
     private void loadVideo() {
+        showLoadingVideo();
+
+        loadingTimeoutHandler.removeCallbacksAndMessages(null);
+        loadingTimeoutHandler.postDelayed(() -> {
+            runOnUiThread(() -> {
+                if (cardLoading.getVisibility() == View.VISIBLE) {
+                    showNoVideo();
+                }
+            });
+        }, NO_VIDEO_TIMEOUT_MS);
+
         DailyFeedVideo cached = feedManager.getCachedVideo();
         if (cached != null) {
             showVideo(cached);
@@ -295,33 +340,28 @@ public class DailyFeedActivity extends AppCompatActivity {
                     showVideo(video);
                     loadComments(video.getVideoId());
                     listenLikes(video.getVideoId());
-                } else if (cached == null) {
-                    showNoVideo();
                 }
             }
 
             @Override
             public void onError(String error) {
-                if (cached == null) {
-                    showNoVideo();
-                }
             }
         });
     }
 
     private void showVideo(DailyFeedVideo video) {
+        loadingTimeoutHandler.removeCallbacksAndMessages(null);
         showLoading(false);
         cardNoVideo.setVisibility(View.GONE);
-        cardVideo.setVisibility(View.VISIBLE);
-        layVideoInfo.setVisibility(View.VISIBLE);
-        layActions.setVisibility(View.VISIBLE);
-
+        // cardVideo not shown yet — stays behind the skeleton until player is ready
         tvVideoTitle.setText(video.getTitle() != null ? video.getTitle() : "Daily Swim Video");
         tvVideoDescription.setText(video.getDescription() != null ? video.getDescription() : "");
 
         if (video.getVideoUrl() != null && !video.getVideoUrl().isEmpty()) {
             initializePlayer(video.getVideoUrl());
         } else {
+            cardLoading.setVisibility(View.GONE);
+            cardVideo.setVisibility(View.VISIBLE);
             videoProgress.setVisibility(View.GONE);
             tvVideoError.setVisibility(View.VISIBLE);
             tvVideoError.setText("Video URL not available");
@@ -329,7 +369,9 @@ public class DailyFeedActivity extends AppCompatActivity {
     }
 
     private void showNoVideo() {
+        loadingTimeoutHandler.removeCallbacksAndMessages(null);
         showLoading(false);
+        cardLoading.setVisibility(View.GONE);
         cardVideo.setVisibility(View.GONE);
         cardNoVideo.setVisibility(View.VISIBLE);
         layVideoInfo.setVisibility(View.GONE);
@@ -351,6 +393,8 @@ public class DailyFeedActivity extends AppCompatActivity {
                     }
                     if (playbackState == Player.STATE_READY) {
                         tvVideoError.setVisibility(View.GONE);
+                        videoProgress.setVisibility(View.GONE);
+                        revealVideo();
                     }
                 }
 
@@ -359,6 +403,7 @@ public class DailyFeedActivity extends AppCompatActivity {
                     videoProgress.setVisibility(View.GONE);
                     tvVideoError.setVisibility(View.VISIBLE);
                     tvVideoError.setText("Error playing video");
+                    revealVideo();
                 }
             });
         }
@@ -664,6 +709,7 @@ public class DailyFeedActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        loadingTimeoutHandler.removeCallbacksAndMessages(null);
         if (currentVideo != null && feedManager != null) {
             feedManager.removeCommentsListener(currentVideo.getVideoId());
             feedManager.removeLikesListener(currentVideo.getVideoId());
